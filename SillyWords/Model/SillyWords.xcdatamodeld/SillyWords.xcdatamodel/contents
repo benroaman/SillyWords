@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24902" systemVersion="25F84" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Flavorite" representedClassName="Flavorite" syncable="YES" codeGenerationType="class">
+        <attribute name="actualSyllables" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="allowsYAsVowel" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="allowVowelCombos" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="filterSortOfBadWords" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="final2LetterBlends" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="final3LetterBlends" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="finalDigraphBlends" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="finalDigraphs" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="initial2LetterBlends" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="initial3LetterBlends" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="initialDigraphBlends" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="initialDigraphs" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="maxSyllables" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="middle2LetterBlends" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="middle3LetterBlends" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="middleDigraphBlends" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="middleDigraphs" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="minSyllables" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="rating" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="soloQs" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="word" optional="YES" attributeType="String"/>
+    </entity>
+</model>

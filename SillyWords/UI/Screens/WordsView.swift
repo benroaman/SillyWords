@@ -19,7 +19,7 @@ struct WordsView: View {
     // MARK: Initializers
     init(generator: GenerationManager, favorites: FavoritesManager) {
         self.generator = generator
-        self.word = generator.makeWord(previousWord: "")
+        self.word = generator.makeWord(previousWord: "").word
         self.favorites = favorites
     }
     
@@ -94,7 +94,7 @@ private extension WordsView {
     
     func doCreateNewWord() {
         Task {
-            let newWord = await self.generator.makeWordAsync(previousWord: self.word)
+            let newWord = await self.generator.makeWordAsync(previousWord: self.word).word
             DispatchQueue.main.async {
                 self.word = newWord
             }

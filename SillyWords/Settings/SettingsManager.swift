@@ -9,7 +9,7 @@ import Foundation
 import BRWordGeneration
 
 @Observable
-class SettingsManager: BRWordGenerationSettings {
+class SettingsManager {
     private typealias S = Settings.WordGeneration
     
     // MARK: Instance Constants
@@ -95,6 +95,26 @@ class SettingsManager: BRWordGenerationSettings {
     // MARK: Computed Values
     var minimumSyllableOptions: [Int] { Array(Self.minimumAllowableSyllables...maxSyllables) }
     var maximumSyllableOptions: [Int] { Array(minSyllables...Self.maximumAllowableSyllables) }
+    var settingsPackage: BRWordGenerationSettings {
+        .init(minSyllables: minSyllables,
+              maxSyllables: maxSyllables,
+              allowVowelCombos: allowVowelCombos,
+              allowsYAsVowel: allowsYAsVowel,
+              filterSortOfBadWords: filterSortOfBadWords,
+              soloQs: soloQs,
+              initialDigraphs: initialDigraphs,
+              initialDigraphBlends: initialDigraphBlends,
+              initial2LetterBlends: initial2LetterBlends,
+              initial3LetterBlends: initial3LetterBlends,
+              middleDigraphs: middleDigraphs,
+              middleDigraphBlends: middleDigraphBlends,
+              middle2LetterBlends: middle2LetterBlends,
+              middle3LetterBlends: middle3LetterBlends,
+              finalDigraphs: finalDigraphs,
+              finalDigraphBlends: finalDigraphBlends,
+              final2LetterBlends: final2LetterBlends,
+              final3LetterBlends: final3LetterBlends)
+    }
 }
 
 @propertyWrapper struct SettingBacked<S: BRSetting> {
