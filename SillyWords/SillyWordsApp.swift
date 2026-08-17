@@ -31,6 +31,7 @@ struct SillyWordsApp: App {
                 })
             })
             .tint(.indigo)
+            .environment(\.managedObjectContext, state.database.viewContext)
         }
     }
 }

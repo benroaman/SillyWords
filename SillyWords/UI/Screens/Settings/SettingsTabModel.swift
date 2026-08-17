@@ -18,6 +18,8 @@ final class SettingsTabModel: SettingsMainMenuViewModel, SettingsFavoritesMenuVi
         self.favorites = favorites
     }
     
+    var clearFavoritesFailure: String?
+    
     // MARK: SettingsMainMenuViewModel
     var path: [SettingsRoute] = []
 
@@ -46,7 +48,19 @@ final class SettingsTabModel: SettingsMainMenuViewModel, SettingsFavoritesMenuVi
     var settingsFavoritesMenuViewIsPresentingPurgeConfirm: Bool = false
     
     func settingsFavoritesMenuViewDoPurge() {
-        favorites.clearFavorites()
+        Task {
+            do {
+                try await favorites.clearFavorites()
+            } catch let error as DatabaseError {
+                await MainActor.run {
+                    self.clearFavoritesFailure = "Failed to clear favorites: \(error.description)"
+                }
+            } catch {
+                await MainActor.run {
+                    self.clearFavoritesFailure = "Failed to clear favorites: \(error.localizedDescription)"
+                }
+            }
+        }
     }
     
     func settingsFavoritesMenuDoSelectOption(_ option: SettingsFavoritesMenuOption) {

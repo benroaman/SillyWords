@@ -92,7 +92,7 @@ protocol FavoritesViewRowModel {
 }
 
 fileprivate struct PreviewWrapper: View {
-    @State private var model = FavoritesView.Model(FavoritesManager())
+    @State private var model = FavoritesView.Model(FavoritesManager(Database()))
     
     var body: some View {
         List {

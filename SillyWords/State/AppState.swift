@@ -14,11 +14,15 @@ class AppState {
     let settings: SettingsManager
     let generator: GenerationManager
     let favorites: FavoritesManager
+    let database: Database
     
     init() {
         let settingsManager = SettingsManager()
         self.settings = settingsManager
         self.generator = GenerationManager(settingsManager)
-        self.favorites = FavoritesManager()
+        
+        let database = Database()
+        self.database = database
+        self.favorites = FavoritesManager(database)
     }
 }

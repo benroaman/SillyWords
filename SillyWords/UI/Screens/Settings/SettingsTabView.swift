@@ -20,6 +20,6 @@ struct SettingsTabView: View {
 }
 
 #Preview {
-    SettingsTabView(model: SettingsTabModel(SettingsManager(), favorites: FavoritesManager()))
+    SettingsTabView(model: SettingsTabModel(SettingsManager(), favorites: FavoritesManager(Database())))
 }
 

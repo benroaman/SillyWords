@@ -94,7 +94,7 @@ extension FavoritesView {
 }
 
 fileprivate struct PreviewWrapper: View {
-    @State private var favorites: FavoritesManager = .init()
+    @State private var favorites: FavoritesManager = .init(Database())
     
     var body: some View {
         FavoritesView(model: .init(favorites))

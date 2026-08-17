@@ -13,13 +13,11 @@ struct WordsView: View {
     // MARK: Instance Variables - State
     @State var generator: GenerationManager
     @State var favorites: FavoritesManager
-    @State private var word: String
     @State var presentedEmail: Email?
     
     // MARK: Initializers
     init(generator: GenerationManager, favorites: FavoritesManager) {
         self.generator = generator
-        self.word = generator.makeWord(previousWord: "").word
         self.favorites = favorites
     }
     
@@ -27,8 +25,8 @@ struct WordsView: View {
     var body: some View {
         VStack {
             ZStack {
-                Text(word)
-                    .animation(.easeIn(duration: 0.75), value: word)
+                Text(generator.currentWordText)
+                    .animation(.easeIn(duration: 0.75), value: generator.currentWordText)
                     .font(.system(size: 60, weight: .medium))
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
@@ -51,12 +49,12 @@ struct WordsView: View {
                 .fontWeight(.medium)
                 Spacer()
                 Button(action: doToggleFavorite, label: {
-                    Image(systemName: favorites.isFavorite(word) ? "heart.fill" : "heart")
+                    Image(systemName: favorites.isFavorite(generator.currentWordText) ? "heart.fill" : "heart")
                 })
                 .tint(.purple)
                 .font(.title)
                 .fontWeight(.medium)
-                .animation(.easeIn(duration: 0.75), value: word)
+                .animation(.easeIn(duration: 0.75), value: generator.currentWordText)
                 Spacer()
                 Menu("", systemImage: "exclamationmark.bubble") {
                     Button(action: doReportCurrentWordOffensive, label: {
@@ -81,24 +79,27 @@ struct WordsView: View {
 // MARK: Private API - User Interactions
 private extension WordsView {
     func doReportCurrentWordOffensive() {
-        presentedEmail = .offensive(word: word)
+        presentedEmail = .offensive(word: generator.currentWordText)
     }
     
     func doReportCurrentWordLowQuality() {
-        presentedEmail = .poorQuality(word: word)
+        presentedEmail = .poorQuality(word: generator.currentWordText)
     }
     
     func doToggleFavorite() {
-        favorites.toggleFavorite(word)
+        guard let word = generator.words.first else { return }
+        
+        Task {
+            do {
+                try await favorites.toggleFavorite(word)
+            } catch {
+                #warning("TODO:")
+            }
+        }
     }
     
     func doCreateNewWord() {
-        Task {
-            let newWord = await self.generator.makeWordAsync(previousWord: self.word).word
-            DispatchQueue.main.async {
-                self.word = newWord
-            }
-        }
+        generator.makeWord()
     }
 }
 

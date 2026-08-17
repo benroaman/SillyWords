@@ -6,37 +6,51 @@
 //
 
 import Foundation
+import CoreData
 
 @Observable
 class FavoritesManager {
-    private(set) var favorites: [Favorite] = Settings.Favorites.Favorites.current
+    private let database: Database
+    private(set) var favoriteWords: Set<String> = []
     
-    func addFavorite(_ word: String) {
-        let favorite = Favorite(word: word, dateCreated: Date())
-        favorites.append(favorite)
-        Settings.Favorites.Favorites.set(favorites)
+    init(_ database: Database) {
+        self.database = database
+    }
+    
+    func addFavorite(_ word: GeneratedWord) async throws {
+        try await database.createFavorite(content: word)
+        favoriteWords.insert(word.word)
     }
     
     func isFavorite(_ word: String) -> Bool {
-        Set(favorites).contains(Favorite(word: word, dateCreated: Date()))
+        favoriteWords.contains(word)
     }
     
-    func removeFavoritee(_ word: String) {
-        favorites = favorites.filter({ $0.word != word })
-        Settings.Favorites.Favorites.set(favorites)
+    func removeFavorite(_ word: String) async throws {
+        try await database.deleteFavorite(word)
+        favoriteWords.remove(word)
     }
     
-    func toggleFavorite(_ word: String) {
-        if let target = favorites.firstIndex(where: { $0.word == word }) {
-            favorites.remove(at: target)
-        } else {
-            favorites.append(Favorite(word: word, dateCreated: Date()))
+    func removeFavorite(_ word: Flavorite) async throws {
+        let wordActual = await database.getWord(from: word)
+        try await database.deleteFavorite(word)
+        if let wordActual {
+            favoriteWords.remove(wordActual)
         }
-        Settings.Favorites.Favorites.set(favorites)
     }
     
-    func clearFavorites() {
-        favorites = []
-        Settings.Favorites.Favorites.set(favorites)
+    func toggleFavorite(_ word: GeneratedWord) async throws {
+        if favoriteWords.contains(word.word) {
+            try await database.deleteFavorite(word.word)
+            favoriteWords.remove(word.word)
+        } else {
+            try await database.createFavorite(content: word)
+            favoriteWords.insert(word.word)
+        }
+    }
+    
+    func clearFavorites() async throws {
+        try await database.clearAllFavorites()
+        favoriteWords = []
     }
 }
