@@ -13,7 +13,7 @@ extension FavoritesView {
         @State var model: M
         
         // MARK: Instance Constants
-        let favorite: Flavorite
+        let favorite: Favorite
         
         // MARK: Body
         var body: some View {
@@ -49,7 +49,7 @@ extension FavoritesView {
 
 // MARK: Private API - View Builders
 private extension FavoritesView.Row {
-    @ViewBuilder func makeRowSwipeActions(for favorite: Flavorite) -> some View {
+    @ViewBuilder func makeRowSwipeActions(for favorite: Favorite) -> some View {
         Button(action: {
             model.onDeleteTapped(for: favorite)
         }, label: {
@@ -85,19 +85,19 @@ extension FavoritesView.Row {
 
 // MARK: Model Requirements
 protocol FavoritesViewRowModel {
-    func onDeleteTapped(for favorite: Flavorite)
-    func onReportPoorQualityTapped(for favorite: Flavorite)
-    func onReportOffensiveTapped(for favorite: Flavorite)
+    func onDeleteTapped(for favorite: Favorite)
+    func onReportPoorQualityTapped(for favorite: Favorite)
+    func onReportOffensiveTapped(for favorite: Favorite)
 }
 
 #warning("TODO: get this somewhere else, maybe a proper preview version of FavoritesView.Model")
 import CoreData
 
 class FavoritesViewRowViewModelPreview: FavoritesViewRowModel {
-    func onDeleteTapped(for favorite: Flavorite) { print("DELETE") }
-    func onReportPoorQualityTapped(for favorite: Flavorite) { print("POOR QUALITY") }
-    func onReportOffensiveTapped(for favorite: Flavorite) { print("OFFENSIVE") }
-    let favorite = (try! Database.preview.viewContext.fetch(Flavorite.fetchRequest()) as! [Flavorite]).first!
+    func onDeleteTapped(for favorite: Favorite) { print("DELETE") }
+    func onReportPoorQualityTapped(for favorite: Favorite) { print("POOR QUALITY") }
+    func onReportOffensiveTapped(for favorite: Favorite) { print("OFFENSIVE") }
+    let favorite = (try! Database.preview.viewContext.fetch(Favorite.fetchRequest()) as! [Favorite]).first!
 }
 
 // MARK: Previews

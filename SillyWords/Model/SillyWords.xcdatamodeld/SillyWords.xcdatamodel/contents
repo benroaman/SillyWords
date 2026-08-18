@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24902" systemVersion="25F84" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="Flavorite" representedClassName="Flavorite" syncable="YES" codeGenerationType="class">
+    <entity name="Favorite" representedClassName="Favorite" syncable="YES" codeGenerationType="class">
         <attribute name="actualSyllables" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="allowsYAsVowel" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="allowVowelCombos" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>

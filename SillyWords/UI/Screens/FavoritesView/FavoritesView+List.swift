@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct FavoritesViewList<M: FavoritesViewRowModel>: View {
-    @FetchRequest private var favorites: FetchedResults<Flavorite>
+    @FetchRequest private var favorites: FetchedResults<Favorite>
     @State private var model: M
     
     init(model: M, sortedBy: FavoritesView.SortMode) {
         self.model = model
-        self._favorites = FetchRequest<Flavorite>(
+        self._favorites = FetchRequest<Favorite>(
             sortDescriptors: sortedBy.favoriteSortDescriptors,
             animation: .default
         )

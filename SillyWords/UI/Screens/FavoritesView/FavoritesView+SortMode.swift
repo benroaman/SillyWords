@@ -30,11 +30,11 @@ extension FavoritesView {
             }
         }
         
-        var favoriteSortDescriptors: [SortDescriptor<Flavorite>] {
+        var favoriteSortDescriptors: [SortDescriptor<Favorite>] {
             switch self {
-            case .alpha: [SortDescriptor(\Flavorite.word, order: favoriteSortOrder)]
-            case .mostRecent: [SortDescriptor(\Flavorite.dateAdded, order: favoriteSortOrder)]
-//            case .highestRated: [SortDescriptor(\Flavorite.rating, order: favoriteSortOrder)]
+            case .alpha: [SortDescriptor(\Favorite.word, order: favoriteSortOrder)]
+            case .mostRecent: [SortDescriptor(\Favorite.dateAdded, order: favoriteSortOrder)]
+//            case .highestRated: [SortDescriptor(\Favorite.rating, order: favoriteSortOrder)]
             }
         }
     }

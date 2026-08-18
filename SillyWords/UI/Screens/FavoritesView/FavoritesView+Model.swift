@@ -14,7 +14,7 @@ extension FavoritesView {
         // MARK: Instance Variables
         private let manager: FavoritesManager
         var sort: SortMode = .mostRecent
-        var pendingDelete: Flavorite?
+        var pendingDelete: Favorite?
         var presentedEmail: Email?
         var deleteFailedMessage: String?
         
@@ -71,16 +71,16 @@ extension FavoritesView.Model {
     }
 
     // MARK: FavoritesViewRowModel Conformance
-    func onDeleteTapped(for favorite: Flavorite) {
+    func onDeleteTapped(for favorite: Favorite) {
         pendingDelete = favorite
     }
     
-    func onReportPoorQualityTapped(for favorite: Flavorite) {
+    func onReportPoorQualityTapped(for favorite: Favorite) {
         guard let word = favorite.word else { return }
         presentedEmail = .poorQuality(word: word)
     }
     
-    func onReportOffensiveTapped(for favorite: Flavorite) {
+    func onReportOffensiveTapped(for favorite: Favorite) {
         guard let word = favorite.word else { return }
         presentedEmail = .offensive(word: word)
     }

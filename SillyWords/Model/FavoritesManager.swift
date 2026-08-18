@@ -34,7 +34,7 @@ class FavoritesManager {
         favoriteWords.remove(word)
     }
     
-    func removeFavorite(_ word: Flavorite) async throws {
+    func removeFavorite(_ word: Favorite) async throws {
         let wordActual = await database.getWord(from: word)
         try await database.deleteFavorite(word)
         if let wordActual {

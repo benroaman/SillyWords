@@ -91,7 +91,7 @@ extension Database {
 extension Database {
     func createFavorite(content: GeneratedWord) async throws {
         try await writeContext.perform {
-            let new = Flavorite(context: writeContext)
+            let new = Favorite(context: writeContext)
             new.word = content.word
             new.actualSyllables = Int64(content.syllables)
             new.dateAdded = Date()
@@ -122,7 +122,7 @@ extension Database {
 
 // MARK: Public API - Delete
 extension Database {
-    func deleteFavorite(_ favorite: Flavorite) async throws {
+    func deleteFavorite(_ favorite: Favorite) async throws {
         let objectID = favorite.objectID
         let writeContext = self.writeContext
         try await writeContext.perform {
@@ -135,7 +135,7 @@ extension Database {
     func deleteFavorite(_ word: String) async throws {
         let writeContext = self.writeContext
         try await writeContext.perform {
-            let request = Flavorite.fetchRequest()
+            let request = Favorite.fetchRequest()
             request.predicate = NSPredicate(format: "word ==[c] %@", word)
             
             do {
@@ -154,7 +154,7 @@ extension Database {
         let readContext = viewContext
         
         try await context.perform {
-            let fetchRequest = Flavorite.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
+            let fetchRequest = Favorite.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
             deleteRequest.resultType = .resultTypeObjectIDs
             
@@ -177,11 +177,11 @@ extension Database {
 
 // MARK: Public API - Read
 extension Database {
-    func getWord(from favorite: Flavorite) async -> String? {
+    func getWord(from favorite: Favorite) async -> String? {
         let objectID = favorite.objectID
         let readContext = viewContext
         return await readContext.perform {
-            (readContext.object(with: objectID) as? Flavorite)?.word
+            (readContext.object(with: objectID) as? Favorite)?.word
         }
     }
     
@@ -190,7 +190,7 @@ extension Database {
         
         do {
             return try readContext.performAndWait {
-                let words = try readContext .fetch(Flavorite.fetchRequest()).compactMap(\.word)
+                let words = try readContext .fetch(Favorite.fetchRequest()).compactMap(\.word)
                 return Set(words)
             }
         } catch {
@@ -202,11 +202,11 @@ extension Database {
 
 // MARK: Public API - Update
 extension Database {
-    func rateFavorite(_ favorite: Flavorite, rating: Int) async throws {
+    func rateFavorite(_ favorite: Favorite, rating: Int) async throws {
         let objectID = favorite.objectID
         let writeContext = self.writeContext
         try await writeContext.perform {
-            guard let object = writeContext.object(with: objectID) as? Flavorite else {
+            guard let object = writeContext.object(with: objectID) as? Favorite else {
                 throw DatabaseError.missingObject
             }
             object.rating = Int64(rating)
@@ -223,15 +223,15 @@ extension Database {
         let context = controller.container.viewContext
 
         // Create sample objects
-        let mock1 = Flavorite(context: context)
+        let mock1 = Favorite(context: context)
         mock1.word = "glunde"
         mock1.dateAdded = Date()
         mock1.actualSyllables = 2
-        let mock2 = Flavorite(context: context)
+        let mock2 = Favorite(context: context)
         mock1.word = "bismustrex"
         mock1.dateAdded = Date()
         mock1.actualSyllables = 3
-        let mock3 = Flavorite(context: context)
+        let mock3 = Favorite(context: context)
         mock1.word = "aja"
         mock1.dateAdded = Date()
         mock1.actualSyllables = 2

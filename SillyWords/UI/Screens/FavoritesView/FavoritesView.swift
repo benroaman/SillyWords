@@ -10,11 +10,11 @@ import SwiftUI
 // MARK: Base
 struct FavoritesView: View {
     // MARK: Instance Variables - State
-    @FetchRequest private var favorites: FetchedResults<Flavorite>
+    @FetchRequest private var favorites: FetchedResults<Favorite>
     @State var model: Model
     
     init(model: Model) {
-        self._favorites = FetchRequest<Flavorite>(
+        self._favorites = FetchRequest<Favorite>(
             sortDescriptors: model.sort.favoriteSortDescriptors,
             animation: .default
         )
