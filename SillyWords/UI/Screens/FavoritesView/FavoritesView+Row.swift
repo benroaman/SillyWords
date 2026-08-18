@@ -97,7 +97,7 @@ class FavoritesViewRowViewModelPreview: FavoritesViewRowModel {
     func onDeleteTapped(for favorite: Flavorite) { print("DELETE") }
     func onReportPoorQualityTapped(for favorite: Flavorite) { print("POOR QUALITY") }
     func onReportOffensiveTapped(for favorite: Flavorite) { print("OFFENSIVE") }
-    let favorite = (try! Database.preview.container.viewContext.fetch(Flavorite.fetchRequest()) as! [Flavorite]).first!
+    let favorite = (try! Database.preview.viewContext.fetch(Flavorite.fetchRequest()) as! [Flavorite]).first!
 }
 
 // MARK: Previews
