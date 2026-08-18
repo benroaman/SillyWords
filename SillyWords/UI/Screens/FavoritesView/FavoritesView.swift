@@ -10,7 +10,16 @@ import SwiftUI
 // MARK: Base
 struct FavoritesView: View {
     // MARK: Instance Variables - State
+    @FetchRequest private var favorites: FetchedResults<Flavorite>
     @State var model: Model
+    
+    init(model: Model) {
+        self._favorites = FetchRequest<Flavorite>(
+            sortDescriptors: model.sort.favoriteSortDescriptors,
+            animation: .default
+        )
+        self.model = model
+    }
     
     // MARK: Body
     var body: some View {
@@ -39,27 +48,32 @@ private extension FavoritesView {
     
     @ViewBuilder var favoritesList: some View {
         List {
-            ForEach(model.favorites, id: \.self) { entry in
+            ForEach(favorites, id: \.self) { entry in
                 Row(model: model, favorite: entry)
             }
         }
+        .onChange(of: model.sort, {_, _ in
+            favorites.sortDescriptors = model.sort.favoriteSortDescriptors
+        })
         .safeAreaBar(edge: .top, alignment: .trailing) {
             sortButton
         }
-        .animation(.default, value: model.favorites)
         .transition(.opacity.animation(.default))
     }
     
     @ViewBuilder var sortButton: some View {
-        Picker("", selection: $model.sort) {
+        Picker(selection: $model.sort, content: {
             ForEach(SortMode.allCases, id: \.self) { mode in
-                Image(mode.icon).tag(mode)
+                Image(mode.icon)
+                .tag(mode)
             }
-        }
+        }, label: {
+            Image(model.sort.icon)
+                .contentTransition(.symbolEffect(.replace))
+        })
         .labelsHidden()
         .glassEffect(.clear)
         .padding(.trailing)
-        .animation(.default, value: model.sort)
     }
     
     @ViewBuilder func makeDeleteConfirmationAlertActions() -> some View {
@@ -94,9 +108,11 @@ extension FavoritesView {
 }
 
 fileprivate struct PreviewWrapper: View {
-    @State private var favorites: FavoritesManager = .init(Database())
+    @State private var favorites: FavoritesManager = .init(Database.preview)
+    @State private var context = Database.preview.viewContext
     
     var body: some View {
         FavoritesView(model: .init(favorites))
+            .environment(\.managedObjectContext, context)
     }
 }

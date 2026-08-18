@@ -13,8 +13,11 @@ class FavoritesManager {
     private let database: Database
     private(set) var favoriteWords: Set<String> = []
     
+    var hasFavorites: Bool { !favoriteWords.isEmpty }
+    
     init(_ database: Database) {
         self.database = database
+        self.favoriteWords = database.allFavoriteWordStrings()
     }
     
     func addFavorite(_ word: GeneratedWord) async throws {

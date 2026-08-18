@@ -9,6 +9,8 @@ import Foundation
 
 enum SFSymbol: String, CaseIterable {
     case aCircle = "a.circle"
+    case arrowDown = "arrow.down"
+    case arrowUp = "arrow.up"
     case arrowUpRight = "arrow.up.right"
     case bCircle = "b.circle"
     case calendar
@@ -21,5 +23,6 @@ enum SFSymbol: String, CaseIterable {
     case pencilAndRuler = "pencil.and.ruler"
     case pencilAndScribble = "pencil.and.scribble"
     case ruler
+    case star
     case trash
 }

@@ -25,16 +25,46 @@ import CloudKit
 import BRWordGeneration
 
 struct Database {
-
-    static let shared = Database()
-
     let container: NSPersistentCloudKitContainer
     let viewContext: NSManagedObjectContext
     private let writeContext: NSManagedObjectContext
+    
+    static var preview: Database = {
+        let controller = Database(inMemory: true)
+        let context = controller.container.viewContext
 
-    init() {
+        // Create sample objects
+        let mock1 = Flavorite(context: context)
+        mock1.word = "glunde"
+        mock1.dateAdded = Date()
+        mock1.actualSyllables = 2
+        let mock2 = Flavorite(context: context)
+        mock1.word = "bismustrex"
+        mock1.dateAdded = Date()
+        mock1.actualSyllables = 3
+        let mock3 = Flavorite(context: context)
+        mock1.word = "aja"
+        mock1.dateAdded = Date()
+        mock1.actualSyllables = 2
+
+        do {
+            try Database.save(context)
+        } catch let error as DatabaseError {
+            fatalError("Failed to save preview data: \(error.description)")
+        } catch {
+            fatalError("Failed to save preview data: \(error.localizedDescription)")
+        }
+
+        return controller
+    }()
+
+    init(inMemory: Bool = false) {
         // Name must match your .xcdatamodeld filename
         container = NSPersistentCloudKitContainer(name: "SillyWords")
+        
+        if inMemory {
+            container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
+        }
 
         guard let description = container.persistentStoreDescriptions.first else {
             fatalError("No persistent store description found")
@@ -105,6 +135,7 @@ struct Database {
             let new = Flavorite(context: writeContext)
             new.word = content.word
             new.actualSyllables = Int64(content.syllables)
+            new.dateAdded = Date()
             
             new.minSyllables = Int64(content.settings.minSyllables)
             new.maxSyllables = Int64(content.settings.maxSyllables)
@@ -198,6 +229,20 @@ struct Database {
         let readContext = viewContext
         return await readContext.perform {
             (readContext.object(with: objectID) as? Flavorite)?.word
+        }
+    }
+    
+    func allFavoriteWordStrings() -> Set<String> {
+        let readContext = viewContext
+        
+        do {
+            return try readContext.performAndWait {
+                let words = try readContext .fetch(Flavorite.fetchRequest()).compactMap(\.word)
+                return Set(words)
+            }
+        } catch {
+            print("Failed to intialize favorites reference list: \(Database.parseFetchError(error).description)")
+            return []
         }
     }
     

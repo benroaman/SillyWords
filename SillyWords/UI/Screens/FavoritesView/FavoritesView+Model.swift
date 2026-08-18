@@ -6,15 +6,17 @@
 //
 
 import SwiftUI
+import CoreData
 
 // MARK: Base
 extension FavoritesView {
     @Observable class Model: FavoritesViewRowModel {
         // MARK: Instance Variables
         private let manager: FavoritesManager
-        var sort: SortMode = .date
-        var pendingDelete: Favorite?
+        var sort: SortMode = .mostRecent
+        var pendingDelete: Flavorite?
         var presentedEmail: Email?
+        var deleteFailedMessage: String?
         
         // MARK: Initializers
         init(_ manager: FavoritesManager) {
@@ -25,17 +27,7 @@ extension FavoritesView {
 
 // MARK: Public API
 extension FavoritesView.Model {
-    /// Computed Values
-    var favorites: [Favorite] {
-        switch sort {
-        case .alpha: return manager.favorites.sorted(by: { $0.word < $1.word })
-        case .date: return manager.favorites.reversed()
-        }
-    }
-    
-    var hasFavorites: Bool {
-        !manager.favorites.isEmpty
-    }
+    var hasFavorites: Bool { manager.hasFavorites }
     
     var deleteConfirmationIsPresented: Binding<Bool> {
         .init(
@@ -50,23 +42,46 @@ extension FavoritesView.Model {
         )
     }
     
-    var deleteConfirmationAlertMessage: String { "Delete \"\(pendingDelete?.word ?? "Favorite")\"?" }
+    var deleteConfirmationAlertMessage: String {
+        var word: String?
+        pendingDelete?.managedObjectContext?.performAndWait {
+            word = pendingDelete?.word
+        }
+        
+        return "Delete \"\(word ?? "Favorite")\"?"
+    }
     
     // Functions
     func onConfirmDeleteTapped() {
-        manager.removeFavoritee(pendingDelete?.word ?? "")
+        guard let pendingDelete else { return }
+        
+        Task {
+            do {
+                try await manager.removeFavorite(pendingDelete)
+            } catch let error as DatabaseError {
+                await MainActor.run {
+                    self.deleteFailedMessage = "Could not delete favorite: \(error.description)"
+                }
+            } catch {
+                await MainActor.run {
+                    self.deleteFailedMessage = "Could not delete favorite: \(error.localizedDescription)"
+                }
+            }
+        }
     }
 
     // MARK: FavoritesViewRowModel Conformance
-    func onDeleteTapped(for favorite: Favorite) {
+    func onDeleteTapped(for favorite: Flavorite) {
         pendingDelete = favorite
     }
     
-    func onReportPoorQualityTapped(for favorite: Favorite) {
-        presentedEmail = .poorQuality(word: favorite.word)
+    func onReportPoorQualityTapped(for favorite: Flavorite) {
+        guard let word = favorite.word else { return }
+        presentedEmail = .poorQuality(word: word)
     }
     
-    func onReportOffensiveTapped(for favorite: Favorite) {
-        presentedEmail = .offensive(word: favorite.word)
+    func onReportOffensiveTapped(for favorite: Flavorite) {
+        guard let word = favorite.word else { return }
+        presentedEmail = .offensive(word: word)
     }
 }
