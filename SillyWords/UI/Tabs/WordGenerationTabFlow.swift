@@ -26,8 +26,9 @@ private extension WordGenerationTabFlow {
         case .settingsSyllables: SettingsSyllablesMenuView(settings: model.settings)
         case .settingsConsonants: SettingsConsonantsMenuView(settings: model.settings)
         case .settingsVowels: SettingsVowelsMenuView(settings: model.settings)
-            #warning("TODO:")
-        case .historyList: EmptyView()
+        case .historyList: WordGenerationHistoryView(model: WordGenerationHistoryViewModelProd(generator: model.generator,
+                                                                                               favorites: model.favorites,
+                                                                                               navigation: model.navigation))
         case .settingsFavorites, .favoriteWordDetail: BadRouteView(route: route)
         }
     }

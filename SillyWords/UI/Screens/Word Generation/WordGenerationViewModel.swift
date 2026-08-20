@@ -34,9 +34,9 @@ protocol WordGenerationViewModel: AnyObject, Observable {
 }
 
 @Observable class WordGenerationViewModelProd: WordGenerationViewModel {
-    let generator: GenerationManager
-    let favorites: FavoritesManager
-    let navigation: any WordGenerationTabNavigation
+    private let generator: GenerationManager
+    private let favorites: FavoritesManager
+    private let navigation: any WordGenerationTabNavigation
     
     @MainActor var toggleFavoriteFailure: String?
     
