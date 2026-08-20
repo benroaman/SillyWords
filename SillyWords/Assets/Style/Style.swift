@@ -27,4 +27,5 @@ extension Style.Color {
     static let deleteTheme: Color = .red
     static let favoriteTheme: Color = .purple
     static let zeroItemTheme: Color = .secondary
+    static let historyTheme: Color = .teal
 }

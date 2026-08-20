@@ -12,7 +12,7 @@ import BRWordGeneration
 
 struct Database {
     // MARK: Instance Constants
-    private let container: NSPersistentCloudKitContainer
+    private let container: NSPersistentContainer
     let viewContext: NSManagedObjectContext
     private let writeContext: NSManagedObjectContext
     
@@ -23,17 +23,23 @@ struct Database {
         
         if inMemory {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
+            container.persistentStoreDescriptions.first?.cloudKitContainerOptions = nil
+        } else {
+            guard let description = container.persistentStoreDescriptions.first else {
+                #warning("TODO: take out the fatal error")
+                fatalError("No persistent store description found")
+            }
+            
+            description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
+            description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+            description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
+                containerIdentifier: "iCloud.sillywords-user-data"
+            )
+            // Pin the view context to the current query generation so it doesn't
+            // see partial updates mid-sync
+            try? container.viewContext.setQueryGenerationFrom(.current)
         }
         
-        guard let description = container.persistentStoreDescriptions.first else {
-            fatalError("No persistent store description found")
-        }
-        
-        description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
-        description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
-        description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
-            containerIdentifier: "iCloud.sillywords-user-data"
-        )
         
         container.loadPersistentStores { storeDescription, error in
             if let error = error as NSError? {
@@ -47,9 +53,6 @@ struct Database {
         container.viewContext.automaticallyMergesChangesFromParent = true
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         
-        // Pin the view context to the current query generation so it doesn't
-        // see partial updates mid-sync
-        try? container.viewContext.setQueryGenerationFrom(.current)
         
 #if DEBUG
         // Uncomment once, run on a real device signed into iCloud, to create

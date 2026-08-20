@@ -13,10 +13,16 @@ enum SFSymbol: String, CaseIterable {
     case arrowUp = "arrow.up"
     case arrowUpRight = "arrow.up.right"
     case bCircle = "b.circle"
+    case bubble
+    case bubbleFill = "bubble.fill"
     case calendar
     case charactersUppercase = "characters.uppercase"
     case chevronRight = "chevron.right"
+    case clock
+    case clockFill = "clock.fill"
     case envelope
+    case gearshape
+    case gearshapeFill = "gearshape.fill"
     case heart
     case heartFill = "heart.fill"
     case exclamationmarkBubble = "exclamationmark.bubble"
@@ -24,5 +30,6 @@ enum SFSymbol: String, CaseIterable {
     case pencilAndScribble = "pencil.and.scribble"
     case ruler
     case star
+    case starFill = "star.fill"
     case trash
 }

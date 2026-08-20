@@ -13,25 +13,29 @@ struct SillyWordsApp: App {
     
     var body: some Scene {
         WindowGroup {
-            TabView(selection: $state.currentTab, content: {
+            TabView(selection: $state.navigation.currentTab, content: {
                 Tab(value: .words, content: {
-                    WordsView(generator: state.generator, favorites: state.favorites)
+                    WordGenerationTabFlow(model: WordGenerationTabFlowModelProd(state: state))
                 }, label: {
                     Image(systemName: SillyTab.words.systemImageNameUnselected)
+                        .accessibilityLabel(SillyTab.words.title)
                 })
                 Tab(value: .favorites, content: {
                     FavoritesView(model: .init(state.favorites))
                 }, label: {
                     Image(systemName: SillyTab.favorites.systemImageNameUnselected)
+                        .accessibilityLabel(SillyTab.favorites.title)
                 })
                 Tab(value: .settings, content: {
                     SettingsTabView(model: SettingsTabModel(state.settings, favorites: state.favorites))
                 }, label: {
                     Image(systemName: SillyTab.settings.systemImageNameUnselected)
+                        .accessibilityLabel(SillyTab.settings.title)
                 })
             })
-            .tint(.indigo)
+            .tint(Style.Color.mainTheme)
             .environment(\.managedObjectContext, state.database.viewContext)
+            .sendEmail($state.navigation.presentedEmail)
         }
     }
 }

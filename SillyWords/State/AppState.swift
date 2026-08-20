@@ -10,7 +10,7 @@ import BRWordGeneration
 
 @Observable
 class AppState {
-    var currentTab: SillyTab = .words
+    var navigation: NavigationManager
     let settings: SettingsManager
     let generator: GenerationManager
     let favorites: FavoritesManager
@@ -24,5 +24,21 @@ class AppState {
         let database = Database()
         self.database = database
         self.favorites = FavoritesManager(database)
+        
+        self.navigation = NavigationManager()
     }
+}
+
+@Observable class NavigationManager: WordGenerationTabNavigation {
+    var currentTab: SillyTab = .words
+    
+    // MARK: Shared Implementation - WordGenerationTabNavigation
+    var presentedEmail: Email?
+    
+    // MARK: WordGenerationTabNavigation Implementation
+    var wordGenerationTabRouter: Router<MainRoute> = .init()
+    
+    
+    var favoritesTabRouter: Router<MainRoute> = .init()
+    var settingsTabRouter: Router<MainRoute> = .init()
 }

@@ -63,3 +63,22 @@ protocol SettingsWordGenMenuViewModel {
 fileprivate class MockSettingsWordGenMenuViewModel: SettingsWordGenMenuViewModel {
     func settingsWordGenMenuDoSelectOption(_ option: SettingsWordGenMenuOption) { print("\(option.title) SELECTED") }
 }
+
+class SettingsWordGenMenuViewModelProd: SettingsWordGenMenuViewModel {
+    // MARK: Instance Members
+    let router: Router<MainRoute>
+    
+    // MARK: Initializers
+    init(_ router: Router<MainRoute>) {
+        self.router = router
+    }
+    
+    // MARK: SettingsWordGenMenuViewModel Implementation
+    func settingsWordGenMenuDoSelectOption(_ option: SettingsWordGenMenuOption) {
+        switch option {
+        case .syllables: router.push(.settingsSyllables)
+        case .vowels: router.push(.settingsVowels)
+        case .consonants: router.push(.settingsConsonants)
+        }
+    }
+}
