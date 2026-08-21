@@ -230,14 +230,14 @@ extension Database {
         mock1.word = "glunde"
         mock1.dateAdded = Date()
         mock1.actualSyllables = 2
-        let mock2 = Favorite(context: context)
-        mock1.word = "bismustrex"
-        mock1.dateAdded = Date()
-        mock1.actualSyllables = 3
         let mock3 = Favorite(context: context)
-        mock1.word = "aja"
-        mock1.dateAdded = Date()
-        mock1.actualSyllables = 2
+        mock3.word = "aja"
+        mock3.dateAdded = Date()
+        mock3.actualSyllables = 2
+        let mock2 = Favorite(context: context)
+        mock2.word = "bismustrex"
+        mock2.dateAdded = Date()
+        mock2.actualSyllables = 3
 
         do {
             try Database.save(context)

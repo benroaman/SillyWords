@@ -29,16 +29,18 @@ class AppState {
     }
 }
 
-@Observable class NavigationManager: WordGenerationTabNavigation {
+@Observable class NavigationManager: WordGenerationTabNavigation, FavoritesTabNavigation {
     var currentTab: SillyTab = .words
     
-    // MARK: Shared Implementation - WordGenerationTabNavigation
+    // MARK: Shared Implementation - WordGenerationTabNavigation, FavoritesTabNavigation
     var presentedEmail: Email?
     
     // MARK: WordGenerationTabNavigation Implementation
     var wordGenerationTabRouter: Router<MainRoute> = .init()
     
-    
+    // MARK: FavoritesTabNavigation Implementation
     var favoritesTabRouter: Router<MainRoute> = .init()
+    
+    
     var settingsTabRouter: Router<MainRoute> = .init()
 }

@@ -9,7 +9,7 @@ import Foundation
 import CoreData
 
 extension FavoritesView {
-    enum SortMode: CaseIterable {
+    enum SortMode: Int, CaseIterable {
         case alpha
         case mostRecent
 //        case highestRated
