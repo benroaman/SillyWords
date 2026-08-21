@@ -20,7 +20,7 @@ protocol WordGenerationViewModel: AnyObject, Observable {
     func onWordGenerationReportLowQuality()
 }
 
-@Observable class WordGenerationViewModelMock: WordGenerationViewModel {
+@Observable class WordGenerationViewModelPreview: WordGenerationViewModel {
     let currentWord = "brismucect"
     private(set) var isCurrentWordFavorite: Bool = false
     var toggleFavoriteFailure: String?

@@ -27,7 +27,7 @@ struct SillyWordsApp: App {
                         .accessibilityLabel(SillyTab.favorites.title)
                 })
                 Tab(value: .settings, content: {
-                    SettingsTabView(model: SettingsTabModel(state.settings, favorites: state.favorites))
+                    SettingsTabFlow(model: SettingsTabModel(state.settings, favorites: state.favorites))
                 }, label: {
                     Image(systemName: SillyTab.settings.systemImageNameUnselected)
                         .accessibilityLabel(SillyTab.settings.title)

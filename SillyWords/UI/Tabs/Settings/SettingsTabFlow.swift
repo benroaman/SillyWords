@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SettingsTabView: View {
+struct SettingsTabFlow: View {
     @State var model: SettingsTabModel
     
     var body: some View {
@@ -20,6 +20,6 @@ struct SettingsTabView: View {
 }
 
 #Preview {
-    SettingsTabView(model: SettingsTabModel(SettingsManager(), favorites: FavoritesManager(Database())))
+    SettingsTabFlow(model: SettingsTabModel(SettingsManager(), favorites: FavoritesManager(Database())))
 }
 

@@ -23,9 +23,9 @@ struct WordGenerationView<M: WordGenerationViewModel>: View {
                 Spacer()
                 generateWordButton
                 Spacer()
-                toggleFavoriteButton
-                Spacer()
                 historyButton
+                Spacer()
+                toggleFavoriteButton
                 Spacer()
                 settingsButton
                 Spacer()
@@ -112,14 +112,15 @@ private extension WordGenerationView {
 
 // MARK: Previews
 #Preview {
-    WordGenerationView(model: WordGenerationViewModelMock())
+    WordGenerationView(model: WordGenerationViewModelPreview())
 }
 
+#warning("TODO: Figure out a better place to put these?")
 // MARK: Convenience View Modifiers
 /**
  Applies the shared styling for primary buttons in WordGenerationView
  */
-struct WordViewButton: ViewModifier {
+fileprivate struct WordViewButton: ViewModifier {
     func body(content: Content) -> some View {
         content
             .font(.title)
@@ -130,7 +131,7 @@ struct WordViewButton: ViewModifier {
 /**
  Applies the shared styling for primary buttons in WordGenerationView
  */
-extension View {
+fileprivate extension View {
     func wordViewButton() -> some View {
         modifier(WordViewButton())
     }
@@ -139,7 +140,7 @@ extension View {
 /**
  Applies the frame-affecting styling for the current word label in WordGenerationView
  */
-struct CurrentWordLabel: ViewModifier {
+fileprivate struct CurrentWordLabel: ViewModifier {
     func body(content: Content) -> some View {
         content
             .font(.system(size: 60, weight: .medium))
@@ -150,7 +151,7 @@ struct CurrentWordLabel: ViewModifier {
 /**
  Applies the frame-affecting styling for the current word label in WordGenerationView
  */
-extension View {
+fileprivate extension View {
     func currentWordLabel() -> some View {
         modifier(CurrentWordLabel())
     }
