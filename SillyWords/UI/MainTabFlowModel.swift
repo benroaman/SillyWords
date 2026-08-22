@@ -5,12 +5,12 @@
 //  Created by Ben Roaman on 8/20/26.
 //
 
-import Foundation
-
+//import Foundation
+//
 //// MARK: Model Requirements
 //protocol MainTabFlowModel: AnyObject, Observable {
-//    associatedtype TabOneModel: TabOneFlowModel
-//    associatedtype TabTwoModel: TabTwoFlowModel
+//    associatedtype WordGenerationModel: WordGenerationTabFlowModel
+//    associatedtype FavoritesModel: FavoritesTabFlowModel
 //    associatedtype TabThreeModel: TabThreeFlowModel
 //    
 //    var navigation: any MainNavigationManager { get set }

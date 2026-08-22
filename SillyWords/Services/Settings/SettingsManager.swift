@@ -9,7 +9,7 @@ import Foundation
 import BRWordGeneration
 
 @Observable
-class SettingsManager {
+class SettingsManager: ConsonantSettings, SyllableSettings, VowelSettings {
     private typealias S = Settings.WordGeneration
     
     // MARK: Instance Constants

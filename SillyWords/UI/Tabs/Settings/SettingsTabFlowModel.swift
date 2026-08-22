@@ -8,6 +8,10 @@
 import Foundation
 import SwiftUI
 
+protocol SettingsTabFlowModel: AnyObject, Observable, SettingsMainMenuViewModel, SettingsFavoritesMenuViewModel, SettingsWordGenMenuViewModel {
+    
+}
+
 @Observable
 final class SettingsTabModel: SettingsMainMenuViewModel, SettingsFavoritesMenuViewModel, SettingsWordGenMenuViewModel {
     private let settings: SettingsManager

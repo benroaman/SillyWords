@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum SettingInput {
+enum SettingInput: CaseIterable {
     // Syllables
     case minSyllables
     case maxSyllables
@@ -59,26 +59,102 @@ extension SettingInput {
         }
     }
     
+    #warning("TODO: Start/End with vowel combos")
     var description: String? {
         switch self {
-        case .minSyllables: "The minimum number of syllables in generated words"
-        case .maxSyllables: "The maximum number of syllables in generated words"
-        case .allowVowelCombos: "e.g. \"ou\", \"ea\""
-        case .allowYAsVowel: nil
-        case .filterSortOfBadWords: "Truly bad words like \"f%#&\" are always filtered out, \"sort of\" bad words include \"poop\""
-        case .soloQs: "Allow \"Q\"s that are not followed by a \"U\""
+        case .minSyllables: "The least syllables in a word"
+        case .maxSyllables: "The most syllables in a word"
+        case .allowVowelCombos: "Words can contain vowel combos"
+        case .allowYAsVowel:
+            """
+            "Y"s can appear as a vowel mid-word
+            """
+        case .filterSortOfBadWords:
+            """
+            Truly bad words like "f%#&" are always filtered out, "sort of" bad words include "poop"
+            """
+        case .soloQs:
+            """
+            Allow "Q"s that are not followed by a "U"
+            """
         case .initialDigraphs: "Allow words to start with consonant digraphs"
-        case .initialDigraphBlends: "Allow words to start with consonant digraph blends"
-        case .initial2LetterBlends: "Allow words to start with two consonant blends"
-        case .initial3LetterBlends: "Allow words to start with three consonant blends"
-        case .middleDigraphs: "Allow consonant digraphs to appear in the middle of words"
-        case .middleDigraphBlends: "Allow consonant digraph blends to appear in the middle of words"
-        case .middle2LetterBlends: "Allow two consonant blends to appear in the middle of words"
-        case .middle3LetterBlends: "Allow three letter consonant blends to appear in the middle of words"
-        case .finalDigraphs: "Allow words to end with consonant digraphs"
-        case .finalDigraphBlends: "Allow words to end with consonant digraph blends"
-        case .final2LetterBlends: "Allow words to end with two consonant blends"
-        case .final3LetterBlends: "Allow words to end with three consonant blends"
+        case .initialDigraphBlends: "Words can start with consonant digraph blends"
+        case .initial2LetterBlends: "Words can start with two consonant blends"
+        case .initial3LetterBlends: "Words can start with three consonant blends"
+        case .middleDigraphs: "Consonant digraphs can appear in the middle of words"
+        case .middleDigraphBlends: "Consonant digraph blends can appear in the middle of words"
+        case .middle2LetterBlends: "Two consonant blends can appear in the middle of words"
+        case .middle3LetterBlends: "Three letter consonant blends can appear in the middle of words"
+        case .finalDigraphs: "Words can end with consonant digraphs"
+        case .finalDigraphBlends: "Words can end with consonant digraph blends"
+        case .final2LetterBlends: "Words can end with two consonant blends"
+        case .final3LetterBlends: "Words can end with three consonant blends"
+        }
+    }
+    
+    var example: String? {
+        switch self {
+        case .minSyllables, .maxSyllables, .filterSortOfBadWords: nil
+        case .allowVowelCombos:
+            """
+            e.g. "ea", "ou"
+            """
+        case .allowYAsVowel:
+            """
+            as in "glyph" and "rhythm"
+            """
+        case .soloQs:
+            """
+            as in "niqab"
+            """
+        case .initialDigraphs:
+            """
+            e.g. "th", "sh"
+            """
+        case .initialDigraphBlends:
+            """
+            e.g. "shr", "thr"
+            """
+        case .initial2LetterBlends:
+            """
+            e.g. "bl", "cr", "st"
+            """
+        case .initial3LetterBlends:
+            """
+            e.g. "scr", "spl"
+            """
+        case .middleDigraphs:
+            """
+            e.g. "ph", "ng"
+            """
+        case .middleDigraphBlends:
+            """
+            e.g. "thr", "nch"
+            """
+        case .middle2LetterBlends:
+            """
+            e.g. "cl", "fr", "sk"
+            """
+        case .middle3LetterBlends:
+            """
+            e.g. "ndr", "str"
+            """
+        case .finalDigraphs:
+            """
+            e.g. "ck", "ch"
+            """
+        case .finalDigraphBlends:
+            """
+            e.g. "nch", "tch"
+            """
+        case .final2LetterBlends:
+            """
+            e.g. "nd", "lf"
+            """
+        case .final3LetterBlends:
+            """
+            e.g. "mpt", "lpt"
+            """
         }
     }
 }
