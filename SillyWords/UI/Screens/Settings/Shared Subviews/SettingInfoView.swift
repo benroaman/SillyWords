@@ -20,6 +20,7 @@ struct SettingInfoView: View {
             Text(example)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+                .italic()
         }
     }
 }
