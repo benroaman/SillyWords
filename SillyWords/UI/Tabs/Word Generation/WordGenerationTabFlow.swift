@@ -66,9 +66,8 @@ class WordGenerationTabFlowModelProd: WordGenerationTabFlowModel {
     }
 }
 
-protocol WordGenerationTabNavigation: AnyObject, Observable {
+protocol WordGenerationTabNavigation: AnyObject, Observable, EmailNavigation {
     var wordGenerationTabRouter: Router<MainRoute> { get set }
-    var presentedEmail: Email? { get set }
 }
 
 @Observable class WordGenerationTabNavigationPreview: WordGenerationTabNavigation {

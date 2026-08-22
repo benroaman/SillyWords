@@ -11,9 +11,9 @@
 //protocol MainTabFlowModel: AnyObject, Observable {
 //    associatedtype WordGenerationModel: WordGenerationTabFlowModel
 //    associatedtype FavoritesModel: FavoritesTabFlowModel
-//    associatedtype TabThreeModel: TabThreeFlowModel
+//    associatedtype SettingsModel: SettingsTabFlowModel
 //    
-//    var navigation: any MainNavigationManager { get set }
+//    var navigation: any NavigationManager { get set }
 //    func makeTabOneFlowModel() -> TabOneModel
 //    func makeTabTwoFlowModel() -> TabTwoModel
 //    func makeTabThreeFlowModel() -> TabThreeModel
@@ -31,9 +31,9 @@
 //    }
 //    
 //    /// MainTabFlowModel
-//    typealias TabOneModel = TabOneFlowModelProd
-//    typealias TabTwoModel = TabTwoFlowModelProd
-//    typealias TabThreeModel = TabThreeFlowModelProd
+//    typealias WordGenerationModel = WordGenerationTabFlowModelProd
+//    typealias FavoritesModel = FavoritesTabFlowModelProd
+//    typealias SettingsModel = SettingsTabFlowModelProd
 //    
 //    var navigation: any MainNavigationManager
 //    

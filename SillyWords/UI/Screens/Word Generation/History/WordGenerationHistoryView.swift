@@ -23,6 +23,7 @@ struct WordGenerationHistoryView<M: WordGenerationHistoryViewModel>: View {
                             .tint(Style.Color.favoriteTheme)
                             .animation(.linear(duration: 0.35), value: model.isWordFavorite(word))
                     })
+                    .sensoryFeedback(.impact(weight: .light), trigger: model.isWordFavorite(word))
                 }
                 .swipeActions(allowsFullSwipe: false) {
                     makeRowSwipeActions(for: word)

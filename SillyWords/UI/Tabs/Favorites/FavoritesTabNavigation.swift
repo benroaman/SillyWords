@@ -7,9 +7,8 @@
 
 import Foundation
 
-protocol FavoritesTabNavigation: AnyObject, Observable {
+protocol FavoritesTabNavigation: AnyObject, Observable, EmailNavigation {
     var favoritesTabRouter: Router<MainRoute> { get set }
-    var presentedEmail: Email? { get set }
 }
 
 @Observable class FavoritesTabNavigationPreview: FavoritesTabNavigation {

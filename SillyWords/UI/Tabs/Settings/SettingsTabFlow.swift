@@ -7,19 +7,19 @@
 
 import SwiftUI
 
-struct SettingsTabFlow: View {
-    @State var model: SettingsTabModel
+struct SettingsTabFlow<M: SettingsTabFlowModel>: View {
+    @State var model: M
     
     var body: some View {
-        NavigationStack(path: $model.path) {
-            SettingsMainMenuView(model: model)
-                .navigationTitle("Options")
-                .navigationDestination(for: SettingsRoute.self, destination: model.destination(for:))
+        NavigationStack(path: $model.navigation.settingsTabRouter.path) {
+            SettingsMainMenuView(model: SettingsMainMenuViewModelProd(model.navigation))
+                .navigationTitle("Settings")
+                .navigationDestination(for: MainRoute.self, destination: model.destination(for:))
         }
     }
 }
 
 #Preview {
-    SettingsTabFlow(model: SettingsTabModel(SettingsManager(), favorites: FavoritesManager(Database())))
+    SettingsTabFlow(model: SettingsTabFlowModelPreview())
 }
 

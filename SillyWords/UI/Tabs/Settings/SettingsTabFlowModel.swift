@@ -8,77 +8,44 @@
 import Foundation
 import SwiftUI
 
-protocol SettingsTabFlowModel: AnyObject, Observable, SettingsMainMenuViewModel, SettingsFavoritesMenuViewModel, SettingsWordGenMenuViewModel {
-    
+// MARK: Requirements
+protocol SettingsTabFlowModel: AnyObject, Observable {
+    associatedtype Content: View
+    associatedtype Navigation: SettingsTabNavigation
+    var navigation: Navigation { get set }
+    @ViewBuilder func destination(for route: MainRoute) -> Content
 }
 
-@Observable
-final class SettingsTabModel: SettingsMainMenuViewModel, SettingsFavoritesMenuViewModel, SettingsWordGenMenuViewModel {
-    private let settings: SettingsManager
-    private let favorites: FavoritesManager
-    
-    init(_ settings: SettingsManager, favorites: FavoritesManager) {
-        self.settings = settings
-        self.favorites = favorites
+// MARK: Preview Implementation
+@Observable class SettingsTabFlowModelPreview: SettingsTabFlowModel {
+    var navigation = SettingsTabNavigationPreview()
+    @ViewBuilder func destination(for route: MainRoute) -> some View {
+        Text(route.description)
     }
-    
-    var clearFavoritesFailure: String?
-    
-    // MARK: SettingsMainMenuViewModel
-    var path: [SettingsRoute] = []
+}
 
-    @ViewBuilder func destination(for route: SettingsRoute) -> some View {
+// MARK: Prod Implementation
+@Observable class SettingsTabFlowModelProd: SettingsTabFlowModel {
+    let settings: SettingsManager
+    let favorites: FavoritesManager
+    
+    init(state: AppState) {
+        self.navigation = state.navigation
+        self.settings = state.settings
+        self.favorites = state.favorites
+    }
+        
+    var navigation: NavigationManager
+    
+    @ViewBuilder func destination(for route: MainRoute) -> some View {
         switch route {
-        case .wordGeneration: SettingsWordGenMenuView(model: self)
-        case .favorites: SettingsFavoritesMenuView(model: self)
-        case .syllables: SettingsSyllablesMenuView(settings: settings)
-        case .vowels: SettingsVowelsMenuView(settings: settings)
-        case .consonants: SettingsConsonantsMenuView(settings: settings)
-        }
-    }
-    
-    // MARK: SettingsMainMenuViewModel
-    var settingsMainMenuPresentedEmail: Email?
-    
-    func onSettingsMainMenuTabOptionSelected(_ option: SettingsMainMenuOption) {
-        switch option {
-        case .wordGeneration: path.append(.wordGeneration)
-        case .favorites: path.append(.favorites)
-        case .feedback: settingsMainMenuPresentedEmail = .feedback
-        }
-    }
-    
-    // MARK: SettingsFavoritesMenuViewModel
-    var settingsFavoritesMenuViewIsPresentingPurgeConfirm: Bool = false
-    
-    func settingsFavoritesMenuViewDoPurge() {
-        Task {
-            do {
-                try await favorites.clearFavorites()
-            } catch let error as DatabaseError {
-                await MainActor.run {
-                    self.clearFavoritesFailure = "Failed to clear favorites: \(error.description)"
-                }
-            } catch {
-                await MainActor.run {
-                    self.clearFavoritesFailure = "Failed to clear favorites: \(error.localizedDescription)"
-                }
-            }
-        }
-    }
-    
-    func settingsFavoritesMenuDoSelectOption(_ option: SettingsFavoritesMenuOption) {
-        switch option {
-        case .clear: settingsFavoritesMenuViewIsPresentingPurgeConfirm = true
-        }
-    }
-    
-    // MARK: SettingsWordGenMenuViewModel
-    func settingsWordGenMenuDoSelectOption(_ option: SettingsWordGenMenuOption) {
-        switch option {
-        case .syllables: path.append(.syllables)
-        case .vowels: path.append(.vowels)
-        case .consonants: path.append(.consonants)
+        case .settingsWordGeneration: SettingsWordGenMenuView(model: SettingsWordGenMenuViewModelProd(navigation.settingsTabRouter))
+        case .settingsVowels: SettingsVowelsMenuView(settings: settings)
+        case .settingsSyllables: SettingsSyllablesMenuView(settings: settings)
+        case .settingsConsonants: SettingsConsonantsMenuView(settings: settings)
+        case .settingsFavorites: SettingsFavoritesMenuView(model: SettingsFavoritesMenuViewModelProd(favorites))
+        case .favoriteWordDetail, .historyList: BadRouteView(route: route)
         }
     }
 }
+

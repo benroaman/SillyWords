@@ -29,6 +29,18 @@ enum MainRoute: Hashable {
         }
     }
     
+    var description: String {
+        switch self {
+        case .settingsWordGeneration: "settingsWordGeneration"
+        case .settingsFavorites: "settingsFavorites"
+        case .settingsSyllables: "settingsSyllables"
+        case .settingsConsonants: "settingsConsonants"
+        case .settingsVowels: "settingsVowels"
+        case .historyList: "historyList"
+        case .favoriteWordDetail: "favoriteWordDetail"
+        }
+    }
+    
     public static func == (lhs: MainRoute, rhs: MainRoute) -> Bool {
         lhs.hashValue == rhs.hashValue
     }

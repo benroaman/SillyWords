@@ -69,6 +69,7 @@ private extension WordGenerationView {
         .tint(Style.Color.favoriteTheme)
         .wordViewButton()
         .animation(.easeIn(duration: 0.75), value: model.currentWord)
+        .sensoryFeedback(.impact(weight: .light), trigger: model.isCurrentWordFavorite)
         .accessibilityLabel("\(model.isCurrentWordFavorite ? "Remove" : "Add") \(model.currentWord) as Favorite")
     }
     
