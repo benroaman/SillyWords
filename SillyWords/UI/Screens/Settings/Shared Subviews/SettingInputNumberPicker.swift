@@ -20,6 +20,7 @@ struct SettingInputNumberPicker: View {
                 }
             }
             .font(.headline)
+            .sensoryFeedback(.selection, trigger: value)
             SettingInfoView(setting: setting)
         }
     }
