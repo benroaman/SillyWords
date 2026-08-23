@@ -47,10 +47,10 @@ struct WordGenerationView<M: WordGenerationViewModel>: View {
 private extension WordGenerationView {
     @ViewBuilder var currentWordLabel: some View {
         ZStack {
-            ExplodingTextView(text: model.currentWord, font: .system(size: 60, weight: .medium))
+            ExplodingTextView(text: model.currentWord, font: .systemFont(ofSize: 60, weight: .medium))
                 .frame(maxWidth: .infinity)
-                .lineLimit(1)
-                .minimumScaleFactor(0.5)
+//                .lineLimit(1)
+//                .minimumScaleFactor(0.5)
 //            Text(model.currentWord)
 //                .animation(.easeIn(duration: 0.75), value: model.currentWord)
 //                .lineLimit(1)
