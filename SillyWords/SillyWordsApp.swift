@@ -17,13 +17,13 @@ struct SillyWordsApp: App {
                 Tab(value: .words, content: {
                     WordGenerationTabFlow(model: WordGenerationTabFlowModelProd(state: state))
                 }, label: {
-                    Image(systemName: SillyTab.words.systemImageNameUnselected)
+                    Image(.characterBubble)
                         .accessibilityLabel(SillyTab.words.title)
                 })
                 Tab(value: .favorites, content: {
                     FavoritesTabFlow(model: FavoritesTabFlowModelProd(state: state))
                 }, label: {
-                    Image(systemName: SillyTab.favorites.systemImageNameUnselected)
+                    Image(.heart)
                         .accessibilityLabel(SillyTab.favorites.title)
                 })
                 Tab(value: .settings, content: {

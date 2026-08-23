@@ -16,6 +16,8 @@ enum SFSymbol: String, CaseIterable {
     case bubble
     case bubbleFill = "bubble.fill"
     case calendar
+    case characterBubble = "character.bubble"
+    case characterBubbleFill = "character.bubble.fill"
     case charactersUppercase = "characters.uppercase"
     case chevronRight = "chevron.right"
     case clock

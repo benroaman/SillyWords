@@ -88,7 +88,7 @@ private extension FavoritesListView {
 // MARK: Copy
 extension FavoritesListView {
     // Instance
-    private var zeroItemMessage: Text { Text("Add favorites in the \(Image(systemName: "bubble.fill")) tab") }
+    private var zeroItemMessage: Text { Text("Add favorites in the \(Image(.characterBubbleFill)) tab") }
     
     // Static
     static var deleteConfirmationAlertConfirmActionTitle: String { "Delete" }
