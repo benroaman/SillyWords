@@ -32,6 +32,12 @@ struct WordGenerationView<M: WordGenerationViewModel>: View {
                 reportButton
                 Spacer()
             }
+//            Spacer()
+//                .frame(height: 40)
+//            Text(model.currentWordSentence)
+//                .font(.callout)
+//                .multilineTextAlignment(.center)
+//                .animation(.easeInOut(duration: 0.75), value: model.currentWordSentence)
         }
         .padding()
     }

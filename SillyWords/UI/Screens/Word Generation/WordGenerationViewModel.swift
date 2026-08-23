@@ -9,6 +9,7 @@ import Foundation
 
 protocol WordGenerationViewModel: AnyObject, Observable {
     var currentWord: String { get }
+    var currentWordSentence: String { get }
     var isCurrentWordFavorite: Bool { get }
     var toggleFavoriteFailure: String? { get set }
     
@@ -21,11 +22,16 @@ protocol WordGenerationViewModel: AnyObject, Observable {
 }
 
 @Observable class WordGenerationViewModelPreview: WordGenerationViewModel {
-    let currentWord = "brismucect"
+    var currentWord = "brismucect"
+    private(set) var currentWordSentence = SentenceGenerator.useItInASentence("brismucect")
+    private let pool = ["brismucect", "glunde", "okay", "words", "aja", "coolbeans", "djbouti", "blackalicious", "radio", "parliament"]
     private(set) var isCurrentWordFavorite: Bool = false
     var toggleFavoriteFailure: String?
     
-    func onWordGenerationNewWordTap() { print("New Word Tap") }
+    func onWordGenerationNewWordTap() {
+        currentWord = pool.randomElement()!
+        currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
+    }
     func onWordGenerationFavoriteTap() { isCurrentWordFavorite.toggle() }
     func onWordGenerationHistoryTap() { print("History Tap") }
     func onWordGenerationSettingsTap() { print("Settings Tap") }
@@ -41,16 +47,20 @@ protocol WordGenerationViewModel: AnyObject, Observable {
     @MainActor var toggleFavoriteFailure: String?
     
     var currentWord: String { generator.currentWordText }
+    private(set) var currentWordSentence: String
     var isCurrentWordFavorite: Bool { favorites.isFavorite(currentWord) }
     
     init(generator: GenerationManager, favorites: FavoritesManager, navigation: any WordGenerationTabNavigation) {
         self.generator = generator
         self.favorites = favorites
         self.navigation = navigation
+        self.currentWordSentence = SentenceGenerator.useItInASentence(generator.currentWordText)
     }
     
     func onWordGenerationNewWordTap() {
         generator.makeWord()
+        currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
+        print(currentWord)
     }
     
     func onWordGenerationFavoriteTap() {

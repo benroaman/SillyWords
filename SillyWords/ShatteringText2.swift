@@ -471,8 +471,10 @@ struct ExplodingTextView: View {
 
 // MARK: - Demo
 
+import OSLog
+
 struct ExplodingTextDemo: View {
-    private let words = ["Hello", "Swift", "Exploding", "UI", "Physics", "A", "Lorem Ipsum Dolor Something"]
+    private let words = ["Hello", "Swift", "Exploding", "UI", "Physics", "A"/*, "Lorem Ipsum Dolor Something"*/]
     @State private var currentWord = "Hello"
 
     var body: some View {
