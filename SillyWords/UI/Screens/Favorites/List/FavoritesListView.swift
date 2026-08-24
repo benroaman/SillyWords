@@ -13,6 +13,7 @@ struct FavoritesListView<M: FavoritesListViewModel>: View {
     @FetchRequest private var favorites: FetchedResults<Favorite>
     @State var model: M
     
+    // MARK: Initializers
     init(model: M) {
         self.model = model
         self._favorites = FetchRequest<Favorite>(
@@ -87,17 +88,17 @@ private extension FavoritesListView {
 
 // MARK: Copy
 extension FavoritesListView {
-    // Instance
+    /// Instance
     private var zeroItemMessage: Text { Text("Add favorites in the \(Image(.characterBubbleFill)) tab") }
     
-    // Static
+    /// Static
     static var deleteConfirmationAlertConfirmActionTitle: String { "Delete" }
     static var deleteConfirmationAlertCancelActionTitle: String { "Cancel" }
 }
 
 // MARK: Style
 extension FavoritesListView {
-    // Fonts
+    /// Fonts
     static var zeroItemMessageFont: Font { .headline }
 }
 
@@ -107,8 +108,10 @@ extension FavoritesListView {
 }
 
 fileprivate struct PreviewWrapper: View {
+    /// Instance Variables - State
     @State private var database = Database.preview
     
+    /// Body
     var body: some View {
         FavoritesListView(model: FavoritesListviewModelProd(manager: FavoritesManager(database), navigation: FavoritesTabNavigationPreview()))
             .environment(\.managedObjectContext, database.viewContext)

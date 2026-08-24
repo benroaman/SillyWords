@@ -19,15 +19,15 @@ class SettingsWordGenMenuViewModelPreview: SettingsWordGenMenuViewModel {
 
 // MARK: Prod
 class SettingsWordGenMenuViewModelProd: SettingsWordGenMenuViewModel {
-    // MARK: Instance Members
+    /// Instance Members
     let router: Router<MainRoute>
     
-    // MARK: Initializers
+    /// Initializers
     init(_ router: Router<MainRoute>) {
         self.router = router
     }
     
-    // MARK: SettingsWordGenMenuViewModel Implementation
+    /// SettingsWordGenMenuViewModel Implementation
     func settingsWordGenMenuDoSelectOption(_ option: SettingsWordGenMenuOption) {
         switch option {
         case .syllables: router.push(.settingsSyllables)

@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreData
 
+// MARK: Requirements
 protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewModel {
     var hasFavorites: Bool { get }
     var deleteConfirmationMessage: String { get }
@@ -19,9 +20,16 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
     func onFavoriteListConfirmDeleteTapped()
 }
 
+// MARK: Preview Implementation
 @Observable class FavoritesListViewModelPreview: FavoritesListViewModel {
-    private(set) var deleteErrorMessage: String?
+    /// Instance Constants
     let someFavorite: Favorite = try! Database.preview.viewContext.fetch(Favorite.fetchRequest()).randomElement()!
+    
+    /// Instance Variables
+    private var _isPresentingDeleteConfirmation: Bool = false
+    
+    /// FavoritesListViewModel Implementation
+    private(set) var deleteErrorMessage: String?
     
     var isPresentingDeleteError: Binding<Bool> {
         .init(
@@ -38,8 +46,6 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
     
     let deleteConfirmationMessage: String = "Delete?"
     
-    private var _isPresentingDeleteConfirmation: Bool = false
-    
     var isPresentingDeleteConfirmation: Binding<Bool> {
         .init(
             get: {
@@ -53,22 +59,29 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
     
     var sort: SortMode = .mostRecent
     
+    func onFavoriteListConfirmDeleteTapped() { _isPresentingDeleteConfirmation = false }
+    
+    /// FavoritesListRowViewModel Implementation
     func onFavoriteListRowDeleteTap(for favorite: Favorite) { _isPresentingDeleteConfirmation = true }
     func onFavoriteListRowReportPoorQualityTap(for favorite: Favorite) { print("Quality") }
     func onFavoriteListRowReportOffensiveTap(for favorite: Favorite) { print("Offensive") }
-    func onFavoriteListConfirmDeleteTapped() { _isPresentingDeleteConfirmation = false }
 }
 
 @Observable class FavoritesListviewModelProd: FavoritesListViewModel {
+    /// Instance Constants
     private let manager: FavoritesManager
     private let navigation: FavoritesTabNavigation
+    
+    /// Instance Variables
     private var pendingDelete: Favorite?
     
+    /// Initializers
     init(manager: FavoritesManager, navigation: FavoritesTabNavigation) {
         self.manager = manager
         self.navigation = navigation
     }
     
+    /// FavoritesListViewModel Implementation
     var hasFavorites: Bool { manager.hasFavorites }
     
     var deleteConfirmationMessage: String {
@@ -110,22 +123,6 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
         )
     }
     
-    func onFavoriteListRowDeleteTap(for favorite: Favorite) {
-        pendingDelete = favorite
-    }
-    
-    func onFavoriteListRowReportPoorQualityTap(for favorite: Favorite) {
-        #warning("TODO: How do I feel about not explicity accessing this on the managed object context thread, even though in this context it will implicitly always execute on the main thread and context will always be viewContext?")
-        guard let word = favorite.word else { return }
-        navigation.presentedEmail = .poorQuality(word: word)
-    }
-    
-    func onFavoriteListRowReportOffensiveTap(for favorite: Favorite) {
-        #warning("TODO: How do I feel about not explicity accessing this on the managed object context thread, even though in this context it will implicitly always execute on the main thread and context will always be viewContext?")
-        guard let word = favorite.word else { return }
-        navigation.presentedEmail = .offensive(word: word)
-    }
-    
     func onFavoriteListConfirmDeleteTapped() {
         guard let pendingDelete else { return }
         
@@ -142,5 +139,22 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
                 }
             }
         }
+    }
+    
+    /// FavoritesListRowViewModel Implementation
+    func onFavoriteListRowDeleteTap(for favorite: Favorite) {
+        pendingDelete = favorite
+    }
+    
+    func onFavoriteListRowReportPoorQualityTap(for favorite: Favorite) {
+        #warning("TODO: How do I feel about not explicity accessing this on the managed object context thread, even though in this context it will implicitly always execute on the main thread and context will always be viewContext?")
+        guard let word = favorite.word else { return }
+        navigation.presentedEmail = .poorQuality(word: word)
+    }
+    
+    func onFavoriteListRowReportOffensiveTap(for favorite: Favorite) {
+        #warning("TODO: How do I feel about not explicity accessing this on the managed object context thread, even though in this context it will implicitly always execute on the main thread and context will always be viewContext?")
+        guard let word = favorite.word else { return }
+        navigation.presentedEmail = .offensive(word: word)
     }
 }

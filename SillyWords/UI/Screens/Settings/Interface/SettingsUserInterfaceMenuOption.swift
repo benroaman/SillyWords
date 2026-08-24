@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// MARK: Support Types
 enum SettingsUserInterfaceMenuOption: Int, SettingsSimpleMenuRowOption, CaseIterable {
     case wordGenCurrentWordTransitionStyle
     

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// MARK: Base
 struct SettingsWordGenMenuView<M: SettingsWordGenMenuViewModel>: View {
     // MARK: Instance Variables - State
     @State var model: M

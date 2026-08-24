@@ -12,4 +12,3 @@ protocol TabIterable: RawRepresentable, Identifiable {
     var title: String { get }
     static var available: [Self] { get }
 }
-

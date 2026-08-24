@@ -7,10 +7,15 @@
 
 import SwiftUI
 
+// MARK: Base
 struct BadRouteView: View {
+    // MARK: Instance Constants
     let route: MainRoute
+    
+    // MARK: Instance Variables - State
     @State var didReport: Bool = false
     
+    // MARK: Body
     var body: some View {
         VStack {
             Text("Whoops!")
@@ -26,6 +31,7 @@ struct BadRouteView: View {
     }
 }
 
+// MARK: Previews
 #Preview {
     BadRouteView(route: .settingsWordGen)
 }

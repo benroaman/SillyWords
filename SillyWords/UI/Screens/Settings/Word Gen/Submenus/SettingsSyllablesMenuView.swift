@@ -7,9 +7,12 @@
 
 import SwiftUI
 
+// MARK: Base
 struct SettingsSyllablesMenuView<S: SyllableSettings>: View {
+    // MARK: Instance Variables - State
     @State var settings: S
     
+    // MARK: Body
     var body: some View {
         List {
             SettingInputNumberPicker(setting: .minSyllables,
@@ -24,6 +27,7 @@ struct SettingsSyllablesMenuView<S: SyllableSettings>: View {
     }
 }
 
+// MARK: Support Types
 protocol SyllableSettings: AnyObject, Observable {
     var minSyllables: Int { get set }
     var maxSyllables: Int { get set }
@@ -31,6 +35,7 @@ protocol SyllableSettings: AnyObject, Observable {
     var maximumSyllableOptions: [Int] { get }
 }
 
+// MARK: Previews
 #Preview {
     SettingsSyllablesMenuView(settings: SettingsManager())
 }

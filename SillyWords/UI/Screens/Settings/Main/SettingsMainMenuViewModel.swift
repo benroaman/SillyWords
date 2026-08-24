@@ -7,21 +7,27 @@
 
 import Foundation
 
+// MARK: Requirements
 protocol SettingsMainMenuViewModel: AnyObject {
     func onSettingsMainMenuTabOptionSelected(_ option: SettingsMainMenuOption)
 }
 
+// MARK: Preview Implementation
 class SettingsMainMenuViewModelPreview: SettingsMainMenuViewModel {
     func onSettingsMainMenuTabOptionSelected(_ option: SettingsMainMenuOption) { print(option.title) }
 }
 
+// MARK: Prod Implementation
 class SettingsMainMenuViewModelProd<N: SettingsTabNavigation>: SettingsMainMenuViewModel {
+    /// Instance Constants
     let navigation: N
     
+    /// Initializers
     init(_ navigation: N) {
         self.navigation = navigation
     }
     
+    /// SettingsMainMenuViewModel Implementation
     func onSettingsMainMenuTabOptionSelected(_ option: SettingsMainMenuOption) {
         switch option {
         case .wordGen: navigation.settingsTabRouter.push(.settingsWordGen)

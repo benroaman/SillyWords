@@ -7,9 +7,12 @@
 
 import SwiftUI
 
+// MARK: Base
 struct SettingsUserInterfaceMenuView<M: SettingsUserInterfaceMenuViewModel>: View {
+    // MARK: Instance Variables - State
     @State var model: M
     
+    // MARK: Body
     var body: some View {
         List {
             ForEach(SettingsUserInterfaceMenuOption.allCases, id: \.self) { option in

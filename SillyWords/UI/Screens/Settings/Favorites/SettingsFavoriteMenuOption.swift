@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// MARK: Support Types
 enum SettingsFavoritesMenuOption: Int, SettingsSimpleMenuRowOption, CaseIterable {
     case clear
     

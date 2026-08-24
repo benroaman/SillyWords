@@ -7,11 +7,16 @@
 
 import SwiftUI
 
+// MARK: Base
 struct SettingInputNumberPicker: View {
+    // MARK: Instance Constants
     let setting: SettingInput
     let options: [Int]
+    
+    // MARK: Instance Variables - State
     @Binding var value: Int
     
+    // MARK: Body
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Picker(setting.title, selection: $value) {
@@ -26,6 +31,7 @@ struct SettingInputNumberPicker: View {
     }
 }
 
+// MARK: Previews
 #Preview {
     PreviewWrapper()
 }

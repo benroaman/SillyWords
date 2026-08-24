@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+#warning("TODO: cleanup")
+#warning("TODO: add demo videos")
 struct SettingsWordGenCurrentWordTransitionMenuView<M: SettingsWordGenCurrentWordTransitionMenuViewModel>: View {
     @State var model: M
     
@@ -14,7 +16,7 @@ struct SettingsWordGenCurrentWordTransitionMenuView<M: SettingsWordGenCurrentWor
         List {
             ForEach(WordTransitionStyle.allCases) { style in
                 Button(action: {
-                    withAnimation(/*.bouncy(duration: 0.5, extraBounce: 0.2)*/) {
+                    withAnimation() {
                         model.select(style: style)
                     }
                 }, label: {
@@ -37,34 +39,10 @@ struct SettingsWordGenCurrentWordTransitionMenuView<M: SettingsWordGenCurrentWor
                 .contentShape(Rectangle())
                 .tint(.primary)
             }
-//            .animation(.default, value: model.selected)
         }
         .sensoryFeedback(.selection, trigger: model.selected)
         .navigationTitle("Transition Style")
     }
-}
-
-protocol SettingsWordGenCurrentWordTransitionMenuViewModel: AnyObject, Observable {
-    var selected: WordTransitionStyle { get }
-    func select(style: WordTransitionStyle)
-}
-
-@Observable class SettingsWordGenCurrentWordTransitionMenuViewModelPreview: SettingsWordGenCurrentWordTransitionMenuViewModel {
-    @MainActor private(set) var selected: WordTransitionStyle = .splode
-    func select(style: WordTransitionStyle) {
-        selected = style
-    }
-}
-
-@Observable class SettingsWordGenCurrentWordTransitionMenuViewModelProd: SettingsWordGenCurrentWordTransitionMenuViewModel {
-    private let settings: SettingsManager
-    
-    init(settings: SettingsManager) {
-        self.settings = settings
-    }
-    
-    var selected: WordTransitionStyle { settings.wordGenCurrentWordTransitionStyle }
-    func select(style: WordTransitionStyle) { settings.wordGenCurrentWordTransitionStyle = style }
 }
 
 #Preview {

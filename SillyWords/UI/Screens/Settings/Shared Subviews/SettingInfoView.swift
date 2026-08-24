@@ -7,9 +7,12 @@
 
 import SwiftUI
 
+// MARK: Base
 struct SettingInfoView: View {
+    // MARK: Instance Constants
     let setting: SettingInput
     
+    // MARK: Body
     var body: some View {
         if let description = setting.description {
             Text(description)
@@ -25,6 +28,7 @@ struct SettingInfoView: View {
     }
 }
 
+// MARK: Previews
 #Preview {
     List {
         VStack(alignment: .leading, spacing: 8) {

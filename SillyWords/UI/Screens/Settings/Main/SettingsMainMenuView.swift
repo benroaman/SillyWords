@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// MARK: Base
 struct SettingsMainMenuView<M: SettingsMainMenuViewModel>: View {
     // MARK: Instance Variables - State
     @State var model: M

@@ -17,6 +17,7 @@ protocol SettingsFavoritesMenuViewModel: AnyObject, Observable {
     func settingsFavoritesMenuViewDoPurge()
 }
 
+// MARK: Preview Implementation
 @Observable class SettingsFavoritesMenuViewModelPreview: SettingsFavoritesMenuViewModel {
     var settingsFavoritesMenuIsPresentingPurgeConfirm: Bool = false
     var settingsFavoritesMenuPurgeErrorMessage: String? = "Puge Error: Message"
@@ -39,13 +40,17 @@ protocol SettingsFavoritesMenuViewModel: AnyObject, Observable {
     func settingsFavoritesMenuViewDoPurge() { print("PURGE") }
 }
 
+// MARK: Prod Implementation
 @Observable class SettingsFavoritesMenuViewModelProd: SettingsFavoritesMenuViewModel {
+    /// Instance Constants
     let manager: FavoritesManager
     
+    /// Initializers
     init(_ manager: FavoritesManager) {
         self.manager = manager
     }
     
+    /// SettingsFavoritesMenuViewModel Implementation
     var settingsFavoritesMenuIsPresentingPurgeConfirm: Bool = false
     var settingsFavoritesMenuPurgeErrorMessage: String?
     var settingsFavoritesMenuIsPresentingPurgeErrorMessage: Binding<Bool> {

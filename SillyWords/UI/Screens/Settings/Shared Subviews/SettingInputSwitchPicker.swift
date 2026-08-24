@@ -7,10 +7,15 @@
 
 import SwiftUI
 
+// MARK: Base
 struct SettingInputSwitchPicker: View {
+    // MARK: Instance Constants
     let setting: SettingInput
+    
+    // MARK: Instance Variables - State
     @Binding var value: Bool
     
+    // MARK: Body
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Toggle(setting.title, isOn: $value)
@@ -24,6 +29,7 @@ struct SettingInputSwitchPicker: View {
     }
 }
 
+// MARK: Previews
 #Preview {
     PreviewWrapper()
 }

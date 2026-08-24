@@ -7,9 +7,12 @@
 
 import SwiftUI
 
+// MARK: Base
 struct SettingsVowelsMenuView<S: VowelSettings>: View {
+    // MARK: Instance Variables - State
     @State var settings: S
     
+    // MARK: Body
     var body: some View {
         List {
             SettingInputSwitchPicker(setting: .allowVowelCombos,
@@ -22,11 +25,13 @@ struct SettingsVowelsMenuView<S: VowelSettings>: View {
     }
 }
 
+// MARK: Support Types
 protocol VowelSettings: AnyObject, Observable {
     var allowVowelCombos: Bool { get set }
     var allowsYAsVowel: Bool { get set }
 }
 
+// MARK: Previews
 #Preview {
     SettingsVowelsMenuView(settings: SettingsManager())
 }
