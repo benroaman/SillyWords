@@ -28,23 +28,3 @@ class AppState {
         self.navigation = NavigationManager()
     }
 }
-
-@Observable class NavigationManager: WordGenTabNavigation, FavoritesTabNavigation, SettingsTabNavigation {
-    var currentTab: SillyTab = .words
-    
-    // MARK: Shared Implementation - WordGenTabNavigation, FavoritesTabNavigation
-    var presentedEmail: Email?
-    
-    // MARK: WordGenTabNavigation Implementation
-    var wordGenTabRouter: Router<MainRoute> = .init()
-    
-    // MARK: FavoritesTabNavigation Implementation
-    var favoritesTabRouter: Router<MainRoute> = .init()
-    
-    // MARK: SettingsTabNavigation Implementation
-    var settingsTabRouter: Router<MainRoute> = .init()
-}
-
-protocol EmailNavigation: AnyObject, Observable {
-    var presentedEmail: Email? { get set }
-}
