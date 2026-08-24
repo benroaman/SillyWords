@@ -43,9 +43,7 @@ class WordGenTabFlowModelProd: WordGenTabFlowModel {
         case .settingsSyllables: SettingsSyllablesMenuView(settings: state.settings)
         case .settingsConsonants: SettingsConsonantsMenuView(settings: state.settings)
         case .settingsVowels: SettingsVowelsMenuView(settings: state.settings)
-        case .historyList: WordGenHistoryView(model: WordGenHistoryViewModelProd(generator: state.generator,
-                                                                                 favorites: state.favorites,
-                                                                                 navigation: state.navigation))
+        case .historyList: WordGenHistoryView(model: WordGenHistoryViewModelProd(state: state))
         case .settingsUserInterface: SettingsUserInterfaceMenuView(model: SettingsUserInterfaceMenuViewModelProd(settings: state.settings,
                                                                                                                  router: router))
         case .settingsWordGenCurrentWordTransition: SettingsWordGenCurrentWordTransitionMenuView(model: SettingsWordGenCurrentWordTransitionMenuViewModelProd(settings: state.settings))

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+#warning("TODO: Clean up this view")
 struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
     @State var model: M
     
@@ -65,73 +66,4 @@ struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
 
 #Preview {
     WordGenHistoryView(model: WordGenHistoryViewModelPreview())
-}
-
-protocol WordGenHistoryViewModel: AnyObject, Observable {
-    var words: [GeneratedWord] { get }
-    var toggleFavoriteFailure: String? { get set }
-    
-    func isWordFavorite(_ word: GeneratedWord) -> Bool
-    func reportOffensiveWord(_ word: GeneratedWord)
-    func reportWordAsLowQuality(_ word: GeneratedWord)
-    func toggleFavorite(word: GeneratedWord)
-}
-
-@Observable class WordGenHistoryViewModelPreview: WordGenHistoryViewModel {
-    let words: [GeneratedWord] = [.mock1, .mock2, .mock3, .mock4, .mock5, .mock6]
-    var toggleFavoriteFailure: String?
-    private var favorites: Set<String> = []
-    
-    func isWordFavorite(_ word: GeneratedWord) -> Bool {
-        favorites.contains(word.word)
-    }
-    
-    func reportOffensiveWord(_ word: GeneratedWord) { print("Offensive") }
-    
-    func reportWordAsLowQuality(_ word: GeneratedWord) { print("Low Quality") }
-    
-    func toggleFavorite(word: GeneratedWord) {
-        if favorites.contains(word.word) {
-            favorites.remove(word.word)
-        } else {
-            favorites.insert(word.word)
-        }
-    }
-}
-
-@Observable class WordGenHistoryViewModelProd: WordGenHistoryViewModel {
-    private let generator: GenerationManager
-    private let favorites: FavoritesManager
-    private let navigation: any WordGenTabNavigation
-    
-    init(generator: GenerationManager, favorites: FavoritesManager, navigation: any WordGenTabNavigation) {
-        self.generator = generator
-        self.favorites = favorites
-        self.navigation = navigation
-    }
-    
-    var words: [GeneratedWord] { generator.words }
-    var toggleFavoriteFailure: String?
-    
-    func isWordFavorite(_ word: GeneratedWord) -> Bool {
-        favorites.isFavorite(word.word)
-    }
-    
-    func reportOffensiveWord(_ word: GeneratedWord) {
-        navigation.presentedEmail = .offensive(word: word.word)
-    }
-    
-    func reportWordAsLowQuality(_ word: GeneratedWord) {
-        navigation.presentedEmail = .poorQuality(word: word.word)
-    }
-    
-    func toggleFavorite(word: GeneratedWord) {
-        Task {
-            do {
-                try await favorites.toggleFavorite(word)
-            } catch {
-                toggleFavoriteFailure = "Failed to update favorites: \((error as? DatabaseError)?.description ?? error.localizedDescription)"
-            }
-        }
-    }
 }

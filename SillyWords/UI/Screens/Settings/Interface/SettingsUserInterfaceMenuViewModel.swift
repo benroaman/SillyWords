@@ -21,14 +21,17 @@ protocol SettingsUserInterfaceMenuViewModel: AnyObject, Observable {
 
 // MARK: Prod Implementation
 @Observable class SettingsUserInterfaceMenuViewModelProd: SettingsUserInterfaceMenuViewModel {
+    /// Instance Constants
     private let settings: SettingsManager
     private let router: Router<MainRoute>
     
+    /// Initializers
     init(settings: SettingsManager, router: Router<MainRoute>) {
         self.settings = settings
         self.router = router
     }
     
+    /// SettingsUserInterfaceMenuViewModel Implementation
     func settingsUserInterfaceMenuDoSelectOption(_ option: SettingsUserInterfaceMenuOption) {
         switch option {
         case .wordGenCurrentWordTransitionStyle: router.push(.settingsWordGenCurrentWordTransition)
