@@ -10,44 +10,51 @@ import SwiftUI
 
 // MARK: Requirements
 protocol SettingsTabFlowModel: AnyObject, Observable {
-    associatedtype Content: View
-    associatedtype Navigation: SettingsTabNavigation
-    var navigation: Navigation { get set }
-    @ViewBuilder func destination(for route: MainRoute) -> Content
+    associatedtype Destination: View
+    associatedtype RootViewModel: SettingsMainMenuViewModel
+    var router: Router<MainRoute> { get set }
+    @ViewBuilder func destination(for route: MainRoute) -> Destination
+    func getRootViewModel() -> RootViewModel
 }
 
 // MARK: Preview Implementation
 @Observable class SettingsTabFlowModelPreview: SettingsTabFlowModel {
-    var navigation = SettingsTabNavigationPreview()
+    var router = Router<MainRoute>()
     @ViewBuilder func destination(for route: MainRoute) -> some View {
         Text(route.description)
     }
+    func getRootViewModel() -> SettingsMainMenuViewModelPreview { SettingsMainMenuViewModelPreview() }
 }
 
 // MARK: Prod Implementation
 @Observable class SettingsTabFlowModelProd: SettingsTabFlowModel {
-    let settings: SettingsManager
-    let favorites: FavoritesManager
+    // MARK: Instance Constants
+    let state: AppState
     
+    // MARK: Initializers
     init(state: AppState) {
-        self.navigation = state.navigation
-        self.settings = state.settings
-        self.favorites = state.favorites
+        self.state = state
+        self.router = state.navigation.settingsTabRouter
     }
         
-    var navigation: NavigationManager
+    // MARK: SettingsTabFlowModel Implementation
+    var router: Router<MainRoute>
     
     @ViewBuilder func destination(for route: MainRoute) -> some View {
         switch route {
-        case .settingsWordGen: SettingsWordGenMenuView(model: SettingsWordGenMenuViewModelProd(navigation.settingsTabRouter))
-        case .settingsVowels: SettingsVowelsMenuView(settings: settings)
-        case .settingsSyllables: SettingsSyllablesMenuView(settings: settings)
-        case .settingsConsonants: SettingsConsonantsMenuView(settings: settings)
-        case .settingsFavorites: SettingsFavoritesMenuView(model: SettingsFavoritesMenuViewModelProd(favorites))
+        case .settingsWordGen: SettingsWordGenMenuView(model: SettingsWordGenMenuViewModelProd(router))
+        case .settingsVowels: SettingsVowelsMenuView(settings: state.settings)
+        case .settingsSyllables: SettingsSyllablesMenuView(settings: state.settings)
+        case .settingsConsonants: SettingsConsonantsMenuView(settings: state.settings)
+        case .settingsFavorites: SettingsFavoritesMenuView(model: SettingsFavoritesMenuViewModelProd(state.favorites))
         case .favoriteWordDetail, .historyList: BadRouteView(route: route)
-        case .settingsUserInterface: SettingsUserInterfaceMenuView(model: SettingsUserInterfaceMenuViewModelProd(settings: settings, router: navigation.settingsTabRouter))
-        case .settingsWordGenCurrentWordTransition: SettingsWordGenCurrentWordTransitionMenuView(model: SettingsWordGenCurrentWordTransitionMenuViewModelProd(settings: settings))
+        case .settingsUserInterface: SettingsUserInterfaceMenuView(model: SettingsUserInterfaceMenuViewModelProd(settings: state.settings, router: router))
+        case .settingsWordGenCurrentWordTransition: SettingsWordGenCurrentWordTransitionMenuView(model: SettingsWordGenCurrentWordTransitionMenuViewModelProd(settings: state.settings))
         }
+    }
+    
+    func getRootViewModel() -> SettingsMainMenuViewModelProd<NavigationManager> {
+        SettingsMainMenuViewModelProd(state.navigation)
     }
 }
 

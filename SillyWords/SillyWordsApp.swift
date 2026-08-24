@@ -9,30 +9,13 @@ import SwiftUI
 
 @main
 struct SillyWordsApp: App {
+    // MARK: Instance Variables - State
     @State private var state = AppState()
     
+    // MARK: Body
     var body: some Scene {
         WindowGroup {
-            TabView(selection: $state.navigation.currentTab, content: {
-                Tab(value: .words, content: {
-                    WordGenTabFlow(model: WordGenTabFlowModelProd(state: state))
-                }, label: {
-                    Image(.characterBubble)
-                        .accessibilityLabel(SillyTab.words.title)
-                })
-                Tab(value: .favorites, content: {
-                    FavoritesTabFlow(model: FavoritesTabFlowModelProd(state: state))
-                }, label: {
-                    Image(.heart)
-                        .accessibilityLabel(SillyTab.favorites.title)
-                })
-                Tab(value: .settings, content: {
-                    SettingsTabFlow(model: SettingsTabFlowModelProd(state: state))
-                }, label: {
-                    Image(systemName: SillyTab.settings.systemImageNameUnselected)
-                        .accessibilityLabel(SillyTab.settings.title)
-                })
-            })
+            MainTabFlow(model: MainTabFlowModelProd(state: state))
             .tint(Style.Color.mainTheme)
             .environment(\.managedObjectContext, state.database.viewContext)
             .sendEmail($state.navigation.presentedEmail)

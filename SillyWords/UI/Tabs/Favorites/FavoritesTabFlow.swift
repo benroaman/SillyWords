@@ -7,27 +7,21 @@
 
 import SwiftUI
 
+// MARK: Base
 struct FavoritesTabFlow<M: FavoritesTabFlowModel>: View {
+    // MARK: Instance Variables - State
     @State var model: M
     
+    // MARK: Body
     var body: some View {
-        NavigationStack(path: $model.navigation.favoritesTabRouter.path) {
-            FavoritesListView(model: FavoritesListviewModelProd(manager: model.favorites, navigation: model.navigation))
-                .navigationDestination(for: MainRoute.self, destination: getDestination(for:))
+        NavigationStack(path: $model.router.path) {
+            FavoritesListView(model: model.makeRootViewModel())
+                .navigationDestination(for: MainRoute.self, destination: model.destination(for:))
         }
     }
 }
 
-private extension FavoritesTabFlow {
-    @ViewBuilder func getDestination(for route: MainRoute) -> some View {
-        switch route {
-            #warning("TODO: Implement favorite detail screen")
-        case .favoriteWordDetail(let favorite): EmptyView()
-        case .settingsWordGen, .settingsFavorites, .settingsSyllables, .settingsConsonants, .settingsVowels, .historyList, .settingsUserInterface, .settingsWordGenCurrentWordTransition: BadRouteView(route: route)
-        }
-    }
-}
-
+// MARK: Previews
 #Preview {
     FavoritesTabFlow(model: FavoritesTabFlowModelPreview())
 }

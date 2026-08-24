@@ -15,4 +15,8 @@ extension Telemetry {
     static func reportUnsupportedMainRoute(_ route: MainRoute) {
         #warning("TODO:")
     }
+    
+    static func reportDatabaseError(_ error: DatabaseError) {
+        #warning("TODO:")
+    }
 }

@@ -7,18 +7,22 @@
 
 import SwiftUI
 
+// MARK: Base
 struct SettingsTabFlow<M: SettingsTabFlowModel>: View {
+    // MARK: Instance Variables - State
     @State var model: M
     
+    // MARK: Body
     var body: some View {
-        NavigationStack(path: $model.navigation.settingsTabRouter.path) {
-            SettingsMainMenuView(model: SettingsMainMenuViewModelProd(model.navigation))
+        NavigationStack(path: $model.router.path) {
+            SettingsMainMenuView(model: model.getRootViewModel())
                 .navigationTitle("Settings")
                 .navigationDestination(for: MainRoute.self, destination: model.destination(for:))
         }
     }
 }
 
+// MARK: Previews
 #Preview {
     SettingsTabFlow(model: SettingsTabFlowModelPreview())
 }
