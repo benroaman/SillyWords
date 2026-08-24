@@ -15,7 +15,7 @@ struct SillyWordsApp: App {
         WindowGroup {
             TabView(selection: $state.navigation.currentTab, content: {
                 Tab(value: .words, content: {
-                    WordGenerationTabFlow(model: WordGenerationTabFlowModelProd(state: state))
+                    WordGenTabFlow(model: WordGenTabFlowModelProd(state: state))
                 }, label: {
                     Image(.characterBubble)
                         .accessibilityLabel(SillyTab.words.title)

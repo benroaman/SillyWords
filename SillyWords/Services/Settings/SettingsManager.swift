@@ -10,7 +10,7 @@ import BRWordGeneration
 
 @Observable
 class SettingsManager: ConsonantSettings, SyllableSettings, VowelSettings {
-    private typealias WG = Settings.WordGeneration
+    private typealias WG = Settings.WordGen
     private typealias UI = Settings.UserInterface
     
     // MARK: Instance Constants

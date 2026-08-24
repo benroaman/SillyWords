@@ -1,5 +1,5 @@
 //
-//  WordGenerationTabFlow.swift
+//  WordGenTabFlow.swift
 //  SillyWords
 //
 //  Created by Ben Roaman on 8/20/26.
@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct WordGenerationTabFlow<M: WordGenerationTabFlowModel>: View {
+struct WordGenTabFlow<M: WordGenTabFlowModel>: View {
     @State var model: M
     var body: some View {
-        NavigationStack(path: $model.navigation.wordGenerationTabRouter.path) {
-            WordGenerationView(model: WordGenerationViewModelProd(generator: model.generator,
+        NavigationStack(path: $model.navigation.wordGenTabRouter.path) {
+            WordGenView(model: WordGenViewModelProd(generator: model.generator,
                                                                   favorites: model.favorites,
                                                                   navigation: model.navigation,
                                                                   settings: model.settings))
@@ -20,18 +20,18 @@ struct WordGenerationTabFlow<M: WordGenerationTabFlowModel>: View {
     }
 }
 
-private extension WordGenerationTabFlow {
+private extension WordGenTabFlow {
     @ViewBuilder func getDestination(for route: MainRoute) -> some View {
         switch route {
-        case .settingsWordGeneration: SettingsWordGenMenuView(model: SettingsWordGenMenuViewModelProd(model.navigation.wordGenerationTabRouter))
+        case .settingsWordGen: SettingsWordGenMenuView(model: SettingsWordGenMenuViewModelProd(model.navigation.wordGenTabRouter))
         case .settingsSyllables: SettingsSyllablesMenuView(settings: model.settings)
         case .settingsConsonants: SettingsConsonantsMenuView(settings: model.settings)
         case .settingsVowels: SettingsVowelsMenuView(settings: model.settings)
-        case .historyList: WordGenerationHistoryView(model: WordGenerationHistoryViewModelProd(generator: model.generator,
+        case .historyList: WordGenHistoryView(model: WordGenHistoryViewModelProd(generator: model.generator,
                                                                                                favorites: model.favorites,
                                                                                                navigation: model.navigation))
         case .settingsUserInterface: SettingsUserInterfaceMenuView(model: SettingsUserInterfaceMenuViewModelProd(settings: model.settings,
-                                                                                                                 router: model.navigation.wordGenerationTabRouter))
+                                                                                                                 router: model.navigation.wordGenTabRouter))
         case .settingsWordGenCurrentWordTransition: SettingsWordGenCurrentWordTransitionMenuView(model: SettingsWordGenCurrentWordTransitionMenuViewModelProd(settings: model.settings))
         case .settingsFavorites, .favoriteWordDetail: BadRouteView(route: route)
         }
@@ -39,28 +39,28 @@ private extension WordGenerationTabFlow {
 }
 
 #Preview {
-    WordGenerationTabFlow(model: WordGenerationTabFlowModelPreview())
+    WordGenTabFlow(model: WordGenTabFlowModelPreview())
 }
 
-protocol WordGenerationTabFlowModel: AnyObject {
+protocol WordGenTabFlowModel: AnyObject {
     var settings: SettingsManager { get }
     var generator: GenerationManager { get }
     var favorites: FavoritesManager { get }
-    var navigation: any WordGenerationTabNavigation { get set }
+    var navigation: any WordGenTabNavigation { get set }
 }
 
-class WordGenerationTabFlowModelPreview: WordGenerationTabFlowModel {
+class WordGenTabFlowModelPreview: WordGenTabFlowModel {
     let settings: SettingsManager = SettingsManager()
     let generator: GenerationManager = GenerationManager(SettingsManager())
     let favorites: FavoritesManager = FavoritesManager(.preview)
-    var navigation: any WordGenerationTabNavigation = WordGenerationTabNavigationPreview()
+    var navigation: any WordGenTabNavigation = WordGenTabNavigationPreview()
 }
 
-class WordGenerationTabFlowModelProd: WordGenerationTabFlowModel {
+class WordGenTabFlowModelProd: WordGenTabFlowModel {
     let settings: SettingsManager
     let generator: GenerationManager
     let favorites: FavoritesManager
-    var navigation: any WordGenerationTabNavigation
+    var navigation: any WordGenTabNavigation
     
     init(state: AppState) {
         self.settings = state.settings
@@ -70,12 +70,12 @@ class WordGenerationTabFlowModelProd: WordGenerationTabFlowModel {
     }
 }
 
-protocol WordGenerationTabNavigation: AnyObject, Observable, EmailNavigation {
-    var wordGenerationTabRouter: Router<MainRoute> { get set }
+protocol WordGenTabNavigation: AnyObject, Observable, EmailNavigation {
+    var wordGenTabRouter: Router<MainRoute> { get set }
 }
 
-@Observable class WordGenerationTabNavigationPreview: WordGenerationTabNavigation {
-    var wordGenerationTabRouter: Router<MainRoute> = .init()
+@Observable class WordGenTabNavigationPreview: WordGenTabNavigation {
+    var wordGenTabRouter: Router<MainRoute> = .init()
     var presentedEmail: Email?
 }
 

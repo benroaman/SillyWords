@@ -1,5 +1,5 @@
 //
-//  WordGenerationViewModel.swift
+//  WordGenViewModel.swift
 //  SillyWords
 //
 //  Created by Ben Roaman on 8/20/26.
@@ -7,22 +7,22 @@
 
 import Foundation
 
-protocol WordGenerationViewModel: AnyObject, Observable {
+protocol WordGenViewModel: AnyObject, Observable {
     var currentWord: String { get }
     var currentWordSentence: String { get }
     var isCurrentWordFavorite: Bool { get }
     var toggleFavoriteFailure: String? { get set }
     var wordTransitionStyle: WordTransitionStyle { get }
     
-    func onWordGenerationNewWordTap()
-    func onWordGenerationFavoriteTap()
-    func onWordGenerationHistoryTap()
-    func onWordGenerationSettingsTap()
-    func onWordGenerationReportOffensive()
-    func onWordGenerationReportLowQuality()
+    func onWordGenNewWordTap()
+    func onWordGenFavoriteTap()
+    func onWordGenHistoryTap()
+    func onWordGenSettingsTap()
+    func onWordGenReportOffensive()
+    func onWordGenReportLowQuality()
 }
 
-@Observable class WordGenerationViewModelPreview: WordGenerationViewModel {
+@Observable class WordGenViewModelPreview: WordGenViewModel {
     var currentWord = "brismucect"
     private(set) var currentWordSentence = SentenceGenerator.useItInASentence("brismucect")
     private let pool = ["brismucect", "glunde", "okay", "words", "aja", "coolbeans", "djbouti", "blackalicious", "radio", "parliament"]
@@ -30,21 +30,21 @@ protocol WordGenerationViewModel: AnyObject, Observable {
     var toggleFavoriteFailure: String?
     let wordTransitionStyle: WordTransitionStyle = .splode
     
-    func onWordGenerationNewWordTap() {
+    func onWordGenNewWordTap() {
         currentWord = pool.randomElement()!
         currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
     }
-    func onWordGenerationFavoriteTap() { isCurrentWordFavorite.toggle() }
-    func onWordGenerationHistoryTap() { print("History Tap") }
-    func onWordGenerationSettingsTap() { print("Settings Tap") }
-    func onWordGenerationReportOffensive() { print("Offensive Tap") }
-    func onWordGenerationReportLowQuality() { print("Low Quality Tap") }
+    func onWordGenFavoriteTap() { isCurrentWordFavorite.toggle() }
+    func onWordGenHistoryTap() { print("History Tap") }
+    func onWordGenSettingsTap() { print("Settings Tap") }
+    func onWordGenReportOffensive() { print("Offensive Tap") }
+    func onWordGenReportLowQuality() { print("Low Quality Tap") }
 }
 
-@Observable class WordGenerationViewModelProd: WordGenerationViewModel {
+@Observable class WordGenViewModelProd: WordGenViewModel {
     private let generator: GenerationManager
     private let favorites: FavoritesManager
-    private let navigation: any WordGenerationTabNavigation
+    private let navigation: any WordGenTabNavigation
     private let settings: SettingsManager
     
     @MainActor var toggleFavoriteFailure: String?
@@ -56,7 +56,7 @@ protocol WordGenerationViewModel: AnyObject, Observable {
         settings.wordGenCurrentWordTransitionStyle
     }
     
-    init(generator: GenerationManager, favorites: FavoritesManager, navigation: any WordGenerationTabNavigation, settings: SettingsManager) {
+    init(generator: GenerationManager, favorites: FavoritesManager, navigation: any WordGenTabNavigation, settings: SettingsManager) {
         self.generator = generator
         self.favorites = favorites
         self.navigation = navigation
@@ -64,13 +64,13 @@ protocol WordGenerationViewModel: AnyObject, Observable {
         self.currentWordSentence = SentenceGenerator.useItInASentence(generator.currentWordText)
     }
     
-    func onWordGenerationNewWordTap() {
+    func onWordGenNewWordTap() {
         generator.makeWord()
         currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
         print(currentWord)
     }
     
-    func onWordGenerationFavoriteTap() {
+    func onWordGenFavoriteTap() {
         guard let word = generator.words.first else { return }
         Task {
             do {
@@ -81,19 +81,19 @@ protocol WordGenerationViewModel: AnyObject, Observable {
         }
     }
     
-    func onWordGenerationHistoryTap() {
-        navigation.wordGenerationTabRouter.push(.historyList)
+    func onWordGenHistoryTap() {
+        navigation.wordGenTabRouter.push(.historyList)
     }
     
-    func onWordGenerationSettingsTap() {
-        navigation.wordGenerationTabRouter.push(.settingsWordGeneration)
+    func onWordGenSettingsTap() {
+        navigation.wordGenTabRouter.push(.settingsWordGen)
     }
     
-    func onWordGenerationReportOffensive() {
+    func onWordGenReportOffensive() {
         navigation.presentedEmail = .offensive(word: currentWord)
     }
     
-    func onWordGenerationReportLowQuality() {
+    func onWordGenReportLowQuality() {
         navigation.presentedEmail = .poorQuality(word: currentWord)
     }
 }

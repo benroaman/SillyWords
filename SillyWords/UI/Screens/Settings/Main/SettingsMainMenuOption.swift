@@ -8,14 +8,14 @@
 import SwiftUI
 
 enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
-    case wordGeneration
+    case wordGen
     case favorites
     case userInterface
     case feedback
     
     var title: String {
         switch self {
-        case .wordGeneration: "Word Generation"
+        case .wordGen: "Word Generation"
         case .favorites: "Favorites"
         case .feedback: "Feedback"
         case .userInterface: "UI"
@@ -24,7 +24,7 @@ enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
     
     var icon: SFSymbol {
         switch self {
-        case .wordGeneration: .pencilAndScribble
+        case .wordGen: .pencilAndScribble
         case .favorites: .heart
         case .feedback: .envelope
         case .userInterface: .candybarphone
@@ -33,7 +33,7 @@ enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
     
     var iconColor: Color {
         switch self {
-        case .wordGeneration: Style.Color.wordGenerateTheme
+        case .wordGen: Style.Color.wordGenerateTheme
         case .favorites: Style.Color.favoriteTheme
         case .feedback: Style.Color.feedbackTheme
         case .userInterface: Style.Color.userInterfaceTheme
@@ -42,7 +42,7 @@ enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
 
     var accessory: SFSymbol? {
         switch self {
-        case .wordGeneration: .chevronRight
+        case .wordGen: .chevronRight
         case .favorites: .chevronRight
         case .feedback: .arrowUpRight
         case .userInterface: .chevronRight

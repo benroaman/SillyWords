@@ -9,7 +9,7 @@
 //
 //// MARK: Model Requirements
 //protocol MainTabFlowModel: AnyObject, Observable {
-//    associatedtype WordGenerationModel: WordGenerationTabFlowModel
+//    associatedtype WordGenModel: WordGenTabFlowModel
 //    associatedtype FavoritesModel: FavoritesTabFlowModel
 //    associatedtype SettingsModel: SettingsTabFlowModel
 //    
@@ -31,7 +31,7 @@
 //    }
 //    
 //    /// MainTabFlowModel
-//    typealias WordGenerationModel = WordGenerationTabFlowModelProd
+//    typealias WordGenModel = WordGenTabFlowModelProd
 //    typealias FavoritesModel = FavoritesTabFlowModelProd
 //    typealias SettingsModel = SettingsTabFlowModelProd
 //    

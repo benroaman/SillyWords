@@ -24,7 +24,7 @@ class SettingsMainMenuViewModelProd<N: SettingsTabNavigation>: SettingsMainMenuV
     
     func onSettingsMainMenuTabOptionSelected(_ option: SettingsMainMenuOption) {
         switch option {
-        case .wordGeneration: navigation.settingsTabRouter.push(.settingsWordGeneration)
+        case .wordGen: navigation.settingsTabRouter.push(.settingsWordGen)
         case .favorites: navigation.settingsTabRouter.push(.settingsFavorites)
         case .userInterface: navigation.settingsTabRouter.push(.settingsUserInterface)
         case .feedback: navigation.presentedEmail = .feedback

@@ -9,7 +9,7 @@ import Foundation
 import CoreData
 
 enum MainRoute: Hashable {
-    case settingsWordGeneration
+    case settingsWordGen
     case settingsFavorites
     case settingsSyllables
     case settingsConsonants
@@ -21,7 +21,7 @@ enum MainRoute: Hashable {
     
     func hash(into hasher: inout Hasher) {
         switch self {
-        case .settingsWordGeneration: hasher.combine(0)
+        case .settingsWordGen: hasher.combine(0)
         case .settingsFavorites: hasher.combine(1)
         case .settingsSyllables: hasher.combine(2)
         case .settingsConsonants: hasher.combine(3)
@@ -35,7 +35,7 @@ enum MainRoute: Hashable {
     
     var description: String {
         switch self {
-        case .settingsWordGeneration: "settingsWordGeneration"
+        case .settingsWordGen: "settingsWordGen"
         case .settingsFavorites: "settingsFavorites"
         case .settingsSyllables: "settingsSyllables"
         case .settingsConsonants: "settingsConsonants"

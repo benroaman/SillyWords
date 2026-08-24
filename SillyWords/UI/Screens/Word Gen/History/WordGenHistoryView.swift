@@ -1,5 +1,5 @@
 //
-//  WordGenerationHistoryView.swift
+//  WordGenHistoryView.swift
 //  SillyWords
 //
 //  Created by Ben Roaman on 8/20/26.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WordGenerationHistoryView<M: WordGenerationHistoryViewModel>: View {
+struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
     @State var model: M
     
     var body: some View {
@@ -64,10 +64,10 @@ struct WordGenerationHistoryView<M: WordGenerationHistoryViewModel>: View {
 }
 
 #Preview {
-    WordGenerationHistoryView(model: WordGenerationHistoryViewModelPreview())
+    WordGenHistoryView(model: WordGenHistoryViewModelPreview())
 }
 
-protocol WordGenerationHistoryViewModel: AnyObject, Observable {
+protocol WordGenHistoryViewModel: AnyObject, Observable {
     var words: [GeneratedWord] { get }
     var toggleFavoriteFailure: String? { get set }
     
@@ -77,7 +77,7 @@ protocol WordGenerationHistoryViewModel: AnyObject, Observable {
     func toggleFavorite(word: GeneratedWord)
 }
 
-@Observable class WordGenerationHistoryViewModelPreview: WordGenerationHistoryViewModel {
+@Observable class WordGenHistoryViewModelPreview: WordGenHistoryViewModel {
     let words: [GeneratedWord] = [.mock1, .mock2, .mock3, .mock4, .mock5, .mock6]
     var toggleFavoriteFailure: String?
     private var favorites: Set<String> = []
@@ -99,12 +99,12 @@ protocol WordGenerationHistoryViewModel: AnyObject, Observable {
     }
 }
 
-@Observable class WordGenerationHistoryViewModelProd: WordGenerationHistoryViewModel {
+@Observable class WordGenHistoryViewModelProd: WordGenHistoryViewModel {
     private let generator: GenerationManager
     private let favorites: FavoritesManager
-    private let navigation: any WordGenerationTabNavigation
+    private let navigation: any WordGenTabNavigation
     
-    init(generator: GenerationManager, favorites: FavoritesManager, navigation: any WordGenerationTabNavigation) {
+    init(generator: GenerationManager, favorites: FavoritesManager, navigation: any WordGenTabNavigation) {
         self.generator = generator
         self.favorites = favorites
         self.navigation = navigation

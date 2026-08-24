@@ -39,7 +39,7 @@ protocol SettingsTabFlowModel: AnyObject, Observable {
     
     @ViewBuilder func destination(for route: MainRoute) -> some View {
         switch route {
-        case .settingsWordGeneration: SettingsWordGenMenuView(model: SettingsWordGenMenuViewModelProd(navigation.settingsTabRouter))
+        case .settingsWordGen: SettingsWordGenMenuView(model: SettingsWordGenMenuViewModelProd(navigation.settingsTabRouter))
         case .settingsVowels: SettingsVowelsMenuView(settings: settings)
         case .settingsSyllables: SettingsSyllablesMenuView(settings: settings)
         case .settingsConsonants: SettingsConsonantsMenuView(settings: settings)

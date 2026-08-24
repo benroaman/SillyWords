@@ -23,7 +23,7 @@ private extension FavoritesTabFlow {
         switch route {
             #warning("TODO: Implement favorite detail screen")
         case .favoriteWordDetail(let favorite): EmptyView()
-        case .settingsWordGeneration, .settingsFavorites, .settingsSyllables, .settingsConsonants, .settingsVowels, .historyList, .settingsUserInterface, .settingsWordGenCurrentWordTransition: BadRouteView(route: route)
+        case .settingsWordGen, .settingsFavorites, .settingsSyllables, .settingsConsonants, .settingsVowels, .historyList, .settingsUserInterface, .settingsWordGenCurrentWordTransition: BadRouteView(route: route)
         }
     }
 }

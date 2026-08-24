@@ -27,5 +27,5 @@ struct BadRouteView: View {
 }
 
 #Preview {
-    BadRouteView(route: .settingsWordGeneration)
+    BadRouteView(route: .settingsWordGen)
 }

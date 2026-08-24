@@ -1,5 +1,5 @@
 //
-//  WordGenerationView.swift
+//  WordGenView.swift
 //  SillyWords
 //
 //  Created by Ben Roaman on 5/3/26.
@@ -9,7 +9,7 @@ import SwiftUI
 import MessageUI
 import BRWordGeneration
 
-struct WordGenerationView<M: WordGenerationViewModel>: View {
+struct WordGenView<M: WordGenViewModel>: View {
     // MARK: Instance Variables - State
     @State var model: M
     
@@ -44,7 +44,7 @@ struct WordGenerationView<M: WordGenerationViewModel>: View {
 }
 
 // MARK: Private API - View Builders
-private extension WordGenerationView {
+private extension WordGenView {
     @ViewBuilder var currentWordLabel: some View {
             switch model.wordTransitionStyle {
             case .crossfade:
@@ -65,7 +65,7 @@ private extension WordGenerationView {
     }
     
     @ViewBuilder var generateWordButton: some View {
-        Button(action: model.onWordGenerationNewWordTap, label: {
+        Button(action: model.onWordGenNewWordTap, label: {
             Image(.pencilAndScribble)
         })
         .tint(Style.Color.wordGenerateTheme)
@@ -74,7 +74,7 @@ private extension WordGenerationView {
     }
     
     @ViewBuilder var toggleFavoriteButton: some View {
-        Button(action: model.onWordGenerationFavoriteTap, label: {
+        Button(action: model.onWordGenFavoriteTap, label: {
             Image(systemName: model.isCurrentWordFavorite ? "heart.fill" : "heart")
         })
         .tint(Style.Color.favoriteTheme)
@@ -86,7 +86,7 @@ private extension WordGenerationView {
     
     @ViewBuilder var historyButton: some View {
         Button(action: {
-            model.onWordGenerationHistoryTap()
+            model.onWordGenHistoryTap()
         }, label: {
             Image(.clock)
         })
@@ -97,7 +97,7 @@ private extension WordGenerationView {
     
     @ViewBuilder var settingsButton: some View {
         Button(action: {
-            model.onWordGenerationSettingsTap()
+            model.onWordGenSettingsTap()
         }, label: {
             Image(.gearshape)
         })
@@ -108,11 +108,11 @@ private extension WordGenerationView {
     
     @ViewBuilder var reportButton: some View {
         Menu("", systemImage: "exclamationmark.bubble") {
-            Button(action: model.onWordGenerationReportOffensive, label: {
+            Button(action: model.onWordGenReportOffensive, label: {
                 Label("Offensive", systemImage: "envelope.fill")
             })
             .tint(Style.Color.offensiveTheme)
-            Button(action: model.onWordGenerationReportLowQuality, label: {
+            Button(action: model.onWordGenReportLowQuality, label: {
                 Label("Poor Quality", systemImage: "envelope.fill")
             })
         }
@@ -124,13 +124,13 @@ private extension WordGenerationView {
 
 // MARK: Previews
 #Preview {
-    WordGenerationView(model: WordGenerationViewModelPreview())
+    WordGenView(model: WordGenViewModelPreview())
 }
 
 #warning("TODO: Figure out a better place to put these?")
 // MARK: Convenience View Modifiers
 /**
- Applies the shared styling for primary buttons in WordGenerationView
+ Applies the shared styling for primary buttons in WordGenView
  */
 fileprivate struct WordViewButton: ViewModifier {
     func body(content: Content) -> some View {
@@ -141,7 +141,7 @@ fileprivate struct WordViewButton: ViewModifier {
 }
 
 /**
- Applies the shared styling for primary buttons in WordGenerationView
+ Applies the shared styling for primary buttons in WordGenView
  */
 fileprivate extension View {
     func wordViewButton() -> some View {
@@ -150,7 +150,7 @@ fileprivate extension View {
 }
 
 /**
- Applies the frame-affecting styling for the current word label in WordGenerationView
+ Applies the frame-affecting styling for the current word label in WordGenView
  */
 fileprivate struct CurrentWordLabel: ViewModifier {
     func body(content: Content) -> some View {
@@ -161,7 +161,7 @@ fileprivate struct CurrentWordLabel: ViewModifier {
 }
 
 /**
- Applies the frame-affecting styling for the current word label in WordGenerationView
+ Applies the frame-affecting styling for the current word label in WordGenView
  */
 fileprivate extension View {
     func currentWordLabel() -> some View {
