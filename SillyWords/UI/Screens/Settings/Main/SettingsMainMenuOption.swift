@@ -10,6 +10,7 @@ import SwiftUI
 enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
     case wordGeneration
     case favorites
+    case userInterface
     case feedback
     
     var title: String {
@@ -17,6 +18,7 @@ enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
         case .wordGeneration: "Word Generation"
         case .favorites: "Favorites"
         case .feedback: "Feedback"
+        case .userInterface: "UI"
         }
     }
     
@@ -25,6 +27,7 @@ enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
         case .wordGeneration: .pencilAndScribble
         case .favorites: .heart
         case .feedback: .envelope
+        case .userInterface: .candybarphone
         }
     }
     
@@ -33,6 +36,7 @@ enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
         case .wordGeneration: Style.Color.wordGenerateTheme
         case .favorites: Style.Color.favoriteTheme
         case .feedback: Style.Color.feedbackTheme
+        case .userInterface: Style.Color.userInterfaceTheme
         }
     }
 
@@ -41,6 +45,7 @@ enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
         case .wordGeneration: .chevronRight
         case .favorites: .chevronRight
         case .feedback: .arrowUpRight
+        case .userInterface: .chevronRight
         }
     }
 }

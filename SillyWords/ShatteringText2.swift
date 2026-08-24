@@ -107,55 +107,58 @@ struct ExplodingTextView: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                // Incoming text, fades in to replace the old one.
-                Text(displayedText)
-                    .font(.init(font))
-                    .opacity(newTextOpacity)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.1)
-                    .frame(height: ceil(font.lineHeight))
-                
-                // Outgoing letters, each animated independently.
-                if !explodingLetters.isEmpty {
-                    HStack(spacing: 0) {
-                        ForEach(explodingLetters) { letter in
-                            Text(String(letter.char))
-                                .opacity(letter.opacity)
-                                .rotationEffect(letter.rotation)
-                                .offset(letter.offset)
-                        }
+        ZStack {
+            // Incoming text, fades in to replace the old one.
+            Text(displayedText)
+                .font(.init(font))
+                .opacity(newTextOpacity)
+                .lineLimit(1)
+                .minimumScaleFactor(0.1)
+                .frame(height: ceil(font.lineHeight))
+            
+            // Outgoing letters, each animated independently.
+            if !explodingLetters.isEmpty {
+                HStack(spacing: 0) {
+                    ForEach(explodingLetters) { letter in
+                        Text(String(letter.char))
+                            .opacity(letter.opacity)
+                            .rotationEffect(letter.rotation)
+                            .offset(letter.offset)
                     }
-                    .font(.init(explodingFont)) // Set once on the container instead of per letter.
-                    // Prevent the exploding copy from affecting layout of siblings.
-                    .fixedSize()
-                    // These letters are purely decorative — skip them in hit-testing.
-                    .allowsHitTesting(false)
-                    // Group the falling letters so their opacity is composited as a
-                    // whole rather than blended layer-by-layer as they overlap during
-                    // the fall. Unlike .drawingGroup(), this doesn't rasterize into a
-                    // fixed-size offscreen buffer, so it can't clip letters as they
-                    // move outside the original text's bounds.
-                    .compositingGroup()
                 }
-            }
-            .frame(maxWidth: .infinity)
-            .onChange(of: geometry.size.width) { _, _ in
-                self.width = geometry.size.width
-            }
-            .onChange(of: text) { oldValue, newValue in
-                guard oldValue != newValue else { return }
-                if isExploding {
-                    // An explosion is already playing — let it finish untouched.
-                    // Just remember where we ultimately need to end up.
-                    pendingText = newValue
-                } else {
-                    explode(from: oldValue, to: newValue)
-                }
+                .font(.init(explodingFont)) // Set once on the container instead of per letter.
+                // Prevent the exploding copy from affecting layout of siblings.
+                .fixedSize()
+                // These letters are purely decorative — skip them in hit-testing.
+                .allowsHitTesting(false)
+                // Group the falling letters so their opacity is composited as a
+                // whole rather than blended layer-by-layer as they overlap during
+                // the fall. Unlike .drawingGroup(), this doesn't rasterize into a
+                // fixed-size offscreen buffer, so it can't clip letters as they
+                // move outside the original text's bounds.
+                .compositingGroup()
             }
         }
+        .frame(maxWidth: .infinity)
+        .onChange(of: text) { oldValue, newValue in
+            guard oldValue != newValue else { return }
+            if isExploding {
+                // An explosion is already playing — let it finish untouched.
+                // Just remember where we ultimately need to end up.
+                pendingText = newValue
+            } else {
+                explode(from: oldValue, to: newValue)
+            }
+        }
+        .frame(maxWidth: .infinity)
         .frame(height: ceil(font.lineHeight))
+        .background(
+            GeometryReader { geometry in
+                Color.clear
+                    .onAppear { self.width = geometry.size.width }
+                    .onChange(of: geometry.size.width) { _, new in self.width = new }
+            }
+        )
     }
 
     // MARK: - Animation logic
@@ -188,7 +191,7 @@ struct ExplodingTextView: View {
                 maxSize = mid
             }
         }
-        print("Font that fits: \(font.pointSize) -> \(best.pointSize)")
+        print("Font that fits \(width): \(font.pointSize) -> \(best.pointSize)")
         return best
     }
     

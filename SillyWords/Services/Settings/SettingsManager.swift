@@ -10,86 +10,92 @@ import BRWordGeneration
 
 @Observable
 class SettingsManager: ConsonantSettings, SyllableSettings, VowelSettings {
-    private typealias S = Settings.WordGeneration
+    private typealias WG = Settings.WordGeneration
+    private typealias UI = Settings.UserInterface
     
     // MARK: Instance Constants
     static let minimumAllowableSyllables: Int = 1
     static let maximumAllowableSyllables: Int = 5
     
     // MARK: Syllables
-    var minSyllables: Int = S.MinSyllables.current {
-        didSet { S.MinSyllables.set(minSyllables) }
+    var minSyllables: Int = WG.MinSyllables.current {
+        didSet { WG.MinSyllables.set(minSyllables) }
     }
     
-    var maxSyllables: Int = S.MaxSyllables.current {
-        didSet { S.MaxSyllables.set(maxSyllables) }
+    var maxSyllables: Int = WG.MaxSyllables.current {
+        didSet { WG.MaxSyllables.set(maxSyllables) }
     }
     
     // MARK: Vowels
-    var allowVowelCombos: Bool = S.AllowVowelCombos.current {
-        didSet { S.AllowVowelCombos.set(allowVowelCombos) }
+    var allowVowelCombos: Bool = WG.AllowVowelCombos.current {
+        didSet { WG.AllowVowelCombos.set(allowVowelCombos) }
     }
     
-    var allowsYAsVowel: Bool = S.AllowYAsVowel.current {
-        didSet { S.AllowYAsVowel.set(allowsYAsVowel) }
+    var allowsYAsVowel: Bool = WG.AllowYAsVowel.current {
+        didSet { WG.AllowYAsVowel.set(allowsYAsVowel) }
     }
     
     // MARK: Explitives
-    var filterSortOfBadWords: Bool = S.FilterSortOfBadWords.current {
-        didSet { S.FilterSortOfBadWords.set(filterSortOfBadWords) }
+    var filterSortOfBadWords: Bool = WG.FilterSortOfBadWords.current {
+        didSet { WG.FilterSortOfBadWords.set(filterSortOfBadWords) }
     }
     
     // MARK: Consonants
-    var soloQs: Bool = S.Consonants.SoloQs.current {
-        didSet { S.Consonants.SoloQs.set(soloQs) }
+    var soloQs: Bool = WG.Consonants.SoloQs.current {
+        didSet { WG.Consonants.SoloQs.set(soloQs) }
     }
     
-    var initialDigraphs: Bool = S.Consonants.InitialDigraphs.current {
-        didSet { S.Consonants.InitialDigraphs.set(initialDigraphs) }
+    var initialDigraphs: Bool = WG.Consonants.InitialDigraphs.current {
+        didSet { WG.Consonants.InitialDigraphs.set(initialDigraphs) }
     }
     
-    var initialDigraphBlends: Bool = S.Consonants.InitialDigraphBlends.current {
-        didSet { S.Consonants.InitialDigraphBlends.set(initialDigraphBlends) }
+    var initialDigraphBlends: Bool = WG.Consonants.InitialDigraphBlends.current {
+        didSet { WG.Consonants.InitialDigraphBlends.set(initialDigraphBlends) }
     }
     
-    var initial2LetterBlends: Bool = S.Consonants.Initial2LetterBlends.current {
-        didSet { S.Consonants.Initial2LetterBlends.set(initial2LetterBlends) }
+    var initial2LetterBlends: Bool = WG.Consonants.Initial2LetterBlends.current {
+        didSet { WG.Consonants.Initial2LetterBlends.set(initial2LetterBlends) }
     }
     
-    var initial3LetterBlends: Bool = S.Consonants.Initial3LetterBlends.current {
-        didSet { S.Consonants.Initial3LetterBlends.set(initial3LetterBlends) }
+    var initial3LetterBlends: Bool = WG.Consonants.Initial3LetterBlends.current {
+        didSet { WG.Consonants.Initial3LetterBlends.set(initial3LetterBlends) }
     }
     
-    var middleDigraphs: Bool = S.Consonants.MiddleDigraphs.current {
-        didSet { S.Consonants.MiddleDigraphs.set(middleDigraphs) }
+    var middleDigraphs: Bool = WG.Consonants.MiddleDigraphs.current {
+        didSet { WG.Consonants.MiddleDigraphs.set(middleDigraphs) }
     }
     
-    var middleDigraphBlends: Bool = S.Consonants.MiddleDigraphBlends.current {
-        didSet { S.Consonants.MiddleDigraphBlends.set(middleDigraphBlends) }
+    var middleDigraphBlends: Bool = WG.Consonants.MiddleDigraphBlends.current {
+        didSet { WG.Consonants.MiddleDigraphBlends.set(middleDigraphBlends) }
     }
     
-    var middle2LetterBlends: Bool = S.Consonants.Middle2LetterBlends.current {
-        didSet { S.Consonants.Middle2LetterBlends.set(middle2LetterBlends) }
+    var middle2LetterBlends: Bool = WG.Consonants.Middle2LetterBlends.current {
+        didSet { WG.Consonants.Middle2LetterBlends.set(middle2LetterBlends) }
     }
     
-    var middle3LetterBlends: Bool = S.Consonants.Middle3LetterBlends.current {
-        didSet { S.Consonants.Middle3LetterBlends.set(middle3LetterBlends) }
+    var middle3LetterBlends: Bool = WG.Consonants.Middle3LetterBlends.current {
+        didSet { WG.Consonants.Middle3LetterBlends.set(middle3LetterBlends) }
     }
     
-    var finalDigraphs: Bool = S.Consonants.FinalDigraphs.current {
-        didSet { S.Consonants.FinalDigraphs.set(finalDigraphs) }
+    var finalDigraphs: Bool = WG.Consonants.FinalDigraphs.current {
+        didSet { WG.Consonants.FinalDigraphs.set(finalDigraphs) }
     }
     
-    var finalDigraphBlends: Bool = S.Consonants.FinalDigraphBlends.current {
-        didSet { S.Consonants.FinalDigraphBlends.set(finalDigraphBlends) }
+    var finalDigraphBlends: Bool = WG.Consonants.FinalDigraphBlends.current {
+        didSet { WG.Consonants.FinalDigraphBlends.set(finalDigraphBlends) }
     }
     
-    var final2LetterBlends: Bool = S.Consonants.Final2LetterBlends.current {
-        didSet { S.Consonants.Final2LetterBlends.set(final2LetterBlends) }
+    var final2LetterBlends: Bool = WG.Consonants.Final2LetterBlends.current {
+        didSet { WG.Consonants.Final2LetterBlends.set(final2LetterBlends) }
     }
     
-    var final3LetterBlends: Bool = S.Consonants.Final3LetterBlends.current {
-        didSet { S.Consonants.Final3LetterBlends.set(final3LetterBlends) }
+    var final3LetterBlends: Bool = WG.Consonants.Final3LetterBlends.current {
+        didSet { WG.Consonants.Final3LetterBlends.set(final3LetterBlends) }
+    }
+    
+    // MARK: UI
+    var wordGenCurrentWordTransitionStyle: WordTransitionStyle = UI.WordGenCurrentWordTransitionStyle.current {
+        didSet { UI.WordGenCurrentWordTransitionStyle.set(wordGenCurrentWordTransitionStyle) }
     }
     
     // MARK: Computed Values

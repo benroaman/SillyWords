@@ -26,6 +26,7 @@ class SettingsMainMenuViewModelProd<N: SettingsTabNavigation>: SettingsMainMenuV
         switch option {
         case .wordGeneration: navigation.settingsTabRouter.push(.settingsWordGeneration)
         case .favorites: navigation.settingsTabRouter.push(.settingsFavorites)
+        case .userInterface: navigation.settingsTabRouter.push(.settingsUserInterface)
         case .feedback: navigation.presentedEmail = .feedback
         }
     }

@@ -13,7 +13,8 @@ struct WordGenerationTabFlow<M: WordGenerationTabFlowModel>: View {
         NavigationStack(path: $model.navigation.wordGenerationTabRouter.path) {
             WordGenerationView(model: WordGenerationViewModelProd(generator: model.generator,
                                                                   favorites: model.favorites,
-                                                                  navigation: model.navigation))
+                                                                  navigation: model.navigation,
+                                                                  settings: model.settings))
             .navigationDestination(for: MainRoute.self, destination: getDestination(for:))
         }
     }
@@ -29,6 +30,9 @@ private extension WordGenerationTabFlow {
         case .historyList: WordGenerationHistoryView(model: WordGenerationHistoryViewModelProd(generator: model.generator,
                                                                                                favorites: model.favorites,
                                                                                                navigation: model.navigation))
+        case .settingsUserInterface: SettingsUserInterfaceMenuView(model: SettingsUserInterfaceMenuViewModelProd(settings: model.settings,
+                                                                                                                 router: model.navigation.wordGenerationTabRouter))
+        case .settingsWordGenCurrentWordTransition: SettingsWordGenCurrentWordTransitionMenuView(model: SettingsWordGenCurrentWordTransitionMenuViewModelProd(settings: model.settings))
         case .settingsFavorites, .favoriteWordDetail: BadRouteView(route: route)
         }
     }

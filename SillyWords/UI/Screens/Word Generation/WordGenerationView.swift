@@ -46,21 +46,22 @@ struct WordGenerationView<M: WordGenerationViewModel>: View {
 // MARK: Private API - View Builders
 private extension WordGenerationView {
     @ViewBuilder var currentWordLabel: some View {
-        ZStack {
-            ExplodingTextView(text: model.currentWord, font: .systemFont(ofSize: 60, weight: .medium))
-                .frame(maxWidth: .infinity)
-//                .lineLimit(1)
-//                .minimumScaleFactor(0.5)
-//            Text(model.currentWord)
-//                .animation(.easeIn(duration: 0.75), value: model.currentWord)
-//                .lineLimit(1)
-//                .minimumScaleFactor(0.5)
-//                .currentWordLabel()
-            Text("REF")
-                .fixedSize(horizontal: true, vertical: true)
-                .foregroundStyle(.clear)
-                .currentWordLabel()
-        }
+            switch model.wordTransitionStyle {
+            case .crossfade:
+                ZStack {
+                    Text(model.currentWord)
+                        .animation(.easeIn(duration: 0.75), value: model.currentWord)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .currentWordLabel()
+                    Text("REF")
+                        .fixedSize(horizontal: true, vertical: true)
+                        .foregroundStyle(.clear)
+                        .currentWordLabel()
+                }
+            case .splode:
+                ExplodingTextView(text: model.currentWord, font: .systemFont(ofSize: 60, weight: .medium))
+            }
     }
     
     @ViewBuilder var generateWordButton: some View {

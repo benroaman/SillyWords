@@ -28,4 +28,5 @@ extension Style.Color {
     static let favoriteTheme: Color = .purple
     static let zeroItemTheme: Color = .secondary
     static let historyTheme: Color = .teal
+    static let userInterfaceTheme: Color = .indigo
 }

@@ -12,6 +12,7 @@ protocol WordGenerationViewModel: AnyObject, Observable {
     var currentWordSentence: String { get }
     var isCurrentWordFavorite: Bool { get }
     var toggleFavoriteFailure: String? { get set }
+    var wordTransitionStyle: WordTransitionStyle { get }
     
     func onWordGenerationNewWordTap()
     func onWordGenerationFavoriteTap()
@@ -27,6 +28,7 @@ protocol WordGenerationViewModel: AnyObject, Observable {
     private let pool = ["brismucect", "glunde", "okay", "words", "aja", "coolbeans", "djbouti", "blackalicious", "radio", "parliament"]
     private(set) var isCurrentWordFavorite: Bool = false
     var toggleFavoriteFailure: String?
+    let wordTransitionStyle: WordTransitionStyle = .splode
     
     func onWordGenerationNewWordTap() {
         currentWord = pool.randomElement()!
@@ -43,17 +45,22 @@ protocol WordGenerationViewModel: AnyObject, Observable {
     private let generator: GenerationManager
     private let favorites: FavoritesManager
     private let navigation: any WordGenerationTabNavigation
+    private let settings: SettingsManager
     
     @MainActor var toggleFavoriteFailure: String?
     
     var currentWord: String { generator.currentWordText }
     private(set) var currentWordSentence: String
     var isCurrentWordFavorite: Bool { favorites.isFavorite(currentWord) }
+    var wordTransitionStyle: WordTransitionStyle {
+        settings.wordGenCurrentWordTransitionStyle
+    }
     
-    init(generator: GenerationManager, favorites: FavoritesManager, navigation: any WordGenerationTabNavigation) {
+    init(generator: GenerationManager, favorites: FavoritesManager, navigation: any WordGenerationTabNavigation, settings: SettingsManager) {
         self.generator = generator
         self.favorites = favorites
         self.navigation = navigation
+        self.settings = settings
         self.currentWordSentence = SentenceGenerator.useItInASentence(generator.currentWordText)
     }
     

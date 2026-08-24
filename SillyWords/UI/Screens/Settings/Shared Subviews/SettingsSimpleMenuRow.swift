@@ -9,6 +9,12 @@ import SwiftUI
 
 struct SettingsSimpleMenuRow<O: SettingsSimpleMenuRowOption>: View {
     let option: O
+    let value: String?
+    
+    init(option: O, value: String? = nil) {
+        self.option = option
+        self.value = value
+    }
     
     var body: some View {
         HStack {
@@ -21,9 +27,14 @@ struct SettingsSimpleMenuRow<O: SettingsSimpleMenuRowOption>: View {
                     .fontWeight(.medium)
             })
             Spacer()
+            if let value {
+                Text(value)
+                    .foregroundColor(.secondary)
+            }
             if let accessory = option.accessory {
                 Image(accessory)
                     .tint(.secondary)
+                    .fixedSize()
             }
         }
     }
