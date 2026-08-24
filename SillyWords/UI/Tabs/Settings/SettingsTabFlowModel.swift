@@ -47,9 +47,9 @@ protocol SettingsTabFlowModel: AnyObject, Observable {
         case .settingsSyllables: SettingsSyllablesMenuView(settings: state.settings)
         case .settingsConsonants: SettingsConsonantsMenuView(settings: state.settings)
         case .settingsFavorites: SettingsFavoritesMenuView(model: SettingsFavoritesMenuViewModelProd(state.favorites))
-        case .favoriteWordDetail, .historyList: BadRouteView(route: route)
         case .settingsUserInterface: SettingsUserInterfaceMenuView(model: SettingsUserInterfaceMenuViewModelProd(settings: state.settings, router: router))
         case .settingsWordGenCurrentWordTransition: SettingsWordGenCurrentWordTransitionMenuView(model: SettingsWordGenCurrentWordTransitionMenuViewModelProd(settings: state.settings))
+        case .favoriteWordDetail, .historyList: BadRouteView(route: route)
         }
     }
     
