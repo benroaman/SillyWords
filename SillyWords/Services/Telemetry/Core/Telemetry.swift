@@ -57,13 +57,3 @@ extension Telemetry {
         return result
     }
 }
-
-extension Telemetry {
-    static func reportUnsupportedMainRoute(_ route: MainRoute) {
-        #warning("TODO:")
-    }
-    
-    static func reportDatabaseError(_ error: DatabaseError) {
-        track(.databaseError, attributes: [.category: "", .description: error.description])
-    }
-}

@@ -9,7 +9,17 @@ import Foundation
 
 extension Telemetry {
     enum Event: String {
+        /// Errors
         case databaseError
+        case badRoute
+        
+        /// User Action - Word Gen
+        case createWord
+        
+        /// User Action - Favorites
+        case addFavorite
+        case removeFavorite
+        case clearFavorites
     }
 }
 

@@ -21,4 +21,13 @@ enum DatabaseError: Error {
         case .batchDeleteFailure(let deleteError): "An error occurred while deleting records - \(deleteError.description)"
         }
     }
+    
+    var name: String {
+        switch self {
+        case .missingObject: "missingObject"
+        case .saveFailure: "saveFailure"
+        case .fetchFailure: "fetchFailure"
+        case .batchDeleteFailure: "batchDeleteFailure"
+        }
+    }
 }

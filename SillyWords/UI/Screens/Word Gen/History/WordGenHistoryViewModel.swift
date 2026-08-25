@@ -77,7 +77,7 @@ protocol WordGenHistoryViewModel: AnyObject, Observable {
     func toggleFavorite(word: GeneratedWord) {
         Task {
             do {
-                try await favorites.toggleFavorite(word)
+                try await favorites.toggleFavorite(word, context: .wordGenHistory)
             } catch {
                 toggleFavoriteFailure = "Failed to update favorites: \((error as? DatabaseError)?.description ?? error.localizedDescription)"
             }

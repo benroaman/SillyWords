@@ -47,7 +47,7 @@ class WordGenTabFlowModelProd: WordGenTabFlowModel {
         case .settingsUserInterface: SettingsUserInterfaceMenuView(model: SettingsUserInterfaceMenuViewModelProd(settings: state.settings,
                                                                                                                  router: router))
         case .settingsWordGenCurrentWordTransition: SettingsWordGenCurrentWordTransitionMenuView(model: SettingsWordGenCurrentWordTransitionMenuViewModelProd(settings: state.settings))
-        case .settingsFavorites, .favoriteWordDetail: BadRouteView(route: route)
+        case .settingsFavorites, .favoriteWordDetail: BadRouteView(route: route, flow: .wordGenTab)
         }
     }
     

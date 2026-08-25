@@ -49,7 +49,7 @@ protocol SettingsTabFlowModel: AnyObject, Observable {
         case .settingsFavorites: SettingsFavoritesMenuView(model: SettingsFavoritesMenuViewModelProd(state.favorites))
         case .settingsUserInterface: SettingsUserInterfaceMenuView(model: SettingsUserInterfaceMenuViewModelProd(settings: state.settings, router: router))
         case .settingsWordGenCurrentWordTransition: SettingsWordGenCurrentWordTransitionMenuView(model: SettingsWordGenCurrentWordTransitionMenuViewModelProd(settings: state.settings))
-        case .favoriteWordDetail, .historyList: BadRouteView(route: route)
+        case .favoriteWordDetail, .historyList: BadRouteView(route: route, flow: .settingsTab)
         }
     }
     

@@ -47,6 +47,20 @@ enum MainRoute: Hashable {
         }
     }
     
+    var telemetryName: String {
+        switch self {
+        case .settingsWordGen: "settingsWordGen"
+        case .settingsFavorites: "settingsFavorites"
+        case .settingsSyllables: "settingsSyllables"
+        case .settingsConsonants: "settingsConsonants"
+        case .settingsVowels: "settingsVowels"
+        case .historyList: "historyList"
+        case .favoriteWordDetail: "favoriteWordDetail"
+        case .settingsUserInterface: "settingsUserInterface"
+        case .settingsWordGenCurrentWordTransition: "settingsWordGenCurrentWordTransition"
+        }
+    }
+    
     public static func == (lhs: MainRoute, rhs: MainRoute) -> Bool {
         lhs.hashValue == rhs.hashValue
     }

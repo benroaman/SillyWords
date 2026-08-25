@@ -85,8 +85,13 @@ extension Database {
         do {
             try context.save()
         } catch {
-            throw DatabaseError.saveFailure(SaveError(error))
+            try throwError(DatabaseError.saveFailure(SaveError(error)))
         }
+    }
+    
+    private static func throwError(_ error: DatabaseError) throws {
+        Telemetry.trackDatabaseError(error)
+        throw error
     }
 }
 
@@ -146,7 +151,7 @@ extension Database {
                     writeContext.delete(object)
                 }
             } catch {
-                throw DatabaseError.fetchFailure(FetchError(error))
+                try Self.throwError(DatabaseError.fetchFailure(FetchError(error)))
             }
             try Self.save(writeContext)
         }
@@ -172,7 +177,7 @@ extension Database {
                     into: [readContext] // add other live contexts here
                 )
             } catch {
-                throw DatabaseError.batchDeleteFailure(BatchDeleteError(error))
+                try Self.throwError(DatabaseError.batchDeleteFailure(BatchDeleteError(error)))
             }
         }
     }
@@ -210,7 +215,7 @@ extension Database {
         let writeContext = self.writeContext
         try await writeContext.perform {
             guard let object = writeContext.object(with: objectID) as? Favorite else {
-                throw DatabaseError.missingObject
+                return try Self.throwError(DatabaseError.missingObject)
             }
             object.rating = Int64(rating)
             try Self.save(writeContext)

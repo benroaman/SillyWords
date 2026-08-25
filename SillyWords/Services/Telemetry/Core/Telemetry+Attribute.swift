@@ -11,6 +11,10 @@ extension Telemetry {
     enum Attribute: String {
         case category
         case description
+        case route
+        case flow
+        case word
+        case context
     }
 }
 

@@ -11,6 +11,7 @@ import SwiftUI
 struct BadRouteView: View {
     // MARK: Instance Constants
     let route: MainRoute
+    let flow: Telemetry.NavFlow
     
     // MARK: Instance Variables - State
     @State var didReport: Bool = false
@@ -25,7 +26,7 @@ struct BadRouteView: View {
                 .multilineTextAlignment(.center)
         }.onAppear() {
             guard !didReport else { return }
-            Telemetry.reportUnsupportedMainRoute(route)
+            Telemetry.reportUnsupportedMainRoute(route, in: flow)
             didReport = true
         }
     }
@@ -33,5 +34,5 @@ struct BadRouteView: View {
 
 // MARK: Previews
 #Preview {
-    BadRouteView(route: .settingsWordGen)
+    BadRouteView(route: .settingsWordGen, flow: .wordGenTab)
 }

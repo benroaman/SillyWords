@@ -74,7 +74,7 @@ protocol WordGenViewModel: AnyObject, Observable {
         guard let word = generator.words.first else { return }
         Task {
             do {
-                try await favorites.toggleFavorite(word)
+                try await favorites.toggleFavorite(word, context: .wordGenMain)
             } catch {
                 toggleFavoriteFailure = "Failed to update favorites: \((error as? DatabaseError)?.description ?? error.localizedDescription)"
             }

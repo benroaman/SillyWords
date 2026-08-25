@@ -128,7 +128,8 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
         
         Task {
             do {
-                try await manager.removeFavorite(pendingDelete)
+                try await manager.removeFavorite(pendingDelete, context: .favoritesList)
+                Telemetry.trackRemoveFavorite(context: .favoritesList)
             } catch let error as DatabaseError {
                 await MainActor.run {
                     self.deleteErrorMessage = "Could not delete favorite: \(error.description)"
