@@ -19,16 +19,6 @@ struct Database {
     
     // MARK: Initializers
     init(inMemory: Bool = false) {
-        
-        let failInitialization: (DatabaseError) -> Void = {
-            #if DEBUG
-            fatalError($0.category)
-            #else
-            initializeFailureError = $0
-            return
-            #endif
-        }
-        
         // Name must match your .xcdatamodeld filename
         container = NSPersistentCloudKitContainer(name: "SillyWords")
         
@@ -47,11 +37,21 @@ struct Database {
             do {
                 try container.viewContext.setQueryGenerationFrom(.current)
             } catch {
-                failInitialization(DatabaseError(error, operation: .setQueryGenerationFrom, caller: .initializer))
+                let error = DatabaseError(error, operation: .setQueryGenerationFrom, caller: .initializer)
+                #if DEBUG
+                fatalError(error.category)
+                #else
+                initializeFailureError = error
+                #endif
             }
             
         } else {
-            failInitialization(.makeNoPersistentStoreDescription(operation: .persistentStoreDescriptions, caller: .initializer))
+            let error = DatabaseError.makeNoPersistentStoreDescription(operation: .persistentStoreDescriptions, caller: .initializer)
+            #if DEBUG
+            fatalError(error.category)
+            #else
+            initializeFailureError = error
+            #endif
         }
         
         
@@ -59,7 +59,12 @@ struct Database {
             if let error {
                 // In production, handle this gracefully (e.g. corrupt store,
                 // disk full, no iCloud account). Don't fatalError in shipped code.
-                failInitialization(DatabaseError(error, operation: .loadPersistentStores, caller: .initializer))
+                let error = DatabaseError(error, operation: .loadPersistentStores, caller: .initializer)
+                #if DEBUG
+                fatalError(error.category)
+                #else
+                initializeFailureError = error
+                #endif
             }
         }
         
