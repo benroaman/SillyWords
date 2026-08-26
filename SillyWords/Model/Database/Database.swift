@@ -15,7 +15,7 @@ struct Database {
     private let container: NSPersistentContainer
     let viewContext: NSManagedObjectContext
     private let writeContext: NSManagedObjectContext
-    private(set) var initializeFailureError: String?
+    private(set) var initializeFailureError: DatabaseError?
     
     // MARK: Initializers
     init(inMemory: Bool = false) {
@@ -109,11 +109,18 @@ extension Database {
         Telemetry.trackDatabaseError(error)
         throw error
     }
+    
+    private func confirmInitialization() throws {
+        if let initializeFailureError {
+            throw initializeFailureError
+        }
+    }
 }
 
 // MARK: Public API - Create
 extension Database {
     func createFavorite(content: GeneratedWord) async throws {
+        try confirmInitialization()
         try await writeContext.perform {
             let new = Favorite(context: writeContext)
             new.word = content.word
@@ -147,6 +154,7 @@ extension Database {
 // MARK: Public API - Delete
 extension Database {
     func deleteFavorite(_ favorite: Favorite) async throws {
+        try confirmInitialization()
         let objectID = favorite.objectID
         let writeContext = self.writeContext
         try await writeContext.perform {
@@ -157,6 +165,7 @@ extension Database {
     }
     
     func deleteFavorite(_ word: String) async throws {
+        try confirmInitialization()
         let writeContext = self.writeContext
         try await writeContext.perform {
             let request = Favorite.fetchRequest()
@@ -174,6 +183,7 @@ extension Database {
     }
     
     func clearAllFavorites() async throws {
+        try confirmInitialization()
         let context = writeContext
         let readContext = viewContext
         
@@ -201,7 +211,8 @@ extension Database {
 
 // MARK: Public API - Read
 extension Database {
-    func getWord(from favorite: Favorite) async -> String? {
+    func getWord(from favorite: Favorite) async throws -> String? {
+        try confirmInitialization()
         let objectID = favorite.objectID
         let readContext = viewContext
         return await readContext.perform {
@@ -209,7 +220,8 @@ extension Database {
         }
     }
     
-    func allFavoriteWordStrings() -> Set<String> {
+    func allFavoriteWordStrings() throws -> Set<String> {
+        try confirmInitialization()
         let readContext = viewContext
         
         do {
@@ -228,6 +240,7 @@ extension Database {
 // MARK: Public API - Update
 extension Database {
     func rateFavorite(_ favorite: Favorite, rating: Int) async throws {
+        try confirmInitialization()
         let objectID = favorite.objectID
         let writeContext = self.writeContext
         try await writeContext.perform {
@@ -262,9 +275,9 @@ extension Database {
         mock2.actualSyllables = 3
 
         do {
-            try Database.save(context, caller: .createPreviewDatabase)
+            try Database.save(context, caller: .seedPreviewDatabase)
         } catch let error as DatabaseError {
-            fatalError("Failed to save preview data: \(error.category)")
+            fatalError("Failed to save preview data: \(error.category) \(error.identity.code)")
         } catch {
             fatalError("Failed to save preview data: \(error.localizedDescription)")
         }

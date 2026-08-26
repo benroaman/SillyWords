@@ -14,7 +14,7 @@ extension Telemetry {
         case settingsTab
     }
     
-    static func reportUnsupportedMainRoute(_ route: MainRoute, in flow: NavFlow) {
+    static func trackUnsupportedMainRoute(_ route: MainRoute, in flow: NavFlow) {
         track(.badRoute, attributes: [
             .route: route.telemetryName,
             .flow: flow
@@ -22,10 +22,29 @@ extension Telemetry {
     }
     
     static func trackDatabaseError(_ error: DatabaseError) {
-        #warning("TODO: add all the detail of DatabaseError")
-        track(.databaseError, attributes: [
-            .category: error.category,
-            .code: error.code
-        ])
+        var attributes: [Attribute: Any] = [.category: error.category]
+        
+        let identity = error.identity
+        attributes[.code] = identity.code
+        attributes[.operation] = identity.operation.rawValue
+        attributes[.caller] = identity.caller.rawValue
+        
+        if let info = error.info {
+            attributes[.description] = info.description
+            attributes[.reason] = info.reason
+            attributes[.suggestion] = info.suggestion
+            attributes[.underlyingCode] = info.underlyingCode
+            attributes[.underlyingDescription] = info.underlyingDescription
+            attributes[.underlyingReason] = info.underlyingReason
+            attributes[.underlyingSuggestion] = info.underlyingSuggestion
+        }
+        
+        if let validation = error.validation {
+            attributes[.validationKey] = validation.validationKey
+            attributes[.validationValue] = validation.validationValue
+            attributes[.validationPredicate] = validation.validationPredicate
+        }
+        
+        track(.databaseError, attributes: attributes)
     }
 }

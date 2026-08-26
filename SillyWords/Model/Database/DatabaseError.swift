@@ -43,19 +43,45 @@ enum DatabaseError: Error {
         }
     }
     
-    var code: String {
-        switch self {
-        case .validation(let info, _), .permission(let info), .diskFull(let info), .badFile(let info), .miscCoreData(let info), .unknown(let info): info.identity.code
-        case .missingObject(let identity), .noPersistentStoreDescription(let identity): identity.code
+    var userMessage: String? {
+        switch self.identity.caller {
+        case .initializer:
+            var result = "Database failed to initialize: "
+            switch self {
+            case .permission: result += "Permission denied"
+            case .diskFull: result += "Disk is full"
+            case .badFile: result += "Database is inaccessible"
+            case .validation, .miscCoreData, .missingObject, .noPersistentStoreDescription, .unknown: result += identity.code
+            }
+            return result
+        default:
+            switch self {
+            case .permission: return "Permission denied"
+            case .diskFull: return "Disk is full"
+            case .badFile: return "Database is inaccessible"
+            case .validation, .miscCoreData, .missingObject, .noPersistentStoreDescription, .unknown: return nil
+            }
         }
     }
     
-    var userMessage: String? {
+    var identity: ErrorIdentity {
         switch self {
-        case .permission: "Permission denied"
-        case .diskFull: "Disk is full"
-        case .badFile: "Database is inaccessible"
-        case .validation, .miscCoreData, .missingObject, .noPersistentStoreDescription, .unknown: nil            
+        case .validation(let info, _), .permission(let info), .diskFull(let info), .badFile(let info), .miscCoreData(let info), .unknown(let info): info.identity
+        case .missingObject(let identity), .noPersistentStoreDescription(let identity): identity
+        }
+    }
+    
+    var info: ErrorInfo? {
+        switch self {
+        case .validation(let info, _), .permission(let info), .diskFull(let info), .badFile(let info), .miscCoreData(let info), .unknown(let info): info
+        case .missingObject, .noPersistentStoreDescription: nil
+        }
+    }
+    
+    var validation: ValidationInfo? {
+        switch self {
+        case .validation(_, let validation): validation
+        case .permission, .diskFull, .badFile, .miscCoreData, .unknown, .missingObject, .noPersistentStoreDescription: nil
         }
     }
 }
@@ -265,7 +291,7 @@ extension DatabaseError {
         case getWord
         case allFavoriteWordStrings
         case rateFavorite
-        case createPreviewDatabase
+        case seedPreviewDatabase
     }
     
     enum SQLiteCode: Int {

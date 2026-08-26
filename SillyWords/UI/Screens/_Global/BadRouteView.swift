@@ -26,7 +26,7 @@ struct BadRouteView: View {
                 .multilineTextAlignment(.center)
         }.onAppear() {
             guard !didReport else { return }
-            Telemetry.reportUnsupportedMainRoute(route, in: flow)
+            Telemetry.trackUnsupportedMainRoute(route, in: flow)
             didReport = true
         }
     }
