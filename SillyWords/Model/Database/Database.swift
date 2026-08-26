@@ -230,7 +230,7 @@ extension Database {
                 return Set(words)
             }
         } catch {
-            print(DatabaseError(error, operation: .fetch, caller: .allFavoriteWordStrings).code)
+            print(DatabaseError(error, operation: .fetch, caller: .allFavoriteWordStrings).identity.code)
             Telemetry.trackDatabaseError(DatabaseError(error, operation: .fetch, caller: .allFavoriteWordStrings))
             return []
         }

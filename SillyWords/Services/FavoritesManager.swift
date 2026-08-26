@@ -12,12 +12,18 @@ import CoreData
 class FavoritesManager {
     private let database: Database
     private(set) var favoriteWords: Set<String> = []
+    private(set) var loadFavoriteWordsError: Error?
     
     var hasFavorites: Bool { !favoriteWords.isEmpty }
     
     init(_ database: Database) {
         self.database = database
-        self.favoriteWords = database.allFavoriteWordStrings()
+        do {
+            self.favoriteWords = try database.allFavoriteWordStrings()
+        } catch {
+            self.loadFavoriteWordsError = error
+            self.favoriteWords = []
+        }
     }
     
     func addFavorite(_ word: GeneratedWord, context: Telemetry.FavoriteContext) async throws {
@@ -37,7 +43,7 @@ class FavoritesManager {
     }
     
     func removeFavorite(_ word: Favorite, context: Telemetry.FavoriteContext) async throws {
-        let wordActual = await database.getWord(from: word)
+        let wordActual = try await database.getWord(from: word)
         try await database.deleteFavorite(word)
         if let wordActual {
             favoriteWords.remove(wordActual)
@@ -46,6 +52,7 @@ class FavoritesManager {
     }
     
     func toggleFavorite(_ word: GeneratedWord, context: Telemetry.FavoriteContext) async throws {
+        if let loadFavoriteWordsError { throw loadFavoriteWordsError }
         if favoriteWords.contains(word.word) {
             try await database.deleteFavorite(word.word)
             favoriteWords.remove(word.word)
