@@ -15,21 +15,27 @@ struct Database {
     private let container: NSPersistentContainer
     let viewContext: NSManagedObjectContext
     private let writeContext: NSManagedObjectContext
+    private(set) var initializeFailureError: String?
     
     // MARK: Initializers
     init(inMemory: Bool = false) {
+        
+        let failInitialization: (DatabaseError) -> Void = {
+            #if DEBUG
+            fatalError($0.category)
+            #else
+            initializeFailureError = $0
+            return
+            #endif
+        }
+        
         // Name must match your .xcdatamodeld filename
         container = NSPersistentCloudKitContainer(name: "SillyWords")
         
         if inMemory {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
             container.persistentStoreDescriptions.first?.cloudKitContainerOptions = nil
-        } else {
-            guard let description = container.persistentStoreDescriptions.first else {
-                #warning("TODO: take out the fatal error")
-                fatalError("No persistent store description found")
-            }
-            
+        } else if let description = container.persistentStoreDescriptions.first {
             description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
             description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
             description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
@@ -37,15 +43,23 @@ struct Database {
             )
             // Pin the view context to the current query generation so it doesn't
             // see partial updates mid-sync
-            try? container.viewContext.setQueryGenerationFrom(.current)
+            
+            do {
+                try container.viewContext.setQueryGenerationFrom(.current)
+            } catch {
+                failInitialization(DatabaseError(error, operation: .setQueryGenerationFrom, caller: .initializer))
+            }
+            
+        } else {
+            failInitialization(.makeNoPersistentStoreDescription(operation: .persistentStoreDescriptions, caller: .initializer))
         }
         
         
         container.loadPersistentStores { storeDescription, error in
-            if let error = error as NSError? {
+            if let error {
                 // In production, handle this gracefully (e.g. corrupt store,
                 // disk full, no iCloud account). Don't fatalError in shipped code.
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+                failInitialization(DatabaseError(error, operation: .loadPersistentStores, caller: .initializer))
             }
         }
         
@@ -74,18 +88,20 @@ struct Database {
         //        }
         self.viewContext = container.viewContext
         self.writeContext = container.newBackgroundContext()
+        self.writeContext.automaticallyMergesChangesFromParent = true
+        self.writeContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
 }
 
 // MARK: Private API - Save Wrapper
 extension Database {
-    private static func save(_ context: NSManagedObjectContext) throws {
+    private static func save(_ context: NSManagedObjectContext, caller: DatabaseError.Caller) throws {
         guard context.hasChanges else { return }
         
         do {
             try context.save()
         } catch {
-            try throwError(DatabaseError.saveFailure(SaveError(error)))
+            try throwError(DatabaseError(error, operation: .save, caller: caller))
         }
     }
     
@@ -123,7 +139,7 @@ extension Database {
             new.final2LetterBlends = content.settings.final2LetterBlends
             new.final3LetterBlends = content.settings.final3LetterBlends
             
-            try Self.save(writeContext)
+            try Self.save(writeContext, caller: .createFavorite)
         }
     }
 }
@@ -136,7 +152,7 @@ extension Database {
         try await writeContext.perform {
             let object = writeContext.object(with: objectID)
             writeContext.delete(object)
-            try Self.save(writeContext)
+            try Self.save(writeContext, caller: .deleteFavoriteByObject)
         }
     }
     
@@ -151,9 +167,9 @@ extension Database {
                     writeContext.delete(object)
                 }
             } catch {
-                try Self.throwError(DatabaseError.fetchFailure(FetchError(error)))
+                try Self.throwError(DatabaseError(error, operation: .fetch, caller: .deleteFavoriteByString))
             }
-            try Self.save(writeContext)
+            try Self.save(writeContext, caller: .deleteFavoriteByString)
         }
     }
     
@@ -177,7 +193,7 @@ extension Database {
                     into: [readContext] // add other live contexts here
                 )
             } catch {
-                try Self.throwError(DatabaseError.batchDeleteFailure(BatchDeleteError(error)))
+                try Self.throwError(DatabaseError(error, operation: .execute, caller: .clearAllFavorites))
             }
         }
     }
@@ -198,11 +214,12 @@ extension Database {
         
         do {
             return try readContext.performAndWait {
-                let words = try readContext .fetch(Favorite.fetchRequest()).compactMap(\.word)
+                let words = try readContext.fetch(Favorite.fetchRequest()).compactMap(\.word)
                 return Set(words)
             }
         } catch {
-            print("Failed to intialize favorites reference list: \(FetchError(error).description)")
+            print(DatabaseError(error, operation: .fetch, caller: .allFavoriteWordStrings).code)
+            Telemetry.trackDatabaseError(DatabaseError(error, operation: .fetch, caller: .allFavoriteWordStrings))
             return []
         }
     }
@@ -215,10 +232,10 @@ extension Database {
         let writeContext = self.writeContext
         try await writeContext.perform {
             guard let object = writeContext.object(with: objectID) as? Favorite else {
-                return try Self.throwError(DatabaseError.missingObject)
+                return try Self.throwError(.makeMissingObject(operation: .object, caller: .rateFavorite))
             }
             object.rating = Int64(rating)
-            try Self.save(writeContext)
+            try Self.save(writeContext, caller: .rateFavorite)
         }
     }
     
@@ -245,9 +262,9 @@ extension Database {
         mock2.actualSyllables = 3
 
         do {
-            try Database.save(context)
+            try Database.save(context, caller: .createPreviewDatabase)
         } catch let error as DatabaseError {
-            fatalError("Failed to save preview data: \(error.description)")
+            fatalError("Failed to save preview data: \(error.category)")
         } catch {
             fatalError("Failed to save preview data: \(error.localizedDescription)")
         }

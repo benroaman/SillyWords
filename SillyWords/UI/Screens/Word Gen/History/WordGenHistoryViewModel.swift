@@ -79,7 +79,13 @@ protocol WordGenHistoryViewModel: AnyObject, Observable {
             do {
                 try await favorites.toggleFavorite(word, context: .wordGenHistory)
             } catch {
-                toggleFavoriteFailure = "Failed to update favorites: \((error as? DatabaseError)?.description ?? error.localizedDescription)"
+                await MainActor.run {
+                    if let message = (error as? DatabaseError)?.userMessage {
+                        self.toggleFavoriteFailure = "Failed to update favorites: \(message)."
+                    } else {
+                        self.toggleFavoriteFailure = "Failed to update favorites."
+                    }
+                }
             }
         }
     }

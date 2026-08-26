@@ -67,7 +67,7 @@ protocol WordGenViewModel: AnyObject, Observable {
     func onWordGenNewWordTap() {
         generator.makeWord()
         currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
-        print(currentWord)
+        Telemetry.trackCreateWord()
     }
     
     func onWordGenFavoriteTap() {
@@ -76,8 +76,13 @@ protocol WordGenViewModel: AnyObject, Observable {
             do {
                 try await favorites.toggleFavorite(word, context: .wordGenMain)
             } catch {
-                toggleFavoriteFailure = "Failed to update favorites: \((error as? DatabaseError)?.description ?? error.localizedDescription)"
-            }
+                await MainActor.run {
+                    if let message = (error as? DatabaseError)?.userMessage {
+                        self.toggleFavoriteFailure = "Failed to update favorites: \(message)."
+                    } else {
+                        self.toggleFavoriteFailure = "Failed to update favorites."
+                    }
+                }            }
         }
     }
     

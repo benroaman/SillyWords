@@ -15,6 +15,7 @@ extension Telemetry {
         case flow
         case word
         case context
+        case code
     }
 }
 

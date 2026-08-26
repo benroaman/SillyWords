@@ -8,7 +8,7 @@
 import Foundation
 
 extension Telemetry {
-    static func trackCreateWord(_ word: String) {
-        track(.createWord, attributes: [.word: word])
+    static func trackCreateWord() {
+        track(.createWord)
     }
 }

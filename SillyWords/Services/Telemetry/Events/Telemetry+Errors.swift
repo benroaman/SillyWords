@@ -22,9 +22,10 @@ extension Telemetry {
     }
     
     static func trackDatabaseError(_ error: DatabaseError) {
+        #warning("TODO: add all the detail of DatabaseError")
         track(.databaseError, attributes: [
-            .category: error.name,
-            .description: error.description
+            .category: error.category,
+            .code: error.code
         ])
     }
 }

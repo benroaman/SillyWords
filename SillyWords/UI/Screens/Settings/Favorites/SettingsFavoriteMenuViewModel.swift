@@ -75,7 +75,11 @@ protocol SettingsFavoritesMenuViewModel: AnyObject, Observable {
                 try await manager.clearFavorites()
             } catch {
                 await MainActor.run {
-                    self.settingsFavoritesMenuPurgeErrorMessage = "Clear favorites failed: \((error as? DatabaseError)?.description ?? error.localizedDescription)"
+                    if let message = (error as? DatabaseError)?.userMessage {
+                        self.settingsFavoritesMenuPurgeErrorMessage = "Clear favorites failed with error: \(message)."
+                    } else {
+                        self.settingsFavoritesMenuPurgeErrorMessage = "Clear favorites failed."
+                    }
                 }
             }
         }

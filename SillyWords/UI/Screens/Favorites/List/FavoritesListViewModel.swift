@@ -130,13 +130,13 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
             do {
                 try await manager.removeFavorite(pendingDelete, context: .favoritesList)
                 Telemetry.trackRemoveFavorite(context: .favoritesList)
-            } catch let error as DatabaseError {
-                await MainActor.run {
-                    self.deleteErrorMessage = "Could not delete favorite: \(error.description)"
-                }
             } catch {
                 await MainActor.run {
-                    self.deleteErrorMessage = "Could not delete favorite: \(error.localizedDescription)"
+                    if let message = (error as? DatabaseError)?.userMessage {
+                        self.deleteErrorMessage = "Failed to remove favorites \(message)."
+                    } else {
+                        self.deleteErrorMessage = "Failed to remove favorite."
+                    }
                 }
             }
         }

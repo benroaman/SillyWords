@@ -12,6 +12,12 @@ struct SillyWordsApp: App {
     // MARK: Instance Variables - State
     @State private var state = AppState()
     
+    // MARK: Initializers
+    init() {
+        Telemetry.initialize()
+        UIApplication.shared.registerForRemoteNotifications()
+    }
+    
     // MARK: Body
     var body: some Scene {
         WindowGroup {
