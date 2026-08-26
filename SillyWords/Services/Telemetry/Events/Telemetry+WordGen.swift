@@ -11,4 +11,8 @@ extension Telemetry {
     static func trackCreateWord() {
         track(.createWord)
     }
+    
+    static func trackCreateSentence() {
+        track(.createSentence)
+    }
 }

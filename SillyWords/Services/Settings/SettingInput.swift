@@ -33,6 +33,10 @@ enum SettingInput: CaseIterable {
     case finalDigraphBlends
     case final2LetterBlends
     case final3LetterBlends
+    
+    // Sentences
+    case includeSentenceAttribution
+    case showSentenceOnMainWordGen
 }
 
 extension SettingInput {
@@ -56,6 +60,8 @@ extension SettingInput {
         case .finalDigraphBlends: "Final Consonant Digraph Blends"
         case .final2LetterBlends: "Final Two Letter Blends"
         case .final3LetterBlends: "Final Three Letter Blends"
+        case .includeSentenceAttribution: "Show Sentence Attribution"
+        case .showSentenceOnMainWordGen: "Main Word Gen Sentence"
         }
     }
     
@@ -89,12 +95,14 @@ extension SettingInput {
         case .finalDigraphBlends: "Words can end with consonant digraph blends"
         case .final2LetterBlends: "Words can end with two consonant blends"
         case .final3LetterBlends: "Words can end with three consonant blends"
+        case .showSentenceOnMainWordGen: "Show sentences on the main word generation screen"
+        case .includeSentenceAttribution: nil
         }
     }
     
     var example: String? {
         switch self {
-        case .minSyllables, .maxSyllables, .filterSortOfBadWords: nil
+        case .minSyllables, .maxSyllables, .filterSortOfBadWords, .showSentenceOnMainWordGen: nil
         case .allowVowelCombos:
             """
             e.g. "ea", "ou"
@@ -154,6 +162,10 @@ extension SettingInput {
         case .final3LetterBlends:
             """
             e.g. "mpt", "lpt"
+            """
+        case .includeSentenceAttribution:
+            """
+            e.g. "- Benjamin Franklin"
             """
         }
     }

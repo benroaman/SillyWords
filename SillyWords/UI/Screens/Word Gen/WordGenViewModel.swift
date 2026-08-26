@@ -9,12 +9,15 @@ import Foundation
 
 protocol WordGenViewModel: AnyObject, Observable {
     var currentWord: String { get }
-    var currentWordSentence: String { get }
+    var currentWordSentence: SentenceGenerator.Sentence { get }
     var isCurrentWordFavorite: Bool { get }
     var toggleFavoriteFailure: String? { get set }
     var wordTransitionStyle: WordTransitionStyle { get }
+    var showSentence: Bool { get }
+    var showSentenceAttribution: Bool { get }
     
     func onWordGenNewWordTap()
+    func onWordGenNewSentenceTap()
     func onWordGenFavoriteTap()
     func onWordGenHistoryTap()
     func onWordGenSettingsTap()
@@ -29,11 +32,14 @@ protocol WordGenViewModel: AnyObject, Observable {
     private(set) var isCurrentWordFavorite: Bool = false
     var toggleFavoriteFailure: String?
     let wordTransitionStyle: WordTransitionStyle = .splode
+    let showSentence: Bool = true
+    let showSentenceAttribution: Bool = true
     
     func onWordGenNewWordTap() {
         currentWord = pool.randomElement()!
         currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
     }
+    func onWordGenNewSentenceTap() { currentWordSentence = SentenceGenerator.useItInASentence(currentWord) }
     func onWordGenFavoriteTap() { isCurrentWordFavorite.toggle() }
     func onWordGenHistoryTap() { print("History Tap") }
     func onWordGenSettingsTap() { print("Settings Tap") }
@@ -50,11 +56,13 @@ protocol WordGenViewModel: AnyObject, Observable {
     @MainActor var toggleFavoriteFailure: String?
     
     var currentWord: String { generator.currentWordText }
-    private(set) var currentWordSentence: String
+    private(set) var currentWordSentence: SentenceGenerator.Sentence
     var isCurrentWordFavorite: Bool { favorites.isFavorite(currentWord) }
     var wordTransitionStyle: WordTransitionStyle {
         settings.wordGenCurrentWordTransitionStyle
     }
+    var showSentence: Bool { settings.showSentenceOnMainWordGen }
+    var showSentenceAttribution: Bool { settings.includeSentenceAttribution }
     
     init(generator: GenerationManager, favorites: FavoritesManager, navigation: any WordGenTabNavigation, settings: SettingsManager) {
         self.generator = generator
@@ -68,6 +76,11 @@ protocol WordGenViewModel: AnyObject, Observable {
         generator.makeWord()
         currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
         Telemetry.trackCreateWord()
+    }
+    
+    func onWordGenNewSentenceTap() {
+        currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
+        Telemetry.trackCreateSentence()
     }
     
     func onWordGenFavoriteTap() {

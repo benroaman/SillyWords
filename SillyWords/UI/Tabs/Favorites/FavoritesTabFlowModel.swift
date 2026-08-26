@@ -41,7 +41,7 @@ protocol FavoritesTabFlowModel: AnyObject, Observable {
         switch route {
             #warning("TODO: Implement favorite detail screen")
         case .favoriteWordDetail(let favorite): EmptyView()
-        case .settingsWordGen, .settingsFavorites, .settingsSyllables, .settingsConsonants, .settingsVowels, .historyList, .settingsUserInterface, .settingsWordGenCurrentWordTransition: BadRouteView(route: route, flow: .favoritesTab)
+        case .settingsWordGen, .settingsFavorites, .settingsSyllables, .settingsConsonants, .settingsVowels, .historyList, .settingsUserInterface, .settingsWordGenCurrentWordTransition, .settingsSentences: BadRouteView(route: route, flow: .favoritesTab)
         }
     }
 

@@ -15,6 +15,7 @@ extension Telemetry {
         
         /// User Action - Word Gen
         case createWord
+        case createSentence
         
         /// User Action - Favorites
         case addFavorite

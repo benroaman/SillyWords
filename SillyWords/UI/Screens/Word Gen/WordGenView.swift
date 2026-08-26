@@ -12,32 +12,29 @@ import BRWordGeneration
 struct WordGenView<M: WordGenViewModel>: View {
     // MARK: Instance Variables - State
     @State var model: M
+    @State private var mainContentHeight: CGFloat = 160
+    @State private var sentenceHeight: CGFloat = 100
     
-    // MARK: Body
+    private var sentenceStackFillHeight: CGFloat { mainContentHeight + sentenceHeight }
+    
     var body: some View {
-        VStack {
-            currentWordLabel
-            Spacer()
-                .frame(height: 40)
-            HStack(spacing: 0) {
+        ZStack {
+            VStack {
+                currentWordLabel
                 Spacer()
-                generateWordButton
-                Spacer()
-                historyButton
-                Spacer()
-                toggleFavoriteButton
-                Spacer()
-                settingsButton
-                Spacer()
-                reportButton
-                Spacer()
+                    .frame(height: 40)
+                mainButtonStack
             }
-//            Spacer()
-//                .frame(height: 40)
-//            Text(model.currentWordSentence)
-//                .font(.callout)
-//                .multilineTextAlignment(.center)
-//                .animation(.easeInOut(duration: 0.75), value: model.currentWordSentence)
+            .background(
+                GeometryReader { geometry in
+                    Color.clear
+                        .onAppear { self.mainContentHeight = geometry.size.height }
+                        .onChange(of: geometry.size.height) { _, new in self.mainContentHeight = new }
+                }
+            )
+            if model.showSentence {
+                sentenceView
+            }
         }
         .padding()
     }
@@ -64,8 +61,65 @@ private extension WordGenView {
             }
     }
     
+    @ViewBuilder var mainButtonStack: some View {
+        HStack(spacing: 0) {
+            Spacer()
+            generateWordButton
+            Spacer()
+            historyButton
+            Spacer()
+            toggleFavoriteButton
+            Spacer()
+            settingsButton
+            Spacer()
+            reportButton
+            Spacer()
+        }
+    }
+    
+    @ViewBuilder var sentenceView: some View {
+        VStack(alignment: .center, spacing: 60) {
+            Spacer()
+                .frame(height: sentenceStackFillHeight)
+                .background(.orange)
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("\"\(model.currentWordSentence.text)\"")
+                    if model.showSentenceAttribution {
+                        Text("- \(model.currentWordSentence.attribution)")
+                            .italic()
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .font(.callout)
+                Spacer()
+                    .frame(width: 8)
+                Button(action: {
+                    withAnimation {
+                        model.onWordGenNewSentenceTap()
+                    }
+                }, label: {
+                    Image(.arrowClockwise)
+                })
+                .tint(Style.Color.wordGenerateTheme)
+            }
+            .animation(.easeInOut(duration: 0.75), value: model.currentWordSentence)
+            .background(
+                GeometryReader { geometry in
+                    Color.clear
+                        .onAppear { self.sentenceHeight = geometry.size.height }
+                        .onChange(of: geometry.size.height) { _, new in self.sentenceHeight = new }
+                }
+            )
+        }
+    }
+    
     @ViewBuilder var generateWordButton: some View {
-        Button(action: model.onWordGenNewWordTap, label: {
+        Button(action: {
+            withAnimation {
+                model.onWordGenNewWordTap()
+            }
+        }, label: {
             Image(.pencilAndScribble)
         })
         .tint(Style.Color.wordGenerateTheme)

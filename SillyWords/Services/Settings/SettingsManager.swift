@@ -9,9 +9,10 @@ import Foundation
 import BRWordGeneration
 
 @Observable
-class SettingsManager: ConsonantSettings, SyllableSettings, VowelSettings {
+class SettingsManager: ConsonantSettings, SyllableSettings, VowelSettings, SentenceSettings {
     private typealias WG = Settings.WordGen
     private typealias UI = Settings.UserInterface
+    private typealias SG = Settings.SentenceGen
     
     // MARK: Instance Constants
     static let minimumAllowableSyllables: Int = 1
@@ -96,6 +97,15 @@ class SettingsManager: ConsonantSettings, SyllableSettings, VowelSettings {
     // MARK: UI
     var wordGenCurrentWordTransitionStyle: WordTransitionStyle = UI.WordGenCurrentWordTransitionStyle.current {
         didSet { UI.WordGenCurrentWordTransitionStyle.set(wordGenCurrentWordTransitionStyle) }
+    }
+    
+    // MARK: Sentence Settings
+    var includeSentenceAttribution: Bool = SG.IncludeAttribution.current {
+        didSet { SG.IncludeAttribution.set(includeSentenceAttribution) }
+    }
+    
+    var showSentenceOnMainWordGen: Bool = SG.SentenceOnMainScreen.current {
+        didSet { SG.SentenceOnMainScreen.set(showSentenceOnMainWordGen) }
     }
     
     // MARK: Computed Values

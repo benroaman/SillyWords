@@ -33,6 +33,7 @@ class SettingsWordGenMenuViewModelProd: SettingsWordGenMenuViewModel {
         case .syllables: router.push(.settingsSyllables)
         case .vowels: router.push(.settingsVowels)
         case .consonants: router.push(.settingsConsonants)
+        case .sentence: router.push(.settingsSentences)
         }
     }
 }
