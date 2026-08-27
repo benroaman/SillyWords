@@ -37,7 +37,6 @@ struct SettingsSimpleMenuRow<O: SettingsSimpleMenuRowOption>: View {
                     .foregroundColor(Style.Settings.Color.optionValue)
                     .font(Style.Settings.Font.optionValue)
             }
-            #warning("TODO: fix issue where value hides accessory")
             if let accessory = option.accessory {
                 Image(accessory)
                     .tint(Style.Settings.Color.optionAccessory)

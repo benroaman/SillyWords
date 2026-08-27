@@ -30,7 +30,7 @@ enum SettingsUserInterfaceMenuOption: Int, SettingsSimpleMenuRowOption, CaseIter
     
     var accessory: SFSymbol? {
         switch self {
-        case .wordGenCurrentWordTransitionStyle: nil
+        case .wordGenCurrentWordTransitionStyle: .chevronRight
         }
     }
 }
