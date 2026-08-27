@@ -9,27 +9,38 @@ import SwiftUI
 
 #warning("TODO: Clean up this view")
 struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
+    @FetchRequest private var words: FetchedResults<Word>
     @State var model: M
+    
+    init(model: M) {
+        self.model = model
+        self._words = FetchRequest<Word>(
+            sortDescriptors: [SortDescriptor(\Word.dateAdded, order: .reverse)],
+            animation: .default
+        )
+    }
     
     var body: some View {
         List {
-            ForEach(model.words, content: { word in
+            ForEach(words, id: \.self) { word in
                 HStack {
-                    Text(word.word)
+                    if let text = word.text {
+                        Text(text)
+                    }
                     Spacer()
                     Button(action: {
                         model.toggleFavorite(word: word)
                     }, label: {
-                        Image(model.isWordFavorite(word) ? .heartFill : .heart)
+                        Image(word.isFavorite ? .heartFill : .heart)
                             .tint(Style.Theme.Color.favorite)
-                            .animation(.linear(duration: 0.35), value: model.isWordFavorite(word))
+                            .animation(.linear(duration: 0.35), value: word.isFavorite)
                     })
-                    .sensoryFeedback(.impact(weight: .light), trigger: model.isWordFavorite(word))
+                    .sensoryFeedback(.impact(weight: .light), trigger: word.isFavorite)
                 }
                 .swipeActions(allowsFullSwipe: false) {
                     makeRowSwipeActions(for: word)
                 }
-            })
+            }
         }
         .navigationTitle("Generated Word History")
         .alert(
@@ -46,7 +57,7 @@ struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
         }
     }
     
-    @ViewBuilder func makeRowSwipeActions(for word: GeneratedWord) -> some View {
+    @ViewBuilder func makeRowSwipeActions(for word: Word) -> some View {
         Menu(.exclamationmarkBubble) {
             Button(action: {
                 model.reportWordAsLowQuality(word)

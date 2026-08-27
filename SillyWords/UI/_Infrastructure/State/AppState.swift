@@ -19,11 +19,11 @@ class AppState {
     init() {
         let settingsManager = SettingsManager()
         self.settings = settingsManager
-        self.generator = GenerationManager(settingsManager)
         
         let database = Database()
         self.database = database
         self.favorites = FavoritesManager(database)
+        self.generator = GenerationManager(settingsManager, database: database)
         
         self.navigation = NavigationManager()
     }

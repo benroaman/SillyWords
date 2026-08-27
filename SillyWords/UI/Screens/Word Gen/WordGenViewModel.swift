@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 protocol WordGenViewModel: AnyObject, Observable {
     var currentWord: String { get }
@@ -15,6 +16,8 @@ protocol WordGenViewModel: AnyObject, Observable {
     var wordTransitionStyle: WordTransitionStyle { get }
     var showSentence: Bool { get }
     var showSentenceAttribution: Bool { get }
+    var failedToSaveWordErrorMessage: String? { get }
+    var isPresentingfailedToSaveWordMessage: Binding<Bool> { get }
     
     func onWordGenNewWordTap()
     func onWordGenNewSentenceTap()
@@ -34,6 +37,14 @@ protocol WordGenViewModel: AnyObject, Observable {
     let wordTransitionStyle: WordTransitionStyle = .splode
     let showSentence: Bool = true
     let showSentenceAttribution: Bool = true
+    var failedToSaveWordErrorMessage: String?
+    var isPresentingfailedToSaveWordMessage: Binding<Bool> {
+        .init(get: {
+            self.failedToSaveWordErrorMessage != nil
+        }, set: { isPresented in
+            if !isPresented { self.failedToSaveWordErrorMessage = nil }
+        })
+    }
     
     func onWordGenNewWordTap() {
         currentWord = pool.randomElement()!
@@ -63,6 +74,14 @@ protocol WordGenViewModel: AnyObject, Observable {
     }
     var showSentence: Bool { settings.showSentenceOnMainWordGen }
     var showSentenceAttribution: Bool { settings.includeSentenceAttribution }
+    var failedToSaveWordErrorMessage: String?
+    var isPresentingfailedToSaveWordMessage: Binding<Bool> {
+        .init(get: {
+            self.failedToSaveWordErrorMessage != nil
+        }, set: { isPresented in
+            if !isPresented { self.failedToSaveWordErrorMessage = nil }
+        })
+    }
     
     init(generator: GenerationManager, favorites: FavoritesManager, navigation: any WordGenTabNavigation, settings: SettingsManager) {
         self.generator = generator
@@ -73,9 +92,19 @@ protocol WordGenViewModel: AnyObject, Observable {
     }
     
     func onWordGenNewWordTap() {
-        generator.makeWord()
-        currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
         Telemetry.trackCreateWord()
+        do {
+            try generator.makeWord()
+        } catch {
+            Task { @MainActor in
+                if let message = (error as? DatabaseError)?.userMessage {
+                    self.failedToSaveWordErrorMessage = "Failed to remove favorites \(message)."
+                } else {
+                    self.failedToSaveWordErrorMessage = "Failed to remove favorite."
+                }
+            }
+        }
+        currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
     }
     
     func onWordGenNewSentenceTap() {
@@ -84,10 +113,9 @@ protocol WordGenViewModel: AnyObject, Observable {
     }
     
     func onWordGenFavoriteTap() {
-        guard let word = generator.words.first else { return }
         Task {
             do {
-                try await favorites.toggleFavorite(word, context: .wordGenMain)
+                try await favorites.toggleFavorite(generator.currentWord, context: .wordGenMain)
             } catch {
                 await MainActor.run {
                     if let message = (error as? DatabaseError)?.userMessage {

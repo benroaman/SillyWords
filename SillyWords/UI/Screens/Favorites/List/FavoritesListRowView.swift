@@ -12,13 +12,13 @@ struct FavoritesListRowView<M: FavoritesListRowViewModel>: View {
     @State var model: M
     
     // MARK: Instance Constants
-    let favorite: Favorite
+    let word: Word
     
     // MARK: Body
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                if let word = favorite.word {
+                if let word = word.text {
                     ZStack(alignment: .leading) {
                         // Text("REF") helps Text(favorite.word) take a uniform amount of space as it scales
                         Text("REF")
@@ -31,7 +31,7 @@ struct FavoritesListRowView<M: FavoritesListRowViewModel>: View {
                             .minimumScaleFactor(0.5)
                     }
                 }
-                if let date = favorite.dateAdded {
+                if let date = word.dateAdded {
                     Text(date.formatted(date: .long, time: .shortened))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
@@ -40,28 +40,28 @@ struct FavoritesListRowView<M: FavoritesListRowViewModel>: View {
             Spacer()
         }
         .swipeActions(allowsFullSwipe: false) {
-            makeRowSwipeActions(for: favorite)
+            makeRowSwipeActions(for: word)
         }
     }
 }
 
 // MARK: Private API - View Builders
 private extension FavoritesListRowView {
-    @ViewBuilder func makeRowSwipeActions(for favorite: Favorite) -> some View {
+    @ViewBuilder func makeRowSwipeActions(for word: Word) -> some View {
         Button(action: {
-            model.onFavoriteListRowDeleteTap(for: favorite)
+            model.onFavoriteListRowDeleteTap(for: word)
         }, label: {
             Image(Self.deleteActionIcon)
         })
         .tint(Style.Theme.Color.delete)
         Menu(Self.reportMenuIcon) {
             Button(action: {
-                model.onFavoriteListRowReportPoorQualityTap(for: favorite)
+                model.onFavoriteListRowReportPoorQualityTap(for: word)
             }, label: {
                 Label(title: Self.reportPoorQualityActionTitle, symbol: Self.reportActionIcon)
             })
             Button(action: {
-                model.onFavoriteListRowReportOffensiveTap(for: favorite)
+                model.onFavoriteListRowReportOffensiveTap(for: word)
             }, label: {
                 Label(title: Self.reportOffensiveActionTitle, symbol: Self.reportActionIcon)
             })
@@ -83,9 +83,9 @@ extension FavoritesListRowView {
 
 // MARK: Model Requirements
 protocol FavoritesListRowViewModel {
-    func onFavoriteListRowDeleteTap(for favorite: Favorite)
-    func onFavoriteListRowReportPoorQualityTap(for favorite: Favorite)
-    func onFavoriteListRowReportOffensiveTap(for favorite: Favorite)
+    func onFavoriteListRowDeleteTap(for word: Word)
+    func onFavoriteListRowReportPoorQualityTap(for word: Word)
+    func onFavoriteListRowReportOffensiveTap(for word: Word)
 }
 
 // MARK: Previews
@@ -98,7 +98,7 @@ fileprivate struct PreviewWrapper: View {
     
     var body: some View {
         List {
-            FavoritesListRowView(model: model, favorite: model.someFavorite)
+            FavoritesListRowView(model: model, word: model.someFavorite)
         }
     }
 }

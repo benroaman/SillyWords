@@ -11,33 +11,38 @@ import BRWordGeneration
 @Observable
 class GenerationManager {
     private let settings: SettingsManager
+    private let database: Database
     private let generator: BRWordGenerator
     
-    private(set) var currentWordText: String = ""
-    private(set) var words: [GeneratedWord] = []
+    private(set) var currentWord: GeneratedWord
+    var currentWordText: String { currentWord.word }
     
-    init(_ settings: SettingsManager) {
+    init(_ settings: SettingsManager, database: Database) {
         self.settings = settings
+        self.database = database
         self.generator = BRWordGenerator()
-        self.makeWord()
+        self.currentWord = Self.emptyWord
+        try? self.makeWord()
     }
 }
 
 // MARK: Public API
 extension GenerationManager {
-    func makeWordAsync() async {
-        makeWord()
-    }
-
-    func makeWord() {
+    func makeWord() throws {
         let settingsPackage = settings.settingsPackage
         #warning("TODO: Consider making this pass a set of all words in the list, or removing it altogether")
-        let result = generator.makeWord(with: settingsPackage, previousWord: words.first?.word ?? "")
+        let result = generator.makeWord(with: settingsPackage, previousWord: currentWordText)
         let generated = GeneratedWord(word: result.word,
                              syllables: result.syllables,
                              settings: settingsPackage)
         
-        currentWordText = generated.word
-        words.insert(generated, at: 0)
+        currentWord = generated
+        try database.createWord(content: generated)
+    }
+}
+
+extension GenerationManager {
+    static var emptyWord: GeneratedWord {
+        .init(word: "", syllables: 0, settings: .init(minSyllables: 0, maxSyllables: 0, allowVowelCombos: false, allowsYAsVowel: false, filterSortOfBadWords: false, soloQs: false, initialDigraphs: false, initialDigraphBlends: false, initial2LetterBlends: false, initial3LetterBlends: false, middleDigraphs: false, middleDigraphBlends: false, middle2LetterBlends: false, middle3LetterBlends: false, finalDigraphs: false, finalDigraphBlends: false, final2LetterBlends: false, final3LetterBlends: false))
     }
 }

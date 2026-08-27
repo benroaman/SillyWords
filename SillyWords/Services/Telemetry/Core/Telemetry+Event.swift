@@ -20,7 +20,7 @@ extension Telemetry {
         /// User Action - Favorites
         case addFavorite
         case removeFavorite
-        case clearFavorites
+        case removeAllFavorites
     }
 }
 

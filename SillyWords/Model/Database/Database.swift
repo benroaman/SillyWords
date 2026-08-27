@@ -98,6 +98,10 @@ struct Database {
         self.writeContext = container.newBackgroundContext()
         self.writeContext.automaticallyMergesChangesFromParent = true
         self.writeContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
+        if initializeFailureError == nil {
+            try? portFavoritesToWords()
+        }
     }
 }
 
@@ -128,14 +132,33 @@ extension Database {
 
 // MARK: Public API - Create
 extension Database {
-    private static var favoritesPredicate: NSPredicate { NSPredicate(format: "isFavorite == YES") }
-    private static var nonFavoritesPredicate: NSPredicate { NSPredicate(format: "isFavorite == NO OR isFavorite == nil") }
+    static var favoritesPredicate: NSPredicate { NSPredicate(format: "isFavorite == YES") }
+    static var nonFavoritesPredicate: NSPredicate { NSPredicate(format: "isFavorite == NO OR isFavorite == nil") }
     private static var textMatchPredicateFormat: String { "text ==[c] %@" }
     
-    func createWord(content: GeneratedWord) async throws {
+    func hasFavorites() -> Bool {
+        let context = viewContext
+        return context.performAndWait {
+            let request = Word.fetchRequest()
+            request.predicate = Self.favoritesPredicate
+            do {
+                return try context.count(for: request) > 0
+            } catch {
+                Telemetry.trackDatabaseError(DatabaseError(error, operation: .count, caller: .hasFavorites))
+                return false
+            }
+        }
+    }
+    
+    func createWord(content: GeneratedWord) throws {
         try confirmInitialization()
-        try await writeContext.perform {
-            let new = Word(context: writeContext)
+        
+        let context = writeContext
+        
+        try context.performAndWait {
+            guard try !doesWordExist(content.word, context: context) else { return }
+            
+            let new = Word(context: context)
             new.text = content.word
             new.actualSyllables = Int64(content.syllables)
             new.dateAdded = Date()
@@ -160,13 +183,41 @@ extension Database {
             new.final3LetterBlends = content.settings.final3LetterBlends
             new.isFavorite = false
             
-            try Self.save(writeContext, caller: .createWord)
+            try Self.save(context, caller: .createWord)
+        }
+    }
+    
+    func doesWordExist(_ text: String, context: NSManagedObjectContext) throws -> Bool {
+        let request = Word.fetchRequest()
+        request.predicate = NSPredicate(format: Self.textMatchPredicateFormat, text)
+        do {
+            return try context.count(for: request) > 0
+        } catch {
+            throw DatabaseError(error, operation: .count, caller: .doesWordExist)
         }
     }
 }
 
 // MARK: Public API - Delete
 extension Database {
+    func isFavorite(_ text: String) -> Bool {
+        let context = viewContext
+        return viewContext.performAndWait {
+            let request = Word.fetchRequest()
+            request.predicate = NSPredicate(format: Self.textMatchPredicateFormat, text)
+            
+            do {
+                guard let word = try context.fetch(request).first else {
+                    throw DatabaseError.makeMissingObject(operation: .first, caller: .isFavorite)
+                }
+                return word.isFavorite
+            } catch {
+                Telemetry.trackDatabaseError((error as? DatabaseError) ?? DatabaseError(error, operation: .fetch, caller: .isFavorite))
+                return false
+            }
+        }
+    }
+    
     func addFavorite(_ word: Word) async throws {
         try await setIsFavorite(true, for: word)
     }
@@ -183,6 +234,49 @@ extension Database {
         try await setIsFavorite(false, for: text)
     }
     
+    func toggleFavorite(_ text: String) async throws -> Bool? {
+        try confirmInitialization()
+        let context = writeContext
+        
+        return try await context.perform {
+            do {
+                let request = Word.fetchRequest()
+                request.predicate = NSPredicate(format: Self.textMatchPredicateFormat, text)
+                guard let word = try context.fetch(request).first else {
+                    throw DatabaseError.makeMissingObject(operation: .first, caller: .toggleFavoriteByText)
+                }
+                word.isFavorite.toggle()
+                try Self.save(context, caller: .toggleFavoriteByText)
+                return word.isFavorite
+            } catch let error as DatabaseError {
+                try Self.throwError(error)
+                return nil
+            } catch {
+                try Self.throwError(DatabaseError(error, operation: .fetch, caller: .toggleFavoriteByText))
+                return nil
+            }
+        }
+    }
+    
+    func toggleFavorite(_ word: Word) async throws -> Bool? {
+        try confirmInitialization()
+        let context = writeContext
+        let objectID = word.objectID
+        
+        return try await context.perform {
+            guard let object = context.object(with: objectID) as? Word else {
+                try Self.throwError(DatabaseError.makeMissingObject(operation: .object, caller: .toggleFavoriteByObject))
+                return nil
+            }
+            
+            object.isFavorite.toggle()
+            
+            try Self.save(context, caller: .toggleFavoriteByObject)
+            
+            return object.isFavorite
+        }
+    }
+    
     private func setIsFavorite(_ isFavorite: Bool, for word: Word) async throws {
         try confirmInitialization()
         let objectID = word.objectID
@@ -190,7 +284,8 @@ extension Database {
         let caller: DatabaseError.Caller = isFavorite ? .addFavoriteByObject : .removeFavoriteByObject
         try await writeContext.perform {
             guard let object = writeContext.object(with: objectID) as? Word else {
-                throw DatabaseError.makeMissingObject(operation: .object, caller: caller)
+                try Self.throwError(DatabaseError.makeMissingObject(operation: .object, caller: caller))
+                return
             }
             object.isFavorite = isFavorite
             try Self.save(writeContext, caller: caller)
@@ -298,6 +393,49 @@ extension Database {
             }
         }
     }
+    
+    private func portFavoritesToWords() throws {
+        let context = writeContext
+        try context.performAndWait {
+            let request = Favorite.fetchRequest()
+            do {
+                for favorite in try context.fetch(request) {
+                    let word = Word(context: context)
+                    
+                    word.text = favorite.word
+                    word.actualSyllables = favorite.actualSyllables
+                    word.dateAdded = favorite.dateAdded
+                    
+                    word.minSyllables = favorite.minSyllables
+                    word.maxSyllables = favorite.maxSyllables
+                    word.allowVowelCombos = favorite.allowVowelCombos
+                    word.allowsYAsVowel = favorite.allowsYAsVowel
+                    word.filterSortOfBadWords = favorite.filterSortOfBadWords
+                    word.soloQs = favorite.soloQs
+                    word.initialDigraphs = favorite.initialDigraphs
+                    word.initialDigraphBlends = favorite.initialDigraphBlends
+                    word.initial2LetterBlends = favorite.initial2LetterBlends
+                    word.initial3LetterBlends = favorite.initial3LetterBlends
+                    word.middleDigraphs = favorite.middleDigraphs
+                    word.middleDigraphBlends = favorite.middleDigraphBlends
+                    word.middle2LetterBlends = favorite.middle2LetterBlends
+                    word.middle3LetterBlends = favorite.middle3LetterBlends
+                    word.finalDigraphs = favorite.finalDigraphs
+                    word.finalDigraphBlends = favorite.finalDigraphBlends
+                    word.final2LetterBlends = favorite.final2LetterBlends
+                    word.final3LetterBlends = favorite.final3LetterBlends
+                    word.isFavorite = true
+                    
+                    context.delete(favorite)
+                }
+                try Self.save(context, caller: .portFavoritesToWords)
+            } catch let error as DatabaseError {
+                try Self.throwError(error)
+            } catch {
+                try Self.throwError(DatabaseError(error, operation: .fetch, caller: .portFavoritesToWords))
+            }
+        }
+    }
 }
 
 // MARK: Public API - Read
@@ -305,9 +443,9 @@ extension Database {
     func getText(from word: Word) async throws -> String? {
         try confirmInitialization()
         let objectID = word.objectID
-        let readContext = viewContext
-        return await readContext.perform {
-            (readContext.object(with: objectID) as? Favorite)?.word
+        let context = viewContext
+        return await context.perform {
+            (context.object(with: objectID) as? Word)?.text
         }
     }
     

@@ -29,10 +29,10 @@ enum SortMode: Int, CaseIterable {
         }
     }
     
-    var favoriteSortDescriptors: [SortDescriptor<Favorite>] {
+    var favoriteSortDescriptors: [SortDescriptor<Word>] {
         switch self {
-        case .alpha: [SortDescriptor(\Favorite.word, order: favoriteSortOrder)]
-        case .mostRecent: [SortDescriptor(\Favorite.dateAdded, order: favoriteSortOrder)]
+        case .alpha: [SortDescriptor(\Word.text, order: favoriteSortOrder)]
+        case .mostRecent: [SortDescriptor(\Word.dateAdded, order: favoriteSortOrder)]
 //            case .highestRated: [SortDescriptor(\Favorite.rating, order: favoriteSortOrder)]
         }
     }

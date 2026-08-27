@@ -10,14 +10,15 @@ import SwiftUI
 // MARK: Base
 struct FavoritesListView<M: FavoritesListViewModel>: View {
     // MARK: Instance Variables - State
-    @FetchRequest private var favorites: FetchedResults<Favorite>
+    @FetchRequest private var favorites: FetchedResults<Word>
     @State var model: M
     
     // MARK: Initializers
     init(model: M) {
         self.model = model
-        self._favorites = FetchRequest<Favorite>(
+        self._favorites = FetchRequest<Word>(
             sortDescriptors: model.sort.favoriteSortDescriptors,
+            predicate: Database.favoritesPredicate,
             animation: .default
         )
     }
@@ -55,7 +56,7 @@ private extension FavoritesListView {
     @ViewBuilder var favoritesList: some View {
         List {
             ForEach(favorites, id: \.self) { entry in
-                FavoritesListRowView(model: model, favorite: entry)
+                FavoritesListRowView(model: model, word: entry)
             }
         }
         .onChange(of: model.sort, {_, _ in

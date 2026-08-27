@@ -23,7 +23,7 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
 // MARK: Preview Implementation
 @Observable class FavoritesListViewModelPreview: FavoritesListViewModel {
     /// Instance Constants
-    let someFavorite: Favorite = try! Database.preview.viewContext.fetch(Favorite.fetchRequest()).randomElement()!
+    let someFavorite: Word = try! Database.preview.viewContext.fetch(Word.fetchRequest()).randomElement()!
     
     /// Instance Variables
     private var _isPresentingDeleteConfirmation: Bool = false
@@ -62,9 +62,9 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
     func onFavoriteListConfirmDeleteTapped() { _isPresentingDeleteConfirmation = false }
     
     /// FavoritesListRowViewModel Implementation
-    func onFavoriteListRowDeleteTap(for favorite: Favorite) { _isPresentingDeleteConfirmation = true }
-    func onFavoriteListRowReportPoorQualityTap(for favorite: Favorite) { print("Quality") }
-    func onFavoriteListRowReportOffensiveTap(for favorite: Favorite) { print("Offensive") }
+    func onFavoriteListRowDeleteTap(for word: Word) { _isPresentingDeleteConfirmation = true }
+    func onFavoriteListRowReportPoorQualityTap(for word: Word) { print("Quality") }
+    func onFavoriteListRowReportOffensiveTap(for word: Word) { print("Offensive") }
 }
 
 @Observable class FavoritesListviewModelProd: FavoritesListViewModel {
@@ -73,7 +73,7 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
     private let navigation: FavoritesTabNavigation
     
     /// Instance Variables
-    private var pendingDelete: Favorite?
+    private var pendingDelete: Word?
     
     /// Initializers
     init(manager: FavoritesManager, navigation: FavoritesTabNavigation) {
@@ -87,10 +87,10 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
     var deleteConfirmationMessage: String {
         var word: String?
         pendingDelete?.managedObjectContext?.performAndWait {
-            word = pendingDelete?.word
+            word = pendingDelete?.text
         }
         
-        return "Delete \"\(word ?? "Favorite")\"?"
+        return "Unfavorite \"\(word ?? "Favorite")\"?"
     }
     
     var isPresentingDeleteConfirmation: Binding<Bool> {
@@ -129,7 +129,7 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
         Task {
             do {
                 try await manager.removeFavorite(pendingDelete, context: .favoritesList)
-                Telemetry.trackRemoveFavorite(context: .favoritesList)
+                Telemetry.trackRemoveFavorite(.favoritesList)
             } catch {
                 await MainActor.run {
                     if let message = (error as? DatabaseError)?.userMessage {
@@ -143,19 +143,19 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
     }
     
     /// FavoritesListRowViewModel Implementation
-    func onFavoriteListRowDeleteTap(for favorite: Favorite) {
-        pendingDelete = favorite
+    func onFavoriteListRowDeleteTap(for word: Word) {
+        pendingDelete = word
     }
     
-    func onFavoriteListRowReportPoorQualityTap(for favorite: Favorite) {
+    func onFavoriteListRowReportPoorQualityTap(for word: Word) {
         #warning("TODO: How do I feel about not explicity accessing this on the managed object context thread, even though in this context it will implicitly always execute on the main thread and context will always be viewContext?")
-        guard let word = favorite.word else { return }
-        navigation.presentedEmail = .poorQuality(word: word)
+        guard let text = word.text else { return }
+        navigation.presentedEmail = .poorQuality(word: text)
     }
     
-    func onFavoriteListRowReportOffensiveTap(for favorite: Favorite) {
+    func onFavoriteListRowReportOffensiveTap(for word: Word) {
         #warning("TODO: How do I feel about not explicity accessing this on the managed object context thread, even though in this context it will implicitly always execute on the main thread and context will always be viewContext?")
-        guard let word = favorite.word else { return }
-        navigation.presentedEmail = .offensive(word: word)
+        guard let text = word.text else { return }
+        navigation.presentedEmail = .offensive(word: text)
     }
 }

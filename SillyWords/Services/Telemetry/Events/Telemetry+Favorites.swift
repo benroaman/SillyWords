@@ -15,15 +15,15 @@ extension Telemetry {
         case favoriteDetail
     }
     
-    static func trackAddFavorite(context: FavoriteContext) {
+    static func trackAddFavorite(_ context: FavoriteContext) {
         track(.addFavorite, attributes: [.context: context.rawValue])
     }
     
-    static func trackRemoveFavorite(context: FavoriteContext) {
+    static func trackRemoveFavorite(_ context: FavoriteContext) {
         track(.removeFavorite, attributes: [.context: context.rawValue])
     }
     
-    static func trackClearFavorites() {
-        track(.clearFavorites)
+    static func trackRemoveAllFavorites() {
+        track(.removeAllFavorites)
     }
 }

@@ -280,6 +280,8 @@ extension DatabaseError {
         case execute = "NSManagedObjectContext.execute"
         case persistentStoreDescriptions = "NSPersistentCloudKitContainer.persistentStoreDescriptions.first"
         case object = "NSManagedObjectContext.object"
+        case count = "NSManagedObjectContext.count"
+        case first = "NSManagedObjectContext.fetch.first"
     }
     
     enum Caller: String {
@@ -297,6 +299,12 @@ extension DatabaseError {
         case deleteWordByText
         case addFavoriteByObject
         case addFavoriteByText
+        case portFavoritesToWords
+        case hasFavorites
+        case doesWordExist
+        case toggleFavoriteByText
+        case toggleFavoriteByObject
+        case isFavorite
     }
     
     enum SQLiteCode: Int {
