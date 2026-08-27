@@ -291,7 +291,7 @@ extension DatabaseError {
         case removeFavoriteByText
         case removeAllFavorites
         case getWord
-        case allFavoriteWordStrings
+        case allWordText
         case rateWord
         case seedPreviewDatabase
         case deleteWordHistory
