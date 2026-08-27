@@ -109,6 +109,7 @@ extension Database {
         do {
             try context.save()
         } catch {
+            context.rollback()
             try throwError(DatabaseError(error, operation: .save, caller: caller))
         }
     }
@@ -127,11 +128,15 @@ extension Database {
 
 // MARK: Public API - Create
 extension Database {
-    func createFavorite(content: GeneratedWord) async throws {
+    private static var favoritesPredicate: NSPredicate { NSPredicate(format: "isFavorite == YES") }
+    private static var nonFavoritesPredicate: NSPredicate { NSPredicate(format: "isFavorite == NO OR isFavorite == nil") }
+    private static var textMatchPredicateFormat: String { "text ==[c] %@" }
+    
+    func createWord(content: GeneratedWord) async throws {
         try confirmInitialization()
         try await writeContext.perform {
-            let new = Favorite(context: writeContext)
-            new.word = content.word
+            let new = Word(context: writeContext)
+            new.text = content.word
             new.actualSyllables = Int64(content.syllables)
             new.dateAdded = Date()
             
@@ -153,65 +158,143 @@ extension Database {
             new.finalDigraphBlends = content.settings.finalDigraphBlends
             new.final2LetterBlends = content.settings.final2LetterBlends
             new.final3LetterBlends = content.settings.final3LetterBlends
+            new.isFavorite = false
             
-            try Self.save(writeContext, caller: .createFavorite)
+            try Self.save(writeContext, caller: .createWord)
         }
     }
 }
 
 // MARK: Public API - Delete
 extension Database {
-    func deleteFavorite(_ favorite: Favorite) async throws {
+    func addFavorite(_ word: Word) async throws {
+        try await setIsFavorite(true, for: word)
+    }
+    
+    func addFavorite(_ text: String) async throws {
+        try await setIsFavorite(true, for: text)
+    }
+    
+    func removeFavorite(_ word: Word) async throws {
+        try await setIsFavorite(false, for: word)
+    }
+    
+    func removeFavorite(_ text: String) async throws {
+        try await setIsFavorite(false, for: text)
+    }
+    
+    private func setIsFavorite(_ isFavorite: Bool, for word: Word) async throws {
         try confirmInitialization()
-        let objectID = favorite.objectID
+        let objectID = word.objectID
+        let writeContext = self.writeContext
+        let caller: DatabaseError.Caller = isFavorite ? .addFavoriteByObject : .removeFavoriteByObject
+        try await writeContext.perform {
+            guard let object = writeContext.object(with: objectID) as? Word else {
+                throw DatabaseError.makeMissingObject(operation: .object, caller: caller)
+            }
+            object.isFavorite = isFavorite
+            try Self.save(writeContext, caller: caller)
+        }
+    }
+    
+    func setIsFavorite(_ isFavorite: Bool, for text: String) async throws {
+        try confirmInitialization()
+        let writeContext = self.writeContext
+        let caller: DatabaseError.Caller = isFavorite ? .addFavoriteByText : .removeFavoriteByText
+        try await writeContext.perform {
+            let request = Word.fetchRequest()
+            request.predicate = NSPredicate(format: Self.textMatchPredicateFormat, text)
+            
+            do {
+                for word in try writeContext.fetch(request) {
+                    word.isFavorite = isFavorite
+                }
+                try Self.save(writeContext, caller: caller)
+            } catch let error as DatabaseError {
+                // save only throws a database error
+                try Self.throwError(error)
+            } catch {
+                // so if it's not a database error, it's a fetch error
+                try Self.throwError(DatabaseError(error, operation: .fetch, caller: caller))
+            }
+        }
+    }
+    
+    func deleteWord(_ word: Word) async throws {
+        try confirmInitialization()
+        let objectID = word.objectID
         let writeContext = self.writeContext
         try await writeContext.perform {
             let object = writeContext.object(with: objectID)
             writeContext.delete(object)
-            try Self.save(writeContext, caller: .deleteFavoriteByObject)
+            try Self.save(writeContext, caller: .deleteWordByObject)
         }
     }
     
-    func deleteFavorite(_ word: String) async throws {
+    func deleteWord(_ text: String) async throws {
         try confirmInitialization()
         let writeContext = self.writeContext
         try await writeContext.perform {
-            let request = Favorite.fetchRequest()
-            request.predicate = NSPredicate(format: "word ==[c] %@", word)
+            let request = Word.fetchRequest()
+            request.predicate = NSPredicate(format: Self.textMatchPredicateFormat, text)
             
             do {
                 for object in try writeContext.fetch(request) {
                     writeContext.delete(object)
                 }
+                try Self.save(writeContext, caller: .deleteWordByText)
+            } catch let error as DatabaseError {
+                try Self.throwError(error)
             } catch {
-                try Self.throwError(DatabaseError(error, operation: .fetch, caller: .deleteFavoriteByString))
+                try Self.throwError(DatabaseError(error, operation: .fetch, caller: .deleteWordByText))
             }
-            try Self.save(writeContext, caller: .deleteFavoriteByString)
         }
     }
     
-    func clearAllFavorites() async throws {
+    func removeAllFavorites() async throws {
         try confirmInitialization()
         let context = writeContext
-        let readContext = viewContext
         
         try await context.perform {
-            let fetchRequest = Favorite.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
+            let fetchRequest = Word.fetchRequest()
+            fetchRequest.predicate = Self.favoritesPredicate
+            
+            do {
+                for word in try context.fetch(fetchRequest) {
+                    word.isFavorite = false
+                }
+                try Self.save(context, caller: .removeAllFavorites)
+            } catch let error as DatabaseError {
+                try Self.throwError(error)
+            } catch {
+                try Self.throwError(DatabaseError(error, operation: .execute, caller: .removeAllFavorites))
+            }
+        }
+    }
+    
+    func deleteWordHistory() async throws {
+        try confirmInitialization()
+        let write = writeContext
+        let read = viewContext
+        
+        try await write.perform {
+            let fetchRequest = Word.fetchRequest() as NSFetchRequest<NSFetchRequestResult>
+            fetchRequest.predicate = Self.nonFavoritesPredicate
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
             deleteRequest.resultType = .resultTypeObjectIDs
             
             do {
-                let result = try context.execute(deleteRequest) as? NSBatchDeleteResult
+                let result = try write.execute(deleteRequest) as? NSBatchDeleteResult
                 let deletedObjectIDs = result?.result as? [NSManagedObjectID] ?? []
                 
                 let changes = [NSDeletedObjectsKey: deletedObjectIDs]
                 
                 NSManagedObjectContext.mergeChanges(
                     fromRemoteContextSave: changes,
-                    into: [readContext] // add other live contexts here
+                    into: [read]
                 )
             } catch {
-                try Self.throwError(DatabaseError(error, operation: .execute, caller: .clearAllFavorites))
+                try Self.throwError(DatabaseError(error, operation: .execute, caller: .deleteWordHistory))
             }
         }
     }
@@ -219,9 +302,9 @@ extension Database {
 
 // MARK: Public API - Read
 extension Database {
-    func getWord(from favorite: Favorite) async throws -> String? {
+    func getText(from word: Word) async throws -> String? {
         try confirmInitialization()
-        let objectID = favorite.objectID
+        let objectID = word.objectID
         let readContext = viewContext
         return await readContext.perform {
             (readContext.object(with: objectID) as? Favorite)?.word
@@ -234,7 +317,9 @@ extension Database {
         
         do {
             return try readContext.performAndWait {
-                let words = try readContext.fetch(Favorite.fetchRequest()).compactMap(\.word)
+                let request = Word.fetchRequest()
+                request.predicate = Self.favoritesPredicate
+                let words = try readContext.fetch(Word.fetchRequest()).compactMap(\.text)
                 return Set(words)
             }
         } catch {
@@ -247,16 +332,16 @@ extension Database {
 
 // MARK: Public API - Update
 extension Database {
-    func rateFavorite(_ favorite: Favorite, rating: Int) async throws {
+    func rateWord(_ word: Word, rating: Int) async throws {
         try confirmInitialization()
-        let objectID = favorite.objectID
+        let objectID = word.objectID
         let writeContext = self.writeContext
         try await writeContext.perform {
             guard let object = writeContext.object(with: objectID) as? Favorite else {
-                return try Self.throwError(.makeMissingObject(operation: .object, caller: .rateFavorite))
+                return try Self.throwError(.makeMissingObject(operation: .object, caller: .rateWord))
             }
             object.rating = Int64(rating)
-            try Self.save(writeContext, caller: .rateFavorite)
+            try Self.save(writeContext, caller: .rateWord)
         }
     }
     
@@ -269,18 +354,21 @@ extension Database {
         let context = controller.container.viewContext
 
         // Create sample objects
-        let mock1 = Favorite(context: context)
-        mock1.word = "glunde"
+        let mock1 = Word(context: context)
+        mock1.text = "glunde"
         mock1.dateAdded = Date()
         mock1.actualSyllables = 2
-        let mock3 = Favorite(context: context)
-        mock3.word = "aja"
-        mock3.dateAdded = Date()
-        mock3.actualSyllables = 2
-        let mock2 = Favorite(context: context)
-        mock2.word = "bismustrex"
+        mock1.isFavorite = true
+        let mock2 = Word(context: context)
+        mock2.text = "bismustrex"
         mock2.dateAdded = Date()
         mock2.actualSyllables = 3
+        mock2.isFavorite = true
+        let mock3 = Word(context: context)
+        mock3.text = "aja"
+        mock3.dateAdded = Date()
+        mock3.actualSyllables = 2
+        mock3.isFavorite = true
 
         do {
             try Database.save(context, caller: .seedPreviewDatabase)

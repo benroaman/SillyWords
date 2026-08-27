@@ -284,14 +284,19 @@ extension DatabaseError {
     
     enum Caller: String {
         case initializer
-        case createFavorite
-        case deleteFavoriteByObject
-        case deleteFavoriteByString
-        case clearAllFavorites
+        case createWord
+        case removeFavoriteByObject
+        case removeFavoriteByText
+        case removeAllFavorites
         case getWord
         case allFavoriteWordStrings
-        case rateFavorite
+        case rateWord
         case seedPreviewDatabase
+        case deleteWordHistory
+        case deleteWordByObject
+        case deleteWordByText
+        case addFavoriteByObject
+        case addFavoriteByText
     }
     
     enum SQLiteCode: Int {

@@ -27,7 +27,7 @@ class FavoritesManager {
     }
     
     func addFavorite(_ word: GeneratedWord, context: Telemetry.FavoriteContext) async throws {
-        try await database.createFavorite(content: word)
+        try await database.createWord(content: word)
         favoriteWords.insert(word.word)
         Telemetry.trackAddFavorite(context: context)
     }
@@ -37,14 +37,14 @@ class FavoritesManager {
     }
     
     func removeFavorite(_ word: String, context: Telemetry.FavoriteContext) async throws {
-        try await database.deleteFavorite(word)
+        try await database.removeFavorite(word)
         favoriteWords.remove(word)
         Telemetry.trackRemoveFavorite(context: context)
     }
     
     func removeFavorite(_ word: Favorite, context: Telemetry.FavoriteContext) async throws {
         let wordActual = try await database.getWord(from: word)
-        try await database.deleteFavorite(word)
+        try await database.removeFavorite(word)
         if let wordActual {
             favoriteWords.remove(wordActual)
         }
@@ -54,18 +54,18 @@ class FavoritesManager {
     func toggleFavorite(_ word: GeneratedWord, context: Telemetry.FavoriteContext) async throws {
         if let loadFavoriteWordsError { throw loadFavoriteWordsError }
         if favoriteWords.contains(word.word) {
-            try await database.deleteFavorite(word.word)
+            try await database.removeFavorite(word.word)
             favoriteWords.remove(word.word)
             Telemetry.trackRemoveFavorite(context: context)
         } else {
-            try await database.createFavorite(content: word)
+            try await database.createWord(content: word)
             favoriteWords.insert(word.word)
             Telemetry.trackAddFavorite(context: context)
         }
     }
     
     func clearFavorites() async throws {
-        try await database.clearAllFavorites()
+        try await database.removeAllFavorites()
         favoriteWords = []
         Telemetry.trackClearFavorites()
     }
