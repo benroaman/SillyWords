@@ -19,6 +19,7 @@ struct Database {
     
     // MARK: Initializers
     init(inMemory: Bool = false) {
+        #warning("TODO: Decide if I actually want to use cloudkit")
         // Name must match your .xcdatamodeld filename
         container = NSPersistentCloudKitContainer(name: "SillyWords")
         
@@ -72,8 +73,6 @@ struct Database {
         }
         
         // Automatically merge changes coming in from CloudKit
-        container.viewContext.automaticallyMergesChangesFromParent = true
-        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         
         
 #if DEBUG
@@ -95,6 +94,9 @@ struct Database {
         //            print("Remote change detected from CloudKit")
         //        }
         self.viewContext = container.viewContext
+        self.viewContext.automaticallyMergesChangesFromParent = true
+        self.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
         self.writeContext = container.newBackgroundContext()
         self.writeContext.automaticallyMergesChangesFromParent = true
         self.writeContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
@@ -112,9 +114,9 @@ extension Database {
     private static var textMatchPredicateFormat: String { "text ==[c] %@" }
 }
 
-// MARK: Private API - Helper Functions
+// MARK: Helper Functions
 extension Database {
-    private static func save(_ context: NSManagedObjectContext, caller: DatabaseError.Caller) throws {
+    static func save(_ context: NSManagedObjectContext, caller: DatabaseError.Caller) throws {
         guard context.hasChanges else { return }
         
         do {
@@ -125,12 +127,12 @@ extension Database {
         }
     }
     
-    private static func throwError(_ error: DatabaseError) throws {
+    static func throwError(_ error: DatabaseError) throws {
         Telemetry.trackDatabaseError(error)
         throw error
     }
     
-    private func confirmInitialization() throws {
+    func confirmInitialization() throws {
         if let initializeFailureError {
             throw initializeFailureError
         }
@@ -225,7 +227,6 @@ extension Database {
                 return Set(words)
             }
         } catch {
-            print(DatabaseError(error, operation: .fetch, caller: .allWordText).identity.code)
             Telemetry.trackDatabaseError(DatabaseError(error, operation: .fetch, caller: .allWordText))
             return []
         }
@@ -259,7 +260,8 @@ extension Database {
                 }
                 return word.isFavorite
             } catch {
-                Telemetry.trackDatabaseError((error as? DatabaseError) ?? DatabaseError(error, operation: .fetch, caller: .isFavorite))
+                Telemetry.trackDatabaseError((error as? DatabaseError) ??
+                                             DatabaseError(error, operation: .fetch, caller: .isFavorite))
                 return false
             }
         }
@@ -295,11 +297,9 @@ extension Database {
                 word.isFavorite.toggle()
                 try Self.save(context, caller: .toggleFavoriteByText)
                 return word.isFavorite
-            } catch let error as DatabaseError {
-                try Self.throwError(error)
-                return nil
             } catch {
-                try Self.throwError(DatabaseError(error, operation: .fetch, caller: .toggleFavoriteByText))
+                try Self.throwError(error as? DatabaseError ??
+                                    DatabaseError(error, operation: .fetch, caller: .toggleFavoriteByText))
                 return nil
             }
         }
@@ -352,12 +352,9 @@ extension Database {
                     word.isFavorite = isFavorite
                 }
                 try Self.save(writeContext, caller: caller)
-            } catch let error as DatabaseError {
-                // save only throws a database error
-                try Self.throwError(error)
             } catch {
-                // so if it's not a database error, it's a fetch error
-                try Self.throwError(DatabaseError(error, operation: .fetch, caller: caller))
+                try Self.throwError(error as? DatabaseError ??
+                                    DatabaseError(error, operation: .fetch, caller: caller))
             }
         }
     }
@@ -375,10 +372,9 @@ extension Database {
                     word.isFavorite = false
                 }
                 try Self.save(context, caller: .removeAllFavorites)
-            } catch let error as DatabaseError {
-                try Self.throwError(error)
             } catch {
-                try Self.throwError(DatabaseError(error, operation: .execute, caller: .removeAllFavorites))
+                try Self.throwError(error as? DatabaseError ??
+                                    DatabaseError(error, operation: .execute, caller: .removeAllFavorites))
             }
         }
     }
@@ -409,10 +405,9 @@ extension Database {
                     writeContext.delete(object)
                 }
                 try Self.save(writeContext, caller: .deleteWordByText)
-            } catch let error as DatabaseError {
-                try Self.throwError(error)
             } catch {
-                try Self.throwError(DatabaseError(error, operation: .fetch, caller: .deleteWordByText))
+                try Self.throwError(error as? DatabaseError ??
+                                    DatabaseError(error, operation: .fetch, caller: .deleteWordByText))
             }
         }
     }
@@ -482,10 +477,9 @@ private extension Database {
                     context.delete(favorite)
                 }
                 try Self.save(context, caller: .portFavoritesToWords)
-            } catch let error as DatabaseError {
-                try Self.throwError(error)
             } catch {
-                try Self.throwError(DatabaseError(error, operation: .fetch, caller: .portFavoritesToWords))
+                try Self.throwError(error as? DatabaseError ??
+                                    DatabaseError(error, operation: .fetch, caller: .portFavoritesToWords))
             }
         }
     }

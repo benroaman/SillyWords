@@ -18,7 +18,7 @@ enum SettingsFavoritesMenuOption: Int, SettingsSimpleMenuRowOption, CaseIterable
     
     var icon: SFSymbol {
         switch self {
-        case .clear: .trash
+        case .clear: Style.Theme.Icon.delete
         }
     }
     

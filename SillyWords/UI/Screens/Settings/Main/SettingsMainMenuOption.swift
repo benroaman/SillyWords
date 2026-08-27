@@ -24,10 +24,10 @@ enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
     
     var icon: SFSymbol {
         switch self {
-        case .wordGen: .pencilAndScribble
-        case .favorites: .heart
-        case .feedback: .envelope
-        case .userInterface: .candybarphone
+        case .wordGen: Style.Theme.Icon.wordGen
+        case .favorites: Style.Theme.Icon.favorite
+        case .feedback: Style.Theme.Icon.contact
+        case .userInterface: Style.Theme.Icon.userInterface
         }
     }
     

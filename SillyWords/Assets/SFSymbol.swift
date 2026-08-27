@@ -21,6 +21,7 @@ enum SFSymbol: String, CaseIterable {
     case candybarphone
     case characterBubble = "character.bubble"
     case characterBubbleFill = "character.bubble.fill"
+    case charactersLowercase = "characters.lowercase"
     case charactersUppercase = "characters.uppercase"
     case checkmark
     case chevronRight = "chevron.right"
@@ -35,6 +36,8 @@ enum SFSymbol: String, CaseIterable {
     case exclamationmarkBubble = "exclamationmark.bubble"
     case pencilAndRuler = "pencil.and.ruler"
     case pencilAndScribble = "pencil.and.scribble"
+    case quoteBubble = "quote.bubble"
+    case quoteBubbleFill = "quote.bubble.fill"
     case rectangle2Swap = "rectangle.2.swap"
     case ruler
     case space

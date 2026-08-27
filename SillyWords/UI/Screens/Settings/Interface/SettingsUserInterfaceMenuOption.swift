@@ -18,7 +18,7 @@ enum SettingsUserInterfaceMenuOption: Int, SettingsSimpleMenuRowOption, CaseIter
     
     var icon: SFSymbol {
         switch self {
-        case .wordGenCurrentWordTransitionStyle: .rectangle2Swap
+        case .wordGenCurrentWordTransitionStyle: Style.Theme.Icon.transition
         }
     }
     

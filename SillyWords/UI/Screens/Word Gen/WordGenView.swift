@@ -126,7 +126,7 @@ private extension WordGenView {
                 model.onWordGenNewWordTap()
             }
         }, label: {
-            Image(.pencilAndScribble)
+            Image(Style.Theme.Icon.wordGen)
         })
         .tint(Style.Theme.Color.wordGenerate)
         .wordViewButton()
@@ -135,7 +135,7 @@ private extension WordGenView {
     
     @ViewBuilder var toggleFavoriteButton: some View {
         Button(action: model.onWordGenFavoriteTap, label: {
-            Image(systemName: model.isCurrentWordFavorite ? "heart.fill" : "heart")
+            Image(model.isCurrentWordFavorite ? Style.Theme.Icon.favoriteYes : Style.Theme.Icon.favoriteNo)
         })
         .tint(Style.Theme.Color.favorite)
         .wordViewButton()

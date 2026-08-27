@@ -81,9 +81,16 @@ struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
             .tint(Style.Theme.Color.offensive)
         }
         .tint(Style.Theme.Color.report)
+        Button(action: {
+            #warning("TODO:")
+        }, label: {
+            Image(.space)
+        })
+        .tint(Style.Theme.Color.sentenceGenerate)
     }
 }
 
 #Preview {
+    #warning("TODO: give this data to render")
     WordGenHistoryView(model: WordGenHistoryViewModelPreview())
 }
