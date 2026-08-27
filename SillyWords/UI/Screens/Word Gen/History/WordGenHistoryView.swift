@@ -24,9 +24,18 @@ struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
         List {
             ForEach(words, id: \.self) { word in
                 HStack {
-                    if let text = word.text {
-                        Text(text)
+                    VStack(alignment: .leading, spacing: 8) {
+                        if let text = word.text {
+                            Text(text)
+                                .font(.headline)
+                        }
+                        if let date = word.dateAdded {
+                            Text(date.formatted(.dateTime))
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
                     }
+                    
                     Spacer()
                     Button(action: {
                         model.toggleFavorite(word: word)
