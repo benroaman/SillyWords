@@ -78,40 +78,46 @@ private extension WordGenView {
     }
     
     @ViewBuilder var sentenceView: some View {
-        VStack(alignment: .center, spacing: 60) {
-            Spacer()
-                .frame(height: sentenceStackFillHeight)
-                .background(.orange)
-            HStack {
-                VStack(alignment: .leading) {
-                    Text("\"\(model.currentWordSentence.text)\"")
-                    if model.showSentenceAttribution {
-                        Text("- \(model.currentWordSentence.attribution)")
-                            .italic()
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .font(.callout)
+        let text = model.currentWordSentence.text
+        let attribution = model.currentWordSentence.attribution
+        let showAttribution = model.showSentenceAttribution
+        ShareLink(item: "\"\(text)\"" + (showAttribution ? "\n- \(attribution)" : "")) {
+            VStack(alignment: .center, spacing: 60) {
                 Spacer()
-                    .frame(width: 8)
-                Button(action: {
-                    withAnimation {
-                        model.onWordGenNewSentenceTap()
+                    .frame(height: sentenceStackFillHeight)
+                    .background(.orange)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("\"\(text)\"")
+                        if showAttribution {
+                            Text("- \(attribution)")
+                                .italic()
+                                .foregroundStyle(.secondary)
+                        }
                     }
-                }, label: {
-                    Image(.arrowClockwise)
-                })
-                .tint(Style.Theme.Color.wordGenerate)
-            }
-            .animation(.easeInOut(duration: 0.75), value: model.currentWordSentence)
-            .background(
-                GeometryReader { geometry in
-                    Color.clear
-                        .onAppear { self.sentenceHeight = geometry.size.height }
-                        .onChange(of: geometry.size.height) { _, new in self.sentenceHeight = new }
+                    .font(.callout)
+                    Spacer()
+                        .frame(width: 8)
+                    Button(action: {
+                        withAnimation {
+                            model.onWordGenNewSentenceTap()
+                        }
+                    }, label: {
+                        Image(.arrowClockwise)
+                    })
+                    .tint(Style.Theme.Color.wordGenerate)
                 }
-            )
+                .animation(.easeInOut(duration: 0.75), value: model.currentWordSentence)
+                .background(
+                    GeometryReader { geometry in
+                        Color.clear
+                            .onAppear { self.sentenceHeight = geometry.size.height }
+                            .onChange(of: geometry.size.height) { _, new in self.sentenceHeight = new }
+                    }
+                )
+            }
         }
+        .buttonStyle(.plain)
     }
     
     @ViewBuilder var generateWordButton: some View {
