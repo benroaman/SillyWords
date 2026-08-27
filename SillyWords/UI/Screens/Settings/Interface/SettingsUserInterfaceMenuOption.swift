@@ -24,7 +24,7 @@ enum SettingsUserInterfaceMenuOption: Int, SettingsSimpleMenuRowOption, CaseIter
     
     var iconColor: Color {
         switch self {
-        case .wordGenCurrentWordTransitionStyle: Style.Color.userInterfaceTheme
+        case .wordGenCurrentWordTransitionStyle: Style.Theme.Color.userInterface
         }
     }
     

@@ -8,6 +8,7 @@
 import SwiftUI
 
 enum SettingsWordGenMenuOption: Int, SettingsSimpleMenuRowOption, CaseIterable {
+    case presets
     case syllables
     case vowels
     case consonants
@@ -15,6 +16,7 @@ enum SettingsWordGenMenuOption: Int, SettingsSimpleMenuRowOption, CaseIterable {
     
     var title: String {
         switch self {
+        case .presets: "Presets"
         case .syllables: "Syllables"
         case .vowels: "Vowels"
         case .consonants: "Consonants"
@@ -24,6 +26,7 @@ enum SettingsWordGenMenuOption: Int, SettingsSimpleMenuRowOption, CaseIterable {
     
     var icon: SFSymbol {
         switch self {
+        case .presets: .documentBadgeGearshape
         case .syllables: .ruler
         case .vowels: .aCircle
         case .consonants: .bCircle
@@ -32,7 +35,7 @@ enum SettingsWordGenMenuOption: Int, SettingsSimpleMenuRowOption, CaseIterable {
     }
     
     var iconColor: Color {
-        Style.Color.wordGenerateTheme
+        Style.Theme.Color.wordGenerate
     }
     
     var accessory: SFSymbol? {

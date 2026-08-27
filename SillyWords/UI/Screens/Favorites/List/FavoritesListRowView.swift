@@ -53,7 +53,7 @@ private extension FavoritesListRowView {
         }, label: {
             Image(Self.deleteActionIcon)
         })
-        .tint(Style.Color.deleteTheme)
+        .tint(Style.Theme.Color.delete)
         Menu(Self.reportMenuIcon) {
             Button(action: {
                 model.onFavoriteListRowReportPoorQualityTap(for: favorite)
@@ -65,9 +65,9 @@ private extension FavoritesListRowView {
             }, label: {
                 Label(title: Self.reportOffensiveActionTitle, symbol: Self.reportActionIcon)
             })
-            .tint(Style.Color.offensiveTheme)
+            .tint(Style.Theme.Color.offensive)
         }
-        .tint(Style.Color.reportTheme)
+        .tint(Style.Theme.Color.report)
     }
 }
 

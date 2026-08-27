@@ -101,7 +101,7 @@ private extension WordGenView {
                 }, label: {
                     Image(.arrowClockwise)
                 })
-                .tint(Style.Color.wordGenerateTheme)
+                .tint(Style.Theme.Color.wordGenerate)
             }
             .animation(.easeInOut(duration: 0.75), value: model.currentWordSentence)
             .background(
@@ -122,7 +122,7 @@ private extension WordGenView {
         }, label: {
             Image(.pencilAndScribble)
         })
-        .tint(Style.Color.wordGenerateTheme)
+        .tint(Style.Theme.Color.wordGenerate)
         .wordViewButton()
         .accessibilityLabel("Generate New Word")
     }
@@ -131,7 +131,7 @@ private extension WordGenView {
         Button(action: model.onWordGenFavoriteTap, label: {
             Image(systemName: model.isCurrentWordFavorite ? "heart.fill" : "heart")
         })
-        .tint(Style.Color.favoriteTheme)
+        .tint(Style.Theme.Color.favorite)
         .wordViewButton()
         .animation(.easeIn(duration: 0.75), value: model.currentWord)
         .sensoryFeedback(.impact(weight: .light), trigger: model.isCurrentWordFavorite)
@@ -144,7 +144,7 @@ private extension WordGenView {
         }, label: {
             Image(.clock)
         })
-        .tint(Style.Color.historyTheme)
+        .tint(Style.Theme.Color.history)
         .wordViewButton()
         .accessibilityLabel("Open History")
     }
@@ -155,7 +155,7 @@ private extension WordGenView {
         }, label: {
             Image(.gearshape)
         })
-        .tint(Style.Color.mainTheme)
+        .tint(Style.Theme.Color.main)
         .wordViewButton()
         .accessibilityLabel("Open Word Generation Settings")
     }
@@ -165,12 +165,12 @@ private extension WordGenView {
             Button(action: model.onWordGenReportOffensive, label: {
                 Label("Offensive", systemImage: "envelope.fill")
             })
-            .tint(Style.Color.offensiveTheme)
+            .tint(Style.Theme.Color.offensive)
             Button(action: model.onWordGenReportLowQuality, label: {
                 Label("Poor Quality", systemImage: "envelope.fill")
             })
         }
-        .tint(Style.Color.reportTheme)
+        .tint(Style.Theme.Color.report)
         .wordViewButton()
         .accessibilityLabel("Report \(model.currentWord)")
     }

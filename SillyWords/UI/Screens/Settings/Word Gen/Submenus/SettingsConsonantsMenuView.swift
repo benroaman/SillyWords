@@ -20,7 +20,7 @@ struct SettingsConsonantsMenuView<S: ConsonantSettings>: View {
             finalSection
             miscSection
         }
-        .tint(Style.Color.wordGenerateTheme)
+        .tint(Style.Theme.Color.wordGenerate)
         .navigationTitle("Consonants")
     }
 }

@@ -24,21 +24,24 @@ struct SettingsSimpleMenuRow<O: SettingsSimpleMenuRowOption>: View {
         HStack {
             Label(title: {
                 Text(option.title)
-                    .tint(.primary)
+                    .tint(Style.Settings.Color.optionTitle)
             }, icon: {
                 Image(option.icon)
                     .foregroundStyle(option.iconColor)
-                    .fontWeight(.medium)
+                    .fontWeight(Style.Settings.Icon.optionIconWeight)
             })
+            .font(Style.Settings.Font.optionTitle)
             Spacer()
             if let value {
                 Text(value)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Style.Settings.Color.optionValue)
+                    .font(Style.Settings.Font.optionValue)
             }
             #warning("TODO: fix issue where value hides accessory")
             if let accessory = option.accessory {
                 Image(accessory)
-                    .tint(.secondary)
+                    .tint(Style.Settings.Color.optionAccessory)
+                    .font(Style.Settings.Icon.accessoryFont)
                     .fixedSize()
             }
         }

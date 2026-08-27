@@ -31,6 +31,12 @@ struct FavoritesListView<M: FavoritesListViewModel>: View {
                 zeroItemView
             }
         }
+        .navigationTitle("Favorites")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                sortButton
+            }
+        }
         .alert(model.deleteConfirmationMessage,
                isPresented: model.isPresentingDeleteConfirmation,
                actions: makeDeleteConfirmationAlertActions)
@@ -42,7 +48,7 @@ private extension FavoritesListView {
     @ViewBuilder var zeroItemView: some View {
         zeroItemMessage
             .font(Self.zeroItemMessageFont)
-            .foregroundStyle(Style.Color.zeroItemTheme)
+            .foregroundStyle(Style.Theme.Color.zeroItem)
             .transition(.opacity.animation(.default))
     }
     
@@ -55,9 +61,6 @@ private extension FavoritesListView {
         .onChange(of: model.sort, {_, _ in
             favorites.sortDescriptors = model.sort.favoriteSortDescriptors
         })
-        .safeAreaBar(edge: .top, alignment: .trailing) {
-            sortButton
-        }
         .transition(.opacity.animation(.default))
     }
     
@@ -72,8 +75,6 @@ private extension FavoritesListView {
                 .contentTransition(.symbolEffect(.replace))
         })
         .labelsHidden()
-        .glassEffect(.clear)
-        .padding(.trailing)
     }
     
     @ViewBuilder func makeDeleteConfirmationAlertActions() -> some View {

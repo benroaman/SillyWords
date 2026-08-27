@@ -23,13 +23,13 @@ struct SettingsWordGenCurrentWordTransitionMenuView<M: SettingsWordGenCurrentWor
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
                             Text(style.displayName)
-                                .font(.headline)
+                                .font(Style.Settings.Font.optionTitle)
                             if style == model.selected {
                                 Group {
                                     Spacer()
                                     Image(.checkmark)
-                                        .font(.headline)
-                                        .foregroundStyle(.green)
+                                        .font(Style.Settings.Icon.accessoryFont)
+                                        .foregroundStyle(Style.Theme.Color.selected)
                                 }
                                 .transition(.scale.animation(.bouncy(duration: 0.5, extraBounce: (style == model.selected ? 0.2 : 0))))
                             }
@@ -37,7 +37,7 @@ struct SettingsWordGenCurrentWordTransitionMenuView<M: SettingsWordGenCurrentWor
                     }
                 })
                 .contentShape(Rectangle())
-                .tint(.primary)
+                .tint(Style.Settings.Color.optionTitle)
             }
         }
         .sensoryFeedback(.selection, trigger: model.selected)

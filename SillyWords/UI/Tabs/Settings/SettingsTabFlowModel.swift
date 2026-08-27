@@ -50,6 +50,7 @@ protocol SettingsTabFlowModel: AnyObject, Observable {
         case .settingsUserInterface: SettingsUserInterfaceMenuView(model: SettingsUserInterfaceMenuViewModelProd(settings: state.settings, router: router))
         case .settingsWordGenCurrentWordTransition: SettingsWordGenCurrentWordTransitionMenuView(model: SettingsWordGenCurrentWordTransitionMenuViewModelProd(settings: state.settings))
         case .settingsSentences: SettingsSentencesMenuView(settings: state.settings)
+        case .settingsWordGenPresets: SettingsWordGenPresetsMenuView(model: SettingsWordGenPresetsMenuViewModelProd(settings: state.settings))
         case .favoriteWordDetail, .historyList: BadRouteView(route: route, flow: .settingsTab)
         }
     }

@@ -17,6 +17,7 @@ enum MainRoute: Hashable {
     case settingsUserInterface
     case settingsWordGenCurrentWordTransition
     case settingsSentences
+    case settingsWordGenPresets
     case historyList
     case favoriteWordDetail(Favorite)
     
@@ -32,6 +33,7 @@ enum MainRoute: Hashable {
         case .settingsUserInterface: hasher.combine(7)
         case .settingsWordGenCurrentWordTransition: hasher.combine(8)
         case .settingsSentences: hasher.combine(9)
+        case .settingsWordGenPresets: hasher.combine(10)
         }
     }
     
@@ -47,6 +49,7 @@ enum MainRoute: Hashable {
         case .settingsUserInterface: "settingsUserInterface"
         case .settingsWordGenCurrentWordTransition: "settingsWordGenCurrentWordTransition"
         case .settingsSentences: "settingsSentences"
+        case .settingsWordGenPresets: "settingsWordGenPresets"
         }
     }
     
@@ -62,6 +65,7 @@ enum MainRoute: Hashable {
         case .settingsUserInterface: "settingsUserInterface"
         case .settingsWordGenCurrentWordTransition: "settingsWordGenCurrentWordTransition"
         case .settingsSentences: "settingsSentences"
+        case .settingsWordGenPresets: "settingsWordGenPresets"
         }
     }
     

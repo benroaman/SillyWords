@@ -26,6 +26,7 @@ enum SFSymbol: String, CaseIterable {
     case chevronRight = "chevron.right"
     case clock
     case clockFill = "clock.fill"
+    case documentBadgeGearshape = "document.badge.gearshape"
     case envelope
     case gearshape
     case gearshapeFill = "gearshape.fill"

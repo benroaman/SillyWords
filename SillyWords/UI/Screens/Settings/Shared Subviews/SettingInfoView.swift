@@ -10,20 +10,36 @@ import SwiftUI
 // MARK: Base
 struct SettingInfoView: View {
     // MARK: Instance Constants
-    let setting: SettingInput
+    let description: String?
+    let example: String?
+    
+    // MARK: Initializers
+    init(description: String?, example: String?) {
+        self.description = description
+        self.example = example
+    }
+    
+    init(setting: SettingInput) {
+        self.description = setting.description
+        self.example = setting.example
+    }
+    
+    init(wordGenPreset: WordGenSettingsPreset) {
+        self.description = wordGenPreset.description
+        self.example = wordGenPreset.example
+    }
     
     // MARK: Body
     var body: some View {
-        if let description = setting.description {
+        if let description {
             Text(description)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(Style.Settings.Font.optionDescription)
+                .foregroundStyle(Style.Settings.Color.optionDescription)
         }
-        if let example = setting.example {
+        if let example {
             Text(example)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .italic()
+                .font(Style.Settings.Font.optionExample)
+                .foregroundStyle(Style.Settings.Color.optionExample)
         }
     }
 }

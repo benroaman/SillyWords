@@ -54,18 +54,21 @@ struct Database {
             #endif
         }
         
-        
+        var loadPersistentStoreError: DatabaseError?
         container.loadPersistentStores { storeDescription, error in
             if let error {
                 // In production, handle this gracefully (e.g. corrupt store,
                 // disk full, no iCloud account). Don't fatalError in shipped code.
-                let error = DatabaseError(error, operation: .loadPersistentStores, caller: .initializer)
-                #if DEBUG
-                fatalError(error.category)
-                #else
-                initializeFailureError = error
-                #endif
+                loadPersistentStoreError = DatabaseError(error, operation: .loadPersistentStores, caller: .initializer)
             }
+        }
+        
+        if let loadPersistentStoreError {
+            #if DEBUG
+            fatalError(loadPersistentStoreError.category)
+            #else
+            initializeFailureError = loadPersistentStoreError
+            #endif
         }
         
         // Automatically merge changes coming in from CloudKit

@@ -34,6 +34,7 @@ class SettingsWordGenMenuViewModelProd: SettingsWordGenMenuViewModel {
         case .vowels: router.push(.settingsVowels)
         case .consonants: router.push(.settingsConsonants)
         case .sentence: router.push(.settingsSentences)
+        case .presets: router.push(.settingsWordGenPresets)
         }
     }
 }

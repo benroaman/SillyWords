@@ -9,7 +9,7 @@ import Foundation
 import BRWordGeneration
 
 @Observable
-class SettingsManager: ConsonantSettings, SyllableSettings, VowelSettings, SentenceSettings {
+@MainActor class SettingsManager: ConsonantSettings, SyllableSettings, VowelSettings, SentenceSettings {
     private typealias WG = Settings.WordGen
     private typealias UI = Settings.UserInterface
     private typealias SG = Settings.SentenceGen
@@ -22,7 +22,7 @@ class SettingsManager: ConsonantSettings, SyllableSettings, VowelSettings, Sente
     var minSyllables: Int = WG.MinSyllables.current {
         didSet { WG.MinSyllables.set(minSyllables) }
     }
-    
+        
     var maxSyllables: Int = WG.MaxSyllables.current {
         didSet { WG.MaxSyllables.set(maxSyllables) }
     }
@@ -133,18 +133,42 @@ class SettingsManager: ConsonantSettings, SyllableSettings, VowelSettings, Sente
     }
 }
 
+extension SettingsManager {
+    func applyPreset(_ preset: WordGenSettingsPreset) {
+        let settings = preset.settings
+        minSyllables = settings.minSyllables
+        maxSyllables = settings.maxSyllables
+        allowVowelCombos = settings.allowVowelCombos
+        allowsYAsVowel = settings.allowsYAsVowel
+        filterSortOfBadWords = settings.filterSortOfBadWords
+        soloQs = settings.soloQs
+        initialDigraphs = settings.initialDigraphs
+        initialDigraphBlends = settings.initialDigraphBlends
+        initial2LetterBlends = settings.initial2LetterBlends
+        initial3LetterBlends = settings.initial3LetterBlends
+        middleDigraphs = settings.middleDigraphs
+        middleDigraphBlends = settings.middleDigraphBlends
+        middle2LetterBlends = settings.middle2LetterBlends
+        middle3LetterBlends = settings.middle3LetterBlends
+        finalDigraphs = settings.finalDigraphs
+        finalDigraphBlends = settings.finalDigraphBlends
+        final2LetterBlends = settings.final2LetterBlends
+        final3LetterBlends = settings.final3LetterBlends
+    }
+}
+
 @propertyWrapper struct SettingBacked<S: BRSetting> {
-    private var value: S.Value
+    private(set) var wrappedValue: S.Value
     
-    var wrappedValue: S.Value {
-        get { value }
+    var value: S.Value {
+        get { wrappedValue }
         set {
-            value = newValue
+            wrappedValue = newValue
             S.set(newValue)
         }
     }
     
     init() {
-        self.value = S.current
+        self.wrappedValue = S.current
     }
 }

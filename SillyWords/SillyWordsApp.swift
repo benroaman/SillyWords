@@ -22,9 +22,9 @@ struct SillyWordsApp: App {
     var body: some Scene {
         WindowGroup {
             MainTabFlow(model: MainTabFlowModelProd(state: state))
-            .tint(Style.Color.mainTheme)
-            .environment(\.managedObjectContext, state.database.viewContext)
-            .sendEmail($state.navigation.presentedEmail)
+                .tint(Style.Theme.Color.main)
+                .environment(\.managedObjectContext, state.database.viewContext)
+                .sendEmail($state.navigation.presentedEmail)
         }
     }
 }

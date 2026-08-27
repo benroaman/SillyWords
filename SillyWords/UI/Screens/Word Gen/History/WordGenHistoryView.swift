@@ -21,7 +21,7 @@ struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
                         model.toggleFavorite(word: word)
                     }, label: {
                         Image(model.isWordFavorite(word) ? .heartFill : .heart)
-                            .tint(Style.Color.favoriteTheme)
+                            .tint(Style.Theme.Color.favorite)
                             .animation(.linear(duration: 0.35), value: model.isWordFavorite(word))
                     })
                     .sensoryFeedback(.impact(weight: .light), trigger: model.isWordFavorite(word))
@@ -58,9 +58,9 @@ struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
             }, label: {
                 Label(title: "Offensive", symbol: .envelope)
             })
-            .tint(Style.Color.offensiveTheme)
+            .tint(Style.Theme.Color.offensive)
         }
-        .tint(Style.Color.reportTheme)
+        .tint(Style.Theme.Color.report)
     }
 }
 

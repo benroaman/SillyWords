@@ -18,13 +18,13 @@ struct SettingInputNumberPicker: View {
     
     // MARK: Body
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Style.Settings.Spacing.optionTitleBottom) {
             Picker(setting.title, selection: $value) {
                 ForEach(options, id: \.self) { option in
                     Text("\(option)").tag(option)
                 }
             }
-            .font(.headline)
+            .font(Style.Settings.Font.optionTitle)
             .sensoryFeedback(.selection, trigger: value)
             SettingInfoView(setting: setting)
         }

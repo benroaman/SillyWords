@@ -24,7 +24,7 @@ enum SettingsFavoritesMenuOption: Int, SettingsSimpleMenuRowOption, CaseIterable
     
     var iconColor: Color {
         switch self {
-        case .clear: Style.Color.deleteTheme
+        case .clear: Style.Theme.Color.delete
         }
     }
     
