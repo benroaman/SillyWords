@@ -319,6 +319,8 @@ private extension SentenceGenerator {
             "Jane Austen",
             "Eleanor Roosevelt",
             "Tokugawa Ieyasu",
+            "Genghis Khan",
+            "John Jacob Jingleheimer Schmidt"
         ]
     }
 }
