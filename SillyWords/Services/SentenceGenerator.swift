@@ -235,7 +235,7 @@ private extension SentenceGenerator {
                        plural: false,
                        properNoun: false,
                        firstWord: false),
-            BRSentence(format: "You miss 100% of the %@ you don't take.",
+            BRSentence(format: "You miss 100%% of the %@ you don't take.",
                        plural: true,
                        properNoun: false,
                        firstWord: false),
