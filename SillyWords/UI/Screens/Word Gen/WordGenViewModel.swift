@@ -68,7 +68,7 @@ protocol WordGenViewModel: AnyObject, Observable {
     
     var currentWord: String { generator.currentWordText }
     private(set) var currentWordSentence: SentenceGenerator.Sentence
-    var isCurrentWordFavorite: Bool { favorites.isFavorite(currentWord) }
+    private(set) var isCurrentWordFavorite: Bool
     var wordTransitionStyle: WordTransitionStyle {
         settings.wordGenCurrentWordTransitionStyle
     }
@@ -89,6 +89,7 @@ protocol WordGenViewModel: AnyObject, Observable {
         self.navigation = navigation
         self.settings = settings
         self.currentWordSentence = SentenceGenerator.useItInASentence(generator.currentWordText)
+        self.isCurrentWordFavorite = favorites.isFavorite(generator.currentWordText)
     }
     
     func onWordGenNewWordTap() {
@@ -98,13 +99,14 @@ protocol WordGenViewModel: AnyObject, Observable {
         } catch {
             Task { @MainActor in
                 if let message = (error as? DatabaseError)?.userMessage {
-                    self.failedToSaveWordErrorMessage = "Failed to remove favorites \(message)."
+                    self.failedToSaveWordErrorMessage = "Failed to create a record of \"\(self.currentWord)\": \(message)."
                 } else {
-                    self.failedToSaveWordErrorMessage = "Failed to remove favorite."
+                    self.failedToSaveWordErrorMessage = "Failed to create a record of \"\(self.currentWord)\""
                 }
             }
         }
         currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
+        isCurrentWordFavorite = false
     }
     
     func onWordGenNewSentenceTap() {
@@ -116,6 +118,9 @@ protocol WordGenViewModel: AnyObject, Observable {
         Task {
             do {
                 try await favorites.toggleFavorite(generator.currentWord, context: .wordGenMain)
+                await MainActor.run {
+                    self.isCurrentWordFavorite.toggle()
+                }
             } catch {
                 await MainActor.run {
                     if let message = (error as? DatabaseError)?.userMessage {

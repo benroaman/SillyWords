@@ -55,11 +55,11 @@ class FavoritesManager {
     }
     
     func removeFavorite(_ word: Word, context: Telemetry.FavoriteContext) async throws {
-        let wordActual = try await database.getText(from: word)
+//        let wordActual = try await database.getText(from: word)
         try await database.removeFavorite(word)
-        if let wordActual {
+//        if let wordActual {
 //            favoriteWords.remove(wordActual)
-        }
+//        }
         Telemetry.trackRemoveFavorite(context)
     }
     
