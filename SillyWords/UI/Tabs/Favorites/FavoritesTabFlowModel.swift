@@ -38,11 +38,12 @@ protocol FavoritesTabFlowModel: AnyObject, Observable {
     var router: Router<MainRoute>
     
     @ViewBuilder func destination(for route: MainRoute) -> some View {
-        switch route {
-            #warning("TODO: Implement favorite detail screen")
-        case .favoriteWordDetail(let favorite): EmptyView()
-        case .settingsWordGen, .settingsFavorites, .settingsSyllables, .settingsConsonants, .settingsVowels, .historyList, .settingsUserInterface, .settingsWordGenCurrentWordTransition, .settingsSentences, .settingsWordGenPresets: BadRouteView(route: route, flow: .favoritesTab)
-        }
+        state.navigation.destination(for: route, in: .favorites, with: state)
+//        switch route {
+//            #warning("TODO: Implement favorite detail screen")
+//        case .favoriteWordDetail(let favorite): EmptyView()
+//        case .settingsWordGen, .settingsFavorites, .settingsSyllables, .settingsConsonants, .settingsVowels, .historyList, .settingsUserInterface, .settingsWordGenCurrentWordTransition, .settingsSentences, .settingsWordGenPresets: BadRouteView(route: route, flow: .favoritesTab)
+//        }
     }
 
     func makeRootViewModel() -> FavoritesListviewModelProd { FavoritesListviewModelProd(manager: state.favorites, navigation: state.navigation) }

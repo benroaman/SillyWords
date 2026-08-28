@@ -25,7 +25,7 @@ enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
     var icon: SFSymbol {
         switch self {
         case .wordGen: Style.Theme.Icon.wordGen
-        case .favorites: Style.Theme.Icon.favorite
+        case .favorites: Style.Theme.Icon.favorites
         case .feedback: Style.Theme.Icon.contact
         case .userInterface: Style.Theme.Icon.userInterface
         }

@@ -41,18 +41,19 @@ protocol SettingsTabFlowModel: AnyObject, Observable {
     var router: Router<MainRoute>
     
     @ViewBuilder func destination(for route: MainRoute) -> some View {
-        switch route {
-        case .settingsWordGen: SettingsWordGenMenuView(model: SettingsWordGenMenuViewModelProd(router))
-        case .settingsVowels: SettingsVowelsMenuView(settings: state.settings)
-        case .settingsSyllables: SettingsSyllablesMenuView(settings: state.settings)
-        case .settingsConsonants: SettingsConsonantsMenuView(settings: state.settings)
-        case .settingsFavorites: SettingsFavoritesMenuView(model: SettingsFavoritesMenuViewModelProd(state.favorites))
-        case .settingsUserInterface: SettingsUserInterfaceMenuView(model: SettingsUserInterfaceMenuViewModelProd(settings: state.settings, router: router))
-        case .settingsWordGenCurrentWordTransition: SettingsWordGenCurrentWordTransitionMenuView(model: SettingsWordGenCurrentWordTransitionMenuViewModelProd(settings: state.settings))
-        case .settingsSentences: SettingsSentencesMenuView(settings: state.settings)
-        case .settingsWordGenPresets: SettingsWordGenPresetsMenuView(model: SettingsWordGenPresetsMenuViewModelProd(settings: state.settings))
-        case .favoriteWordDetail, .historyList: BadRouteView(route: route, flow: .settingsTab)
-        }
+        state.navigation.destination(for: route, in: .settings, with: state)
+//        switch route {
+//        case .settingsWordGen: SettingsWordGenMenuView(model: SettingsWordGenMenuViewModelProd(router))
+//        case .settingsVowels: SettingsVowelsMenuView(settings: state.settings)
+//        case .settingsSyllables: SettingsSyllablesMenuView(settings: state.settings)
+//        case .settingsConsonants: SettingsConsonantsMenuView(settings: state.settings)
+//        case .settingsFavorites: SettingsFavoritesMenuView(model: SettingsFavoritesMenuViewModelProd(state.favorites))
+//        case .settingsUserInterface: SettingsUserInterfaceMenuView(model: SettingsUserInterfaceMenuViewModelProd(settings: state.settings, router: router))
+//        case .settingsWordGenCurrentWordTransition: SettingsWordGenCurrentWordTransitionMenuView(model: SettingsWordGenCurrentWordTransitionMenuViewModelProd(settings: state.settings))
+//        case .settingsSentences: SettingsSentencesMenuView(settings: state.settings)
+//        case .settingsWordGenPresets: SettingsWordGenPresetsMenuView(model: SettingsWordGenPresetsMenuViewModelProd(settings: state.settings))
+//        case .favoriteWordDetail, .historyList: BadRouteView(route: route, flow: .settingsTab)
+//        }
     }
     
     func getRootViewModel() -> SettingsMainMenuViewModelProd<NavigationManager> {
