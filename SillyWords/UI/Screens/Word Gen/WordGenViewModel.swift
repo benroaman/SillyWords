@@ -8,16 +8,18 @@
 import Foundation
 import SwiftUI
 
+// MARK: Requirements
 protocol WordGenViewModel: AnyObject, Observable {
     var currentWord: String { get }
     var currentWordSentence: SentenceGenerator.Sentence { get }
     var isCurrentWordFavorite: Bool { get }
-    var toggleFavoriteFailure: String? { get set }
     var wordTransitionStyle: WordTransitionStyle { get }
     var showSentence: Bool { get }
     var showSentenceAttribution: Bool { get }
-    var failedToSaveWordErrorMessage: String? { get }
-    var isPresentingfailedToSaveWordMessage: Binding<Bool> { get }
+    var createWordRecordFailure: String? { get }
+    var isPresentingCreateWordRecordFailure: Binding<Bool> { get }
+    var toggleFavoriteFailure: String? { get }
+    var isPresentingToggleFavoriteFailure: Binding<Bool> { get }
     
     func onWordGenNewWordTap()
     func onWordGenNewSentenceTap()
@@ -28,21 +30,34 @@ protocol WordGenViewModel: AnyObject, Observable {
     func onWordGenReportLowQuality()
 }
 
+// MARK: Preview Implementation
 @Observable class WordGenViewModelPreview: WordGenViewModel {
+    /// Instance Constants
+    private let pool = ["brismucect", "glunde", "okay", "words", "aja", "coolbeans", "djbouti", "blackalicious", "radio", "parliament"]
+    
+    /// WordGenViewModel Implementation
     var currentWord = "brismucect"
     private(set) var currentWordSentence = SentenceGenerator.useItInASentence("brismucect")
-    private let pool = ["brismucect", "glunde", "okay", "words", "aja", "coolbeans", "djbouti", "blackalicious", "radio", "parliament"]
     private(set) var isCurrentWordFavorite: Bool = false
-    var toggleFavoriteFailure: String?
     let wordTransitionStyle: WordTransitionStyle = .splode
     let showSentence: Bool = true
     let showSentenceAttribution: Bool = true
-    var failedToSaveWordErrorMessage: String?
-    var isPresentingfailedToSaveWordMessage: Binding<Bool> {
+    
+    var createWordRecordFailure: String?
+    var isPresentingCreateWordRecordFailure: Binding<Bool> {
         .init(get: {
-            self.failedToSaveWordErrorMessage != nil
+            self.createWordRecordFailure != nil
         }, set: { isPresented in
-            if !isPresented { self.failedToSaveWordErrorMessage = nil }
+            if !isPresented { self.createWordRecordFailure = nil }
+        })
+    }
+    
+    var toggleFavoriteFailure: String?
+    var isPresentingToggleFavoriteFailure: Binding<Bool> {
+        .init(get: {
+            self.toggleFavoriteFailure != nil
+        }, set: { isPresented in
+            if !isPresented { self.toggleFavoriteFailure = nil }
         })
     }
     
@@ -58,31 +73,15 @@ protocol WordGenViewModel: AnyObject, Observable {
     func onWordGenReportLowQuality() { print("Low Quality Tap") }
 }
 
+// MARK: Prod Implementation
 @Observable class WordGenViewModelProd: WordGenViewModel {
+    /// Instance Constants
     private let generator: GenerationManager
     private let favorites: FavoritesManager
     private let navigation: any WordGenTabNavigation
     private let settings: SettingsManager
     
-    @MainActor var toggleFavoriteFailure: String?
-    
-    var currentWord: String { generator.currentWordText }
-    private(set) var currentWordSentence: SentenceGenerator.Sentence
-    private(set) var isCurrentWordFavorite: Bool
-    var wordTransitionStyle: WordTransitionStyle {
-        settings.wordGenCurrentWordTransitionStyle
-    }
-    var showSentence: Bool { settings.showSentenceOnMainWordGen }
-    var showSentenceAttribution: Bool { settings.includeSentenceAttribution }
-    var failedToSaveWordErrorMessage: String?
-    var isPresentingfailedToSaveWordMessage: Binding<Bool> {
-        .init(get: {
-            self.failedToSaveWordErrorMessage != nil
-        }, set: { isPresented in
-            if !isPresented { self.failedToSaveWordErrorMessage = nil }
-        })
-    }
-    
+    /// Initializers
     init(generator: GenerationManager, favorites: FavoritesManager, navigation: any WordGenTabNavigation, settings: SettingsManager) {
         self.generator = generator
         self.favorites = favorites
@@ -92,6 +91,34 @@ protocol WordGenViewModel: AnyObject, Observable {
         self.isCurrentWordFavorite = favorites.isFavorite(generator.currentWordText)
     }
     
+    /// WordGenViewModel Implementation
+    var currentWord: String { generator.currentWordText }
+    private(set) var currentWordSentence: SentenceGenerator.Sentence
+    private(set) var isCurrentWordFavorite: Bool
+    var wordTransitionStyle: WordTransitionStyle {
+        settings.wordGenCurrentWordTransitionStyle
+    }
+    var showSentence: Bool { settings.showSentenceOnMainWordGen }
+    var showSentenceAttribution: Bool { settings.includeSentenceAttribution }
+    
+    var createWordRecordFailure: String?
+    var isPresentingCreateWordRecordFailure: Binding<Bool> {
+        .init(get: {
+            self.createWordRecordFailure != nil
+        }, set: { isPresented in
+            if !isPresented { self.createWordRecordFailure = nil }
+        })
+    }
+    
+    var toggleFavoriteFailure: String?
+    var isPresentingToggleFavoriteFailure: Binding<Bool> {
+        .init(get: {
+            self.toggleFavoriteFailure != nil
+        }, set: { isPresented in
+            if !isPresented { self.toggleFavoriteFailure = nil }
+        })
+    }
+    
     func onWordGenNewWordTap() {
         Telemetry.trackCreateWord()
         do {
@@ -99,9 +126,9 @@ protocol WordGenViewModel: AnyObject, Observable {
         } catch {
             Task { @MainActor in
                 if let message = (error as? DatabaseError)?.userMessage {
-                    self.failedToSaveWordErrorMessage = "Failed to create a record of \"\(self.currentWord)\": \(message)."
+                    self.createWordRecordFailure = "Failed to create a record of \"\(self.currentWord)\": \(message)."
                 } else {
-                    self.failedToSaveWordErrorMessage = "Failed to create a record of \"\(self.currentWord)\""
+                    self.createWordRecordFailure = "Failed to create a record of \"\(self.currentWord)\""
                 }
             }
         }
