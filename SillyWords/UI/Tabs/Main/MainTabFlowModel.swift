@@ -30,9 +30,9 @@ protocol MainTabFlowModel: AnyObject, Observable {
     
     @ViewBuilder func makeContent(for tab: SillyTab) -> some View {
         switch tab {
-        case .words: WordGenTabFlow(model: WordGenTabFlowModelPreview())
-        case .favorites: FavoritesTabFlow(model: FavoritesTabFlowModelPreview())
-        case .settings: SettingsTabFlow(model: SettingsTabFlowModelPreview())
+        case .words: WordGenTabNavFlow(model: WordGenTabFlowModelPreview())
+        case .favorites: FavoritesTabNavFlow(model: FavoritesTabFlowModelPreview())
+        case .settings: SettingsTabNavFlow(model: SettingsTabFlowModelPreview())
         }
     }
 }
@@ -58,9 +58,9 @@ protocol MainTabFlowModel: AnyObject, Observable {
     
     @ViewBuilder func makeContent(for tab: SillyTab) -> some View {
         switch tab {
-        case .words: WordGenTabFlow(model: WordGenTabFlowModelProd(state: state))
-        case .favorites: FavoritesTabFlow(model: FavoritesTabFlowModelProd(state: state))
-        case .settings: SettingsTabFlow(model: SettingsTabFlowModelProd(state: state))
+        case .words: WordGenTabNavFlow(model: WordGenTabFlowModelProd(state: state))
+        case .favorites: FavoritesTabNavFlow(model: FavoritesTabFlowModelProd(state: state))
+        case .settings: SettingsTabNavFlow(model: SettingsTabFlowModelProd(state: state))
         }
     }
 }

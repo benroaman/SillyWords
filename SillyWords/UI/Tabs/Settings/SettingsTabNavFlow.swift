@@ -1,5 +1,5 @@
 //
-//  SettingsTabView.swift
+//  SettingsTabNavFlow.swift
 //  SillyWords
 //
 //  Created by Ben Roaman on 5/14/26.
@@ -8,7 +8,7 @@
 import SwiftUI
 
 // MARK: Base
-struct SettingsTabFlow<M: SettingsTabFlowModel>: View {
+struct SettingsTabNavFlow<M: SettingsTabNavFlowModel>: View {
     // MARK: Instance Variables - State
     @State var model: M
     
@@ -24,6 +24,6 @@ struct SettingsTabFlow<M: SettingsTabFlowModel>: View {
 
 // MARK: Previews
 #Preview {
-    SettingsTabFlow(model: SettingsTabFlowModelPreview())
+    SettingsTabNavFlow(model: SettingsTabFlowModelPreview())
 }
 

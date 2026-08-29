@@ -1,5 +1,5 @@
 //
-//  FavoritesTabFlowModel.swift
+//  FavoritesTabNavFlowModel.swift
 //  SillyWords
 //
 //  Created by Ben Roaman on 8/21/26.
@@ -8,7 +8,7 @@
 import SwiftUI
 
 // MARK: Requirements
-protocol FavoritesTabFlowModel: AnyObject, Observable {
+protocol FavoritesTabNavFlowModel: AnyObject, Observable {
     associatedtype Destination: View
     associatedtype RootViewModel: FavoritesListViewModel
     var router: Router<MainRoute> { get set }
@@ -17,14 +17,14 @@ protocol FavoritesTabFlowModel: AnyObject, Observable {
 }
 
 // MARK: Preview Implementation
-@Observable class FavoritesTabFlowModelPreview: FavoritesTabFlowModel {
+@Observable class FavoritesTabFlowModelPreview: FavoritesTabNavFlowModel {
     var router = Router<MainRoute>()
     @ViewBuilder func destination(for route: MainRoute) -> some View { Text(route.description) }
     func makeRootViewModel() -> FavoritesListViewModelPreview { FavoritesListViewModelPreview() }
 }
 
 // MARK: Prod Implementation
-@Observable class FavoritesTabFlowModelProd: FavoritesTabFlowModel {
+@Observable class FavoritesTabFlowModelProd: FavoritesTabNavFlowModel {
     // MARK: Instance Constants
     private let state: AppState
     

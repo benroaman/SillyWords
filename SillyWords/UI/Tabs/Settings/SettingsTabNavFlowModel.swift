@@ -1,5 +1,5 @@
 //
-//  SettingsTabModel.swift
+//  SettingsTabNavFlowModel.swift
 //  SillyWords
 //
 //  Created by Ben Roaman on 5/14/26.
@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 // MARK: Requirements
-protocol SettingsTabFlowModel: AnyObject, Observable {
+protocol SettingsTabNavFlowModel: AnyObject, Observable {
     associatedtype Destination: View
     associatedtype RootViewModel: SettingsMainMenuViewModel
     var router: Router<MainRoute> { get set }
@@ -18,7 +18,7 @@ protocol SettingsTabFlowModel: AnyObject, Observable {
 }
 
 // MARK: Preview Implementation
-@Observable class SettingsTabFlowModelPreview: SettingsTabFlowModel {
+@Observable class SettingsTabFlowModelPreview: SettingsTabNavFlowModel {
     var router = Router<MainRoute>()
     @ViewBuilder func destination(for route: MainRoute) -> some View {
         Text(route.description)
@@ -27,7 +27,7 @@ protocol SettingsTabFlowModel: AnyObject, Observable {
 }
 
 // MARK: Prod Implementation
-@Observable class SettingsTabFlowModelProd: SettingsTabFlowModel {
+@Observable class SettingsTabFlowModelProd: SettingsTabNavFlowModel {
     // MARK: Instance Constants
     let state: AppState
     

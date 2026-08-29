@@ -8,7 +8,7 @@
 import SwiftUI
 
 // MARK: Requirements
-protocol WordGenTabFlowModel: AnyObject {
+protocol WordGenTabNavFlowModel: AnyObject {
     associatedtype Destination: View
     associatedtype RootViewModel: WordGenViewModel
     var router: Router<MainRoute> { get set }
@@ -17,14 +17,14 @@ protocol WordGenTabFlowModel: AnyObject {
 }
 
 // MARK: Preview Implementation
-class WordGenTabFlowModelPreview: WordGenTabFlowModel {
+class WordGenTabFlowModelPreview: WordGenTabNavFlowModel {
     var router = Router<MainRoute>()
     @ViewBuilder func getDestination(for route: MainRoute) -> some View { Text(route.description) }
     func getWordGenViewModel() -> WordGenViewModelPreview { WordGenViewModelPreview() }
 }
 
 // MARK: Prod Implementation
-class WordGenTabFlowModelProd: WordGenTabFlowModel {
+class WordGenTabFlowModelProd: WordGenTabNavFlowModel {
     /// Instance Constants
     private let state: AppState
     
