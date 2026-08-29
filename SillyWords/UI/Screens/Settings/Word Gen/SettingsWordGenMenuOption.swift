@@ -35,7 +35,7 @@ enum SettingsWordGenMenuOption: Int, SettingsSimpleMenuRowOption, CaseIterable {
     }
     
     var iconColor: Color {
-        Style.Theme.Color.wordGenerate
+        Style.Theme.Color.wordGen
     }
     
     var accessory: SFSymbol? {

@@ -86,7 +86,7 @@ struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
         }, label: {
             Image(.space)
         })
-        .tint(Style.Theme.Color.sentenceGenerate)
+        .tint(Style.Theme.Color.sentenceGen)
     }
 }
 

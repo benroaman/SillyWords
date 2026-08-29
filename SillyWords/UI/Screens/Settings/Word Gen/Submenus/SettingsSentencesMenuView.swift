@@ -20,7 +20,7 @@ struct SettingsSentencesMenuView<S: SentenceSettings>: View {
             SettingInputSwitchPicker(setting: .includeSentenceAttribution,
                                      value: $settings.includeSentenceAttribution)
         }
-        .tint(Style.Theme.Color.wordGenerate)
+        .tint(Style.Theme.Color.wordGen)
         .navigationTitle("Sentences")
     }
 }

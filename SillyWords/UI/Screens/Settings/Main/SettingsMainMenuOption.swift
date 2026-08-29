@@ -33,7 +33,7 @@ enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
     
     var iconColor: Color {
         switch self {
-        case .wordGen: Style.Theme.Color.wordGenerate
+        case .wordGen: Style.Theme.Color.wordGen
         case .favorites: Style.Theme.Color.favorite
         case .feedback: Style.Theme.Color.feedback
         case .userInterface: Style.Theme.Color.userInterface

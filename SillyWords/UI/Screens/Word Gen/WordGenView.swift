@@ -107,7 +107,7 @@ private extension WordGenView {
                     }, label: {
                         Image(.arrowClockwise)
                     })
-                    .tint(Style.Theme.Color.wordGenerate)
+                    .tint(Style.Theme.Color.wordGen)
                 }
                 .animation(.easeInOut(duration: 0.75), value: model.currentWordSentence)
                 .background(
@@ -130,7 +130,7 @@ private extension WordGenView {
         }, label: {
             Image(Style.Theme.Icon.wordGen)
         })
-        .tint(Style.Theme.Color.wordGenerate)
+        .tint(Style.Theme.Color.wordGen)
         .wordViewButton()
         .accessibilityLabel("Generate New Word")
     }

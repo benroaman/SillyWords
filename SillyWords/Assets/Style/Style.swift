@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+#warning("TODO: Organize (refactor?)")
+
 struct Style {
     private init() { }
     
@@ -30,8 +32,8 @@ extension Style.Theme {
 
 extension Style.Theme.Color {
     static let main: Color = .indigo
-    static let wordGenerate: Color = .green
-    static let sentenceGenerate: Color = .green
+    static let wordGen: Color = .green
+    static let sentenceGen: Color = .green
     static let report: Color = .orange
     static let offensive: Color = .red
     static let poorQuality: Color = .orange

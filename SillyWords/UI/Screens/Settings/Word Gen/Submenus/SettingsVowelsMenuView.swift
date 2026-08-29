@@ -20,7 +20,7 @@ struct SettingsVowelsMenuView<S: VowelSettings>: View {
             SettingInputSwitchPicker(setting: .allowYAsVowel,
                                      value: $settings.allowsYAsVowel)
         }
-        .tint(Style.Theme.Color.wordGenerate)
+        .tint(Style.Theme.Color.wordGen)
         .navigationTitle("Vowels")
     }
 }
