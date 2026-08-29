@@ -105,7 +105,7 @@ private extension WordGenView {
                             model.onWordGenNewSentenceTap()
                         }
                     }, label: {
-                        Image(.arrowClockwise)
+                        Image(.arrowTrianglehead2Clockwise)
                     })
                     .tint(Style.Theme.Color.wordGen)
                 }

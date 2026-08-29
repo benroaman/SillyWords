@@ -12,6 +12,7 @@ enum SFSymbol: String, CaseIterable {
     case arrowClockwise = "arrow.clockwise"
     case arrowClockwiseSquareFill = "arrow.clockwise.square.fill"
     case arrowDown = "arrow.down"
+    case arrowTrianglehead2Clockwise = "arrow.trianglehead.2.clockwise"
     case arrowUp = "arrow.up"
     case arrowUpRight = "arrow.up.right"
     case bCircle = "b.circle"

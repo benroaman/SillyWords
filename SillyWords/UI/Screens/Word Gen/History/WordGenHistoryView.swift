@@ -51,7 +51,7 @@ struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
                 }
             }
         }
-        .navigationTitle("Generated Word History")
+        .navigationTitle("History")
         .alert(
             "Favorite Error",
             isPresented: Binding(
