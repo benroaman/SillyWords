@@ -16,7 +16,7 @@ struct WordGenTabNavFlow<M: WordGenTabNavFlowModel>: View {
     var body: some View {
         NavigationStack(path: $model.router.path) {
             WordGenView(model: model.getWordGenViewModel())
-            .navigationDestination(for: MainRoute.self, destination: model.getDestination(for:))
+            .navigationDestination(for: MainRoute.self, destination: model.destination(for:))
         }
     }
 }

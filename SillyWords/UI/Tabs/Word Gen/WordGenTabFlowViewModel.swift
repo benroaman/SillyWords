@@ -12,14 +12,14 @@ protocol WordGenTabNavFlowModel: AnyObject {
     associatedtype Destination: View
     associatedtype RootViewModel: WordGenViewModel
     var router: Router<MainRoute> { get set }
-    @ViewBuilder func getDestination(for route: MainRoute) -> Destination
+    @ViewBuilder func destination(for route: MainRoute) -> Destination
     func getWordGenViewModel() -> RootViewModel
 }
 
 // MARK: Preview Implementation
 class WordGenTabFlowModelPreview: WordGenTabNavFlowModel {
     var router = Router<MainRoute>()
-    @ViewBuilder func getDestination(for route: MainRoute) -> some View { Text(route.description) }
+    @ViewBuilder func destination(for route: MainRoute) -> some View { Text(route.description) }
     func getWordGenViewModel() -> WordGenViewModelPreview { WordGenViewModelPreview() }
 }
 
@@ -37,7 +37,7 @@ class WordGenTabFlowModelProd: WordGenTabNavFlowModel {
     /// WordGenTabFlowModel Implementation
     var router: Router<MainRoute>
     
-    func getDestination(for route: MainRoute) -> some View {
+    func destination(for route: MainRoute) -> some View {
         switch route {
         case .settingsWordGen: SettingsWordGenMenuView(model: SettingsWordGenMenuViewModelProd(router))
         case .settingsSyllables: SettingsSyllablesMenuView(settings: state.settings)
