@@ -27,6 +27,7 @@ struct SettingsFavoritesMenuView<M: SettingsFavoritesMenuViewModel>: View {
                 model.settingsFavoritesMenuViewDoPurge()
             })
         })
+        .errorAlert("Failed to remove all favorites", error: $model.removeAllFavoritesError)
     }
 }
 

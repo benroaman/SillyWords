@@ -46,19 +46,19 @@ enum DatabaseError: Error {
     var userMessage: String? {
         switch self.identity.caller {
         case .initializer:
-            var result = "Database failed to initialize: "
+            var result = "the database failed to initialize - "
             switch self {
-            case .permission: result += "Permission denied"
-            case .diskFull: result += "Disk is full"
-            case .badFile: result += "Database is inaccessible"
+            case .permission: result += "permission denied"
+            case .diskFull: result += "disk is full"
+            case .badFile: result += "file is inaccessible"
             case .validation, .miscCoreData, .missingObject, .noPersistentStoreDescription, .unknown: result += identity.code
             }
             return result
         default:
             switch self {
-            case .permission: return "Permission denied"
-            case .diskFull: return "Disk is full"
-            case .badFile: return "Database is inaccessible"
+            case .permission: return "permission denied"
+            case .diskFull: return "disk is full"
+            case .badFile: return "file is inaccessible"
             case .validation, .miscCoreData, .missingObject, .noPersistentStoreDescription, .unknown: return nil
             }
         }
@@ -402,5 +402,31 @@ extension DatabaseError {
                 self.validationPredicate = nil
             }
         }
+    }
+}
+
+extension DatabaseError {
+    static var mockDiskFull: Self {
+        DatabaseError.diskFull(.init(NSError(
+            domain: "com.beebooapps.SillyWords",
+            code: -1,
+            userInfo: [NSLocalizedDescriptionKey: "Something went wrong"]
+        ), .init(code: "SomeErrorCode", operation: .save, caller: .createWord)))
+    }
+    
+    static var mockMisc: Self {
+        DatabaseError.miscCoreData(.init(NSError(
+            domain: "com.beebooapps.SillyWords",
+            code: -1,
+            userInfo: [NSLocalizedDescriptionKey: "Something went wrong"]
+        ), .init(code: "SomeOtherErrorCode", operation: .save, caller: .addFavoriteByObject)))
+    }
+    
+    static var mockFailedInitializer: DatabaseError {
+        DatabaseError.badFile(.init(NSError(
+            domain: "com.beebooapps.SillyWords",
+            code: -1,
+            userInfo: [NSLocalizedDescriptionKey: "Something went wrong"]
+        ), .init(code: "SomeOtherErrorCode", operation: .loadPersistentStores, caller: .initializer)))
     }
 }

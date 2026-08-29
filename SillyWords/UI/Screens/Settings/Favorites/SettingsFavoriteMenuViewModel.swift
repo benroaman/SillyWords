@@ -10,8 +10,7 @@ import SwiftUI
 // MARK: Model Requirements
 protocol SettingsFavoritesMenuViewModel: AnyObject, Observable {
     var settingsFavoritesMenuIsPresentingPurgeConfirm: Bool { get set }
-    var settingsFavoritesMenuPurgeErrorMessage: String? { get }
-    var settingsFavoritesMenuIsPresentingPurgeErrorMessage: Binding<Bool> { get }
+    var removeAllFavoritesError: (any Error)? { get set }
     
     func settingsFavoritesMenuDoSelectOption(_ option: SettingsFavoritesMenuOption)
     func settingsFavoritesMenuViewDoPurge()
@@ -20,16 +19,7 @@ protocol SettingsFavoritesMenuViewModel: AnyObject, Observable {
 // MARK: Preview Implementation
 @Observable class SettingsFavoritesMenuViewModelPreview: SettingsFavoritesMenuViewModel {
     var settingsFavoritesMenuIsPresentingPurgeConfirm: Bool = false
-    var settingsFavoritesMenuPurgeErrorMessage: String? = "Puge Error: Message"
-    var settingsFavoritesMenuIsPresentingPurgeErrorMessage: Binding<Bool> {
-        .init(
-            get: {
-                self.settingsFavoritesMenuPurgeErrorMessage == nil
-            }, set: { isPresented in
-                if !isPresented { self.settingsFavoritesMenuPurgeErrorMessage = nil }
-            }
-        )
-    }
+    var removeAllFavoritesError: (any Error)?
     
     func settingsFavoritesMenuDoSelectOption(_ option: SettingsFavoritesMenuOption) {
         switch option {
@@ -37,7 +27,11 @@ protocol SettingsFavoritesMenuViewModel: AnyObject, Observable {
         }
     }
     
-    func settingsFavoritesMenuViewDoPurge() { print("PURGE") }
+    func settingsFavoritesMenuViewDoPurge() {
+        if Bool.random() {
+            removeAllFavoritesError = DatabaseError.mockMisc
+        }
+    }
 }
 
 // MARK: Prod Implementation
@@ -52,16 +46,7 @@ protocol SettingsFavoritesMenuViewModel: AnyObject, Observable {
     
     /// SettingsFavoritesMenuViewModel Implementation
     var settingsFavoritesMenuIsPresentingPurgeConfirm: Bool = false
-    var settingsFavoritesMenuPurgeErrorMessage: String?
-    var settingsFavoritesMenuIsPresentingPurgeErrorMessage: Binding<Bool> {
-        .init(
-            get: {
-                self.settingsFavoritesMenuPurgeErrorMessage == nil
-            }, set: { isPresented in
-                if !isPresented { self.settingsFavoritesMenuPurgeErrorMessage = nil }
-            }
-        )
-    }
+    var removeAllFavoritesError: (any Error)?
     
     func settingsFavoritesMenuDoSelectOption(_ option: SettingsFavoritesMenuOption) {
         switch option {
@@ -75,11 +60,7 @@ protocol SettingsFavoritesMenuViewModel: AnyObject, Observable {
                 try await manager.clearFavorites()
             } catch {
                 await MainActor.run {
-                    if let message = (error as? DatabaseError)?.userMessage {
-                        self.settingsFavoritesMenuPurgeErrorMessage = "Clear favorites failed with error: \(message)."
-                    } else {
-                        self.settingsFavoritesMenuPurgeErrorMessage = "Clear favorites failed."
-                    }
+                    self.removeAllFavoritesError = error
                 }
             }
         }

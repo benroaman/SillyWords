@@ -16,10 +16,8 @@ protocol WordGenViewModel: AnyObject, Observable {
     var wordTransitionStyle: WordTransitionStyle { get }
     var showSentence: Bool { get }
     var showSentenceAttribution: Bool { get }
-    var createWordRecordFailure: String? { get }
-    var isPresentingCreateWordRecordFailure: Binding<Bool> { get }
-    var toggleFavoriteFailure: String? { get }
-    var isPresentingToggleFavoriteFailure: Binding<Bool> { get }
+    var createWordRecordError: (any Error)? { get set }
+    var toggleFavoriteError: (any Error)? { get set }
     
     func onWordGenNewWordTap()
     func onWordGenNewSentenceTap()
@@ -43,23 +41,8 @@ protocol WordGenViewModel: AnyObject, Observable {
     let showSentence: Bool = true
     let showSentenceAttribution: Bool = true
     
-    var createWordRecordFailure: String?
-    var isPresentingCreateWordRecordFailure: Binding<Bool> {
-        .init(get: {
-            self.createWordRecordFailure != nil
-        }, set: { isPresented in
-            if !isPresented { self.createWordRecordFailure = nil }
-        })
-    }
-    
-    var toggleFavoriteFailure: String?
-    var isPresentingToggleFavoriteFailure: Binding<Bool> {
-        .init(get: {
-            self.toggleFavoriteFailure != nil
-        }, set: { isPresented in
-            if !isPresented { self.toggleFavoriteFailure = nil }
-        })
-    }
+    var createWordRecordError: (any Error)?
+    var toggleFavoriteError: (any Error)?
     
     func onWordGenNewWordTap() {
         currentWord = pool.randomElement()!
@@ -101,23 +84,8 @@ protocol WordGenViewModel: AnyObject, Observable {
     var showSentence: Bool { settings.showSentenceOnMainWordGen }
     var showSentenceAttribution: Bool { settings.includeSentenceAttribution }
     
-    var createWordRecordFailure: String?
-    var isPresentingCreateWordRecordFailure: Binding<Bool> {
-        .init(get: {
-            self.createWordRecordFailure != nil
-        }, set: { isPresented in
-            if !isPresented { self.createWordRecordFailure = nil }
-        })
-    }
-    
-    var toggleFavoriteFailure: String?
-    var isPresentingToggleFavoriteFailure: Binding<Bool> {
-        .init(get: {
-            self.toggleFavoriteFailure != nil
-        }, set: { isPresented in
-            if !isPresented { self.toggleFavoriteFailure = nil }
-        })
-    }
+    var createWordRecordError: (any Error)?
+    var toggleFavoriteError: (any Error)?
     
     func onWordGenNewWordTap() {
         Telemetry.trackCreateWord()
@@ -125,11 +93,7 @@ protocol WordGenViewModel: AnyObject, Observable {
             try generator.makeWord()
         } catch {
             Task { @MainActor in
-                if let message = (error as? DatabaseError)?.userMessage {
-                    self.createWordRecordFailure = "Failed to create a record of \"\(self.currentWord)\": \(message)."
-                } else {
-                    self.createWordRecordFailure = "Failed to create a record of \"\(self.currentWord)\""
-                }
+                self.createWordRecordError = error
             }
         }
         currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
@@ -150,12 +114,9 @@ protocol WordGenViewModel: AnyObject, Observable {
                 }
             } catch {
                 await MainActor.run {
-                    if let message = (error as? DatabaseError)?.userMessage {
-                        self.toggleFavoriteFailure = "Failed to update favorites: \(message)."
-                    } else {
-                        self.toggleFavoriteFailure = "Failed to update favorites."
-                    }
-                }            }
+                    self.toggleFavoriteError = error
+                }
+            }
         }
     }
     

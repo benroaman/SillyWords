@@ -41,6 +41,7 @@ struct FavoritesListView<M: FavoritesListViewModel>: View {
         .alert(model.deleteConfirmationMessage,
                isPresented: model.isPresentingDeleteConfirmation,
                actions: makeDeleteConfirmationAlertActions)
+        .errorAlert("Failed to remove favorites", error: $model.removeFavoriteError)
     }
 }
 

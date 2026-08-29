@@ -14,8 +14,7 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
     var deleteConfirmationMessage: String { get }
     var isPresentingDeleteConfirmation: Binding<Bool> { get }
     var sort: SortMode { get set }
-    var deleteErrorMessage: String? { get }
-    var isPresentingDeleteError: Binding<Bool> { get }
+    var removeFavoriteError: Error? { get set }
     
     func onFavoriteListConfirmDeleteTapped()
 }
@@ -29,18 +28,7 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
     private var _isPresentingDeleteConfirmation: Bool = false
     
     /// FavoritesListViewModel Implementation
-    private(set) var deleteErrorMessage: String?
-    
-    var isPresentingDeleteError: Binding<Bool> {
-        .init(
-            get: {
-                self.deleteErrorMessage != nil
-            },
-            set: { isPresented in
-                if !isPresented { self.deleteErrorMessage = nil }
-            }
-        )
-    }
+    var removeFavoriteError: (any Error)?
     
     let hasFavorites: Bool = true
     
@@ -108,20 +96,7 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
     
     var sort: SortMode = .mostRecent
     
-    private(set) var deleteErrorMessage: String?
-    
-    var isPresentingDeleteError: Binding<Bool> {
-        .init(
-            get: {
-                self.deleteErrorMessage != nil
-            },
-            set: { isPresented in
-                if !isPresented {
-                    self.deleteErrorMessage = nil
-                }
-            }
-        )
-    }
+    var removeFavoriteError: (any Error)?
     
     func onFavoriteListConfirmDeleteTapped() {
         guard let pendingDelete else { return }
@@ -132,11 +107,7 @@ protocol FavoritesListViewModel: AnyObject, Observable, FavoritesListRowViewMode
                 Telemetry.trackRemoveFavorite(.favoritesList)
             } catch {
                 await MainActor.run {
-                    if let message = (error as? DatabaseError)?.userMessage {
-                        self.deleteErrorMessage = "Failed to remove favorites \(message)."
-                    } else {
-                        self.deleteErrorMessage = "Failed to remove favorite."
-                    }
+                    self.removeFavoriteError = error
                 }
             }
         }

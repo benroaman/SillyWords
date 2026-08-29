@@ -7,8 +7,9 @@
 
 import SwiftUI
 
+#warning("TODO: WIP")
 struct WordDetailView<M : WordDetailViewModel>: View {
-    let model: M
+    @State var model: M
     
     var body: some View {
         ScrollView {
@@ -36,16 +37,8 @@ struct WordDetailView<M : WordDetailViewModel>: View {
                 .tint(Style.Theme.Color.favorite)
             }
         }
-        .alert(model.deleteWordFailure ?? "Delete Failed", isPresented: model.isPresentingDeleteWordFailure, actions: {
-            Button(action: { }, label: {
-                Text("Okay")
-            })
-        })
-        .alert(model.toggleFavoriteFailure ?? "Toggle Favorite Failed", isPresented: model.isPresentingToggleFavoriteFailure, actions: {
-            Button(action: { }, label: {
-                Text("Okay")
-            })
-        })
+        .errorAlert("Failed to toggle favorite", error: $model.toggleFavoriteError)
+        .errorAlert("Failed to delete \"\(model.text)\"", error: $model.deleteWordError)
     }
 }
 
@@ -65,10 +58,8 @@ protocol WordDetailViewModel: AnyObject, Observable {
     var deleteConfirmationMessage: String { get }
     var isPresentingDeleteConfirmation: Bool { get set }
     
-    var toggleFavoriteFailure: String? { get }
-    var isPresentingToggleFavoriteFailure: Binding<Bool> { get }
-    var deleteWordFailure: String? { get }
-    var isPresentingDeleteWordFailure: Binding<Bool> { get }
+    var toggleFavoriteError: Error? { get set }
+    var deleteWordError: Error? { get set }
     
     func onFavoriteTap()
     func onNewSentenceTap()
@@ -86,29 +77,14 @@ protocol WordDetailViewModel: AnyObject, Observable {
     var deleteConfirmationMessage: String { "Are you sure you want to delete \"\(text)\"?" }
     var isPresentingDeleteConfirmation: Bool = false
     
-    private(set) var toggleFavoriteFailure: String?
-    var isPresentingToggleFavoriteFailure: Binding<Bool> {
-        .init(get: {
-            self.toggleFavoriteFailure != nil
-        }, set: { isPresented in
-            if !isPresented { self.toggleFavoriteFailure = nil }
-        })
-    }
-    
-    private(set) var deleteWordFailure: String?
-    var isPresentingDeleteWordFailure: Binding<Bool> {
-        .init(get: {
-            self.deleteWordFailure != nil
-        }, set: { isPresented in
-            if !isPresented { self.deleteWordFailure = nil }
-        })
-    }
+    var toggleFavoriteError: Error?
+    var deleteWordError: Error?
     
     func onFavoriteTap() {
         if Bool.random() {
             isFavorite.toggle()
         } else {
-            toggleFavoriteFailure = "Favorite Error"
+            toggleFavoriteError = DatabaseError.mockFailedInitializer
         }
     }
     
@@ -116,7 +92,7 @@ protocol WordDetailViewModel: AnyObject, Observable {
     func onDeleteTap() { isPresentingDeleteConfirmation = true }
     func onConfirmDeleteTap() {
         if Bool.random() {
-            deleteWordFailure = "Delete Error"
+            deleteWordError = DatabaseError.mockMisc
         }
     }
 }
@@ -141,23 +117,8 @@ protocol WordDetailViewModel: AnyObject, Observable {
     var deleteConfirmationMessage: String { "Are you sure you want to delete \"\(text)\"?" }
     var isPresentingDeleteConfirmation: Bool = false
     
-    private(set) var toggleFavoriteFailure: String?
-    var isPresentingToggleFavoriteFailure: Binding<Bool> {
-        .init(get: {
-            self.toggleFavoriteFailure != nil
-        }, set: { isPresented in
-            if !isPresented { self.toggleFavoriteFailure = nil }
-        })
-    }
-    
-    private(set) var deleteWordFailure: String?
-    var isPresentingDeleteWordFailure: Binding<Bool> {
-        .init(get: {
-            self.deleteWordFailure != nil
-        }, set: { isPresented in
-            if !isPresented { self.deleteWordFailure = nil }
-        })
-    }
+    var toggleFavoriteError: Error?
+    var deleteWordError: Error?
     
     func onFavoriteTap() {
         Task {
@@ -168,11 +129,7 @@ protocol WordDetailViewModel: AnyObject, Observable {
                 }
             } catch {
                 await MainActor.run {
-                    if let userMessage = (error as? DatabaseError)?.userMessage {
-                        self.toggleFavoriteFailure = "Failed to toggle favorite: \(userMessage)"
-                    } else {
-                        self.toggleFavoriteFailure = "Failed to toggle favorite"
-                    }
+                    self.toggleFavoriteError = error
                 }
             }
         }
@@ -192,11 +149,7 @@ protocol WordDetailViewModel: AnyObject, Observable {
                 #warning("TODO:")
             } catch {
                 await MainActor.run {
-                    if let userMessage = (error as? DatabaseError)?.userMessage {
-                        self.deleteWordFailure = "Failed to toggle favorite: \(userMessage)"
-                    } else {
-                        self.deleteWordFailure = "Failed to toggle favorite"
-                    }
+                    self.deleteWordError = error
                 }
             }
         }

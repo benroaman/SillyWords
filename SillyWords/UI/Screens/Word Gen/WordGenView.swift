@@ -37,6 +37,8 @@ struct WordGenView<M: WordGenViewModel>: View {
             }
         }
         .padding()
+        .errorAlert("Failed to create a record of \"\(model.currentWord)\"", error: $model.createWordRecordError)
+        .errorAlert("Failed to toggle favorite", error: $model.toggleFavoriteError)
     }
 }
 
