@@ -16,6 +16,7 @@ class GenerationManager {
     
     private(set) var currentWord: GeneratedWord
     var currentWordText: String { currentWord.word }
+    var currentSentence: SentenceGenerator.Sentence = .init(text: "", attribution: "")
     
     init(_ settings: SettingsManager, database: Database) {
         self.settings = settings
@@ -37,7 +38,12 @@ extension GenerationManager {
                              settings: settingsPackage)
         
         currentWord = generated
+        currentSentence = SentenceGenerator.useItInASentence(currentWordText)
         try database.createWord(content: generated)
+    }
+    
+    func makeSentence() {
+        currentSentence = SentenceGenerator.useItInASentence(currentWordText)
     }
 }
 

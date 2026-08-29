@@ -24,6 +24,6 @@ struct SettingsTabNavFlow<M: SettingsTabNavFlowModel>: View {
 
 // MARK: Previews
 #Preview {
-    SettingsTabNavFlow(model: SettingsTabFlowModelPreview())
+    SettingsTabNavFlow(model: SettingsTabNavFlowModelPreview())
 }
 

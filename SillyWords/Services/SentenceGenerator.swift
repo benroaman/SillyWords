@@ -30,6 +30,7 @@ extension SentenceGenerator {
 // MARK: Private API - Sentence Building
 private extension SentenceGenerator {
     static func getText() -> BRSentence {
+        print("GET TEXT")
         if currentTextPool.isEmpty {
             currentTextPool = fullTextPool
         }
@@ -40,6 +41,7 @@ private extension SentenceGenerator {
     }
     
     static func getAttribution() -> String {
+        print("GET ATTRIBUTION")
         if currentAttributionPool.isEmpty {
             currentAttributionPool = fullAttributionPool
         }
@@ -310,7 +312,7 @@ private extension SentenceGenerator {
             "Fyodor Dostoevsky",
             "Leo Tolstoy",
             "Marie Curie",
-            "Albert Eistein",
+            "Albert Einstein",
             "Ada Lovelace",
             "Margaret Thatcher",
             "Mary Shelley",

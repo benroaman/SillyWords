@@ -23,7 +23,7 @@ struct WordGenTabNavFlow<M: WordGenTabNavFlowModel>: View {
 
 // MARK: Previews
 #Preview {
-    WordGenTabNavFlow(model: WordGenTabFlowModelPreview())
+    WordGenTabNavFlow(model: WordGenTabNavFlowModelPreview())
 }
 
 

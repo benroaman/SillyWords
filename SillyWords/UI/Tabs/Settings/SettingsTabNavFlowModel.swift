@@ -18,7 +18,7 @@ protocol SettingsTabNavFlowModel: AnyObject, Observable {
 }
 
 // MARK: Preview Implementation
-@Observable class SettingsTabFlowModelPreview: SettingsTabNavFlowModel {
+@Observable class SettingsTabNavFlowModelPreview: SettingsTabNavFlowModel {
     var router = Router<MainRoute>()
     @ViewBuilder func destination(for route: MainRoute) -> some View {
         Text(route.description)
@@ -27,7 +27,7 @@ protocol SettingsTabNavFlowModel: AnyObject, Observable {
 }
 
 // MARK: Prod Implementation
-@Observable class SettingsTabFlowModelProd: SettingsTabNavFlowModel {
+@Observable class SettingsTabNavFlowModelProd: SettingsTabNavFlowModel {
     // MARK: Instance Constants
     let state: AppState
     

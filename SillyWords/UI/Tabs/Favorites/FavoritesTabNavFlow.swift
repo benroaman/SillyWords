@@ -23,5 +23,5 @@ struct FavoritesTabNavFlow<M: FavoritesTabNavFlowModel>: View {
 
 // MARK: Previews
 #Preview {
-    FavoritesTabNavFlow(model: FavoritesTabFlowModelPreview())
+    FavoritesTabNavFlow(model: FavoritesTabNavFlowModelPreview())
 }

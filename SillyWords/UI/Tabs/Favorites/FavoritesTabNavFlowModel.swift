@@ -17,14 +17,14 @@ protocol FavoritesTabNavFlowModel: AnyObject, Observable {
 }
 
 // MARK: Preview Implementation
-@Observable class FavoritesTabFlowModelPreview: FavoritesTabNavFlowModel {
+@Observable class FavoritesTabNavFlowModelPreview: FavoritesTabNavFlowModel {
     var router = Router<MainRoute>()
     @ViewBuilder func destination(for route: MainRoute) -> some View { Text(route.description) }
     func makeRootViewModel() -> FavoritesListViewModelPreview { FavoritesListViewModelPreview() }
 }
 
 // MARK: Prod Implementation
-@Observable class FavoritesTabFlowModelProd: FavoritesTabNavFlowModel {
+@Observable class FavoritesTabNavFlowModelProd: FavoritesTabNavFlowModel {
     // MARK: Instance Constants
     private let state: AppState
     

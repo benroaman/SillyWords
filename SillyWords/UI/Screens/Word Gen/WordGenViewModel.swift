@@ -70,13 +70,12 @@ protocol WordGenViewModel: AnyObject, Observable {
         self.favorites = favorites
         self.navigation = navigation
         self.settings = settings
-        self.currentWordSentence = SentenceGenerator.useItInASentence(generator.currentWordText)
         self.isCurrentWordFavorite = favorites.isFavorite(generator.currentWordText)
     }
     
     /// WordGenViewModel Implementation
     var currentWord: String { generator.currentWordText }
-    private(set) var currentWordSentence: SentenceGenerator.Sentence
+    var currentWordSentence: SentenceGenerator.Sentence { generator.currentSentence }
     private(set) var isCurrentWordFavorite: Bool
     var wordTransitionStyle: WordTransitionStyle {
         settings.wordGenCurrentWordTransitionStyle
@@ -96,12 +95,11 @@ protocol WordGenViewModel: AnyObject, Observable {
                 self.createWordRecordError = error
             }
         }
-        currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
         isCurrentWordFavorite = false
     }
     
     func onWordGenNewSentenceTap() {
-        currentWordSentence = SentenceGenerator.useItInASentence(currentWord)
+        generator.makeSentence()
         Telemetry.trackCreateSentence()
     }
     

@@ -8,7 +8,6 @@
 import Foundation
 import BRWordGeneration
 
-@Observable
 class AppState {
     var navigation: NavigationManager
     let settings: SettingsManager

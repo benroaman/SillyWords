@@ -17,14 +17,14 @@ protocol WordGenTabNavFlowModel: AnyObject {
 }
 
 // MARK: Preview Implementation
-class WordGenTabFlowModelPreview: WordGenTabNavFlowModel {
+class WordGenTabNavFlowModelPreview: WordGenTabNavFlowModel {
     var router = Router<MainRoute>()
     @ViewBuilder func destination(for route: MainRoute) -> some View { Text(route.description) }
     func getWordGenViewModel() -> WordGenViewModelPreview { WordGenViewModelPreview() }
 }
 
 // MARK: Prod Implementation
-class WordGenTabFlowModelProd: WordGenTabNavFlowModel {
+class WordGenTabNavFlowModelProd: WordGenTabNavFlowModel {
     /// Instance Constants
     private let state: AppState
     
