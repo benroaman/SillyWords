@@ -19,7 +19,7 @@ struct SettingsWordGenPresetsMenuView<M: SettingsWordGenPresetsMenuViewModel>: V
         List {
             ForEach(WordGenSettingsPreset.available) { preset in
                 let isApplied = model.isPresetApplied(preset)
-                VStack(alignment: .leading, spacing: Style.Settings.Spacing.optionTitleBottom) {
+                VStack(alignment: .leading, spacing: Style.Settings.Layout.optionTitleBottom) {
                     HStack {
                         Text(preset.displayName)
                             .font(Style.Settings.Font.optionTitle)
@@ -27,7 +27,7 @@ struct SettingsWordGenPresetsMenuView<M: SettingsWordGenPresetsMenuViewModel>: V
                         Spacer()
                         if isApplied {
                             Image(.checkmark)
-                                .foregroundStyle(Style.Theme.Color.selected)
+                                .foregroundStyle(Theme.Selected.color)
                                 .font(Style.Settings.Icon.actionFont)
                                 .transition(Self.transitionStyle)
                         } else {
@@ -39,7 +39,7 @@ struct SettingsWordGenPresetsMenuView<M: SettingsWordGenPresetsMenuViewModel>: V
                                 Text("Apply")
                                     .font(Style.Settings.Font.actionFont)
                             })
-                            .tint(Style.Theme.Color.main)
+                            .tint(Theme.App.color)
                             .transition(Self.transitionStyle)
                             
                         }

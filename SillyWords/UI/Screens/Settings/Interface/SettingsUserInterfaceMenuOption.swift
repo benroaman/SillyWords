@@ -18,13 +18,13 @@ enum SettingsUserInterfaceMenuOption: Int, SettingsSimpleMenuRowOption, CaseIter
     
     var icon: SFSymbol {
         switch self {
-        case .wordGenCurrentWordTransitionStyle: Style.Theme.Icon.transition
+        case .wordGenCurrentWordTransitionStyle: Theme.Transition.icon
         }
     }
     
     var iconColor: Color {
         switch self {
-        case .wordGenCurrentWordTransitionStyle: Style.Theme.Color.userInterface
+        case .wordGenCurrentWordTransitionStyle: Theme.UserInterface.color
         }
     }
     

@@ -18,7 +18,7 @@ struct SettingInputNumberPicker: View {
     
     // MARK: Body
     var body: some View {
-        VStack(alignment: .leading, spacing: Style.Settings.Spacing.optionTitleBottom) {
+        VStack(alignment: .leading, spacing: Style.Settings.Layout.optionTitleBottom) {
             Picker(setting.title, selection: $value) {
                 ForEach(options, id: \.self) { option in
                     Text("\(option)").tag(option)

@@ -30,6 +30,7 @@ enum SFSymbol: String, CaseIterable {
     case clockFill = "clock.fill"
     case documentBadgeGearshape = "document.badge.gearshape"
     case envelope
+    case envelopeFill = "envelope.fill"
     case gearshape
     case gearshapeFill = "gearshape.fill"
     case heart

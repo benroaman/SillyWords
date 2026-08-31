@@ -51,23 +51,24 @@ private extension FavoritesListRowView {
         Button(action: {
             model.onFavoriteListRowDeleteTap(for: word)
         }, label: {
-            Image(Self.deleteActionIcon)
+            Image(Theme.Delete.icon)
         })
-        .tint(Style.Theme.Color.delete)
-        Menu(Self.reportMenuIcon) {
+        .tint(Theme.Delete.color)
+        Menu(Theme.Report.icon) {
             Button(action: {
                 model.onFavoriteListRowReportPoorQualityTap(for: word)
             }, label: {
-                Label(title: Self.reportPoorQualityActionTitle, symbol: Self.reportActionIcon)
+                Label(title: Self.reportPoorQualityActionTitle, symbol: Theme.Contact.icon)
             })
+            .tint(Theme.PoorQuality.color)
             Button(action: {
                 model.onFavoriteListRowReportOffensiveTap(for: word)
             }, label: {
-                Label(title: Self.reportOffensiveActionTitle, symbol: Self.reportActionIcon)
+                Label(title: Self.reportOffensiveActionTitle, symbol: Theme.Contact.icon)
             })
-            .tint(Style.Theme.Color.offensive)
+            .tint(Theme.Offensive.color)
         }
-        .tint(Style.Theme.Color.report)
+        .tint(Theme.Report.color)
     }
 }
 
@@ -76,9 +77,6 @@ extension FavoritesListRowView {
     static var reportPoorQualityActionTitle: String { "Poor Quality" }
     static var reportOffensiveActionTitle: String { "Offensive" }
     
-    static var deleteActionIcon: SFSymbol { .trash }
-    static var reportMenuIcon: SFSymbol { .exclamationmarkBubble }
-    static var reportActionIcon: SFSymbol { .envelope }
 }
 
 // MARK: Model Requirements

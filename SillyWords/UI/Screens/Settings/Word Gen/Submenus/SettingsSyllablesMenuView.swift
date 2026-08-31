@@ -22,7 +22,7 @@ struct SettingsSyllablesMenuView<S: SyllableSettings>: View {
                                      options: settings.maximumSyllableOptions,
                                      value: $settings.maxSyllables)
         }
-        .tint(Style.Theme.Color.wordGen)
+        .tint(Theme.WordGen.color)
         .navigationTitle("Syllables")
     }
 }

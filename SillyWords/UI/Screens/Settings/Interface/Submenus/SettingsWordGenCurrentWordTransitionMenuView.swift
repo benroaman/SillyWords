@@ -29,7 +29,7 @@ struct SettingsWordGenCurrentWordTransitionMenuView<M: SettingsWordGenCurrentWor
                                     Spacer()
                                     Image(.checkmark)
                                         .font(Style.Settings.Icon.accessoryFont)
-                                        .foregroundStyle(Style.Theme.Color.selected)
+                                        .foregroundStyle(Theme.Selected.color)
                                 }
                                 .transition(.scale.animation(.bouncy(duration: 0.5, extraBounce: (style == model.selected ? 0.2 : 0))))
                             }

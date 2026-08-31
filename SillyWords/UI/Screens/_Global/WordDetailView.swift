@@ -31,10 +31,10 @@ struct WordDetailView<M : WordDetailViewModel>: View {
                 Button(action: {
                     model.onFavoriteTap()
                 }, label: {
-                    Image(model.isFavorite ? Style.Theme.Icon.favoriteYes : Style.Theme.Icon.favoriteNo)
+                    Image(model.isFavorite ? Theme.Favorite.iconOn : Theme.Favorite.iconOff)
                         .animation(.bouncy, value: model.isFavorite)
                 })
-                .tint(Style.Theme.Color.favorite)
+                .tint(Theme.Favorite.color)
             }
         }
         .errorAlert("Failed to toggle favorite", error: $model.toggleFavoriteError)

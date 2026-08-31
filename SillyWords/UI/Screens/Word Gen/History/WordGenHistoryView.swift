@@ -40,8 +40,8 @@ struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
                     Button(action: {
                         model.toggleFavorite(word: word)
                     }, label: {
-                        Image(word.isFavorite ? .heartFill : .heart)
-                            .tint(Style.Theme.Color.favorite)
+                        Image(word.isFavorite ? Theme.Favorite.iconOn : Theme.Favorite.iconOff)
+                            .tint(Theme.Favorite.color)
                             .animation(.linear(duration: 0.35), value: word.isFavorite)
                     })
                     .sensoryFeedback(.impact(weight: .light), trigger: word.isFavorite)
@@ -67,26 +67,27 @@ struct WordGenHistoryView<M: WordGenHistoryViewModel>: View {
     }
     
     @ViewBuilder func makeRowSwipeActions(for word: Word) -> some View {
-        Menu(.exclamationmarkBubble) {
+        Menu(Theme.Report.icon) {
             Button(action: {
                 model.reportWordAsLowQuality(word)
             }, label: {
-                Label(title: "Poor Quality", symbol: .envelope)
+                Label(title: "Poor Quality", symbol: Theme.Contact.icon)
             })
+            .tint(Theme.PoorQuality.color)
             Button(action: {
                 model.reportOffensiveWord(word)
             }, label: {
-                Label(title: "Offensive", symbol: .envelope)
+                Label(title: "Offensive", symbol: Theme.Contact.icon)
             })
-            .tint(Style.Theme.Color.offensive)
+            .tint(Theme.Offensive.color)
         }
-        .tint(Style.Theme.Color.report)
+        .tint(Theme.Report.color)
         Button(action: {
-            #warning("TODO:")
+            #warning("TODO: Implement a one off sentence generation ui")
         }, label: {
-            Image(.space)
+            Image(Theme.SentenceGen.icon)
         })
-        .tint(Style.Theme.Color.sentenceGen)
+        .tint(Theme.SentenceGen.color)
     }
 }
 

@@ -17,7 +17,7 @@ struct SettingInputSwitchPicker: View {
     
     // MARK: Body
     var body: some View {
-        VStack(alignment: .leading, spacing: Style.Settings.Spacing.optionTitleBottom) {
+        VStack(alignment: .leading, spacing: Style.Settings.Layout.optionTitleBottom) {
             Toggle(setting.title, isOn: $value)
                 .font(Style.Settings.Font.optionTitle)
             SettingInfoView(setting: setting)

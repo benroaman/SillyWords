@@ -8,14 +8,15 @@
 import CoreData
 import CloudKit
 
+#warning("TODO: Organize this file, maybe break into multiple")
 enum DatabaseError: Error {
     case validation(ErrorInfo, ValidationInfo)
     case permission(ErrorInfo)
     case diskFull(ErrorInfo)
     case badFile(ErrorInfo)
-    case miscCoreData(ErrorInfo)
     case missingObject(ErrorIdentity)
     case noPersistentStoreDescription(ErrorIdentity)
+    case miscCoreData(ErrorInfo)
     case unknown(ErrorInfo)
     
     init(_ error: Error, operation: Operation, caller: Caller) {
@@ -36,9 +37,9 @@ enum DatabaseError: Error {
         case .permission: "permission"
         case .diskFull: "diskFull"
         case .badFile: "badFile"
-        case .miscCoreData: "miscCoreData"
         case .missingObject: "missingObject"
         case .noPersistentStoreDescription: "noPersistentStoreDescription"
+        case .miscCoreData: "miscCoreData"
         case .unknown: "unknown"
         }
     }
@@ -161,7 +162,6 @@ private extension DatabaseError {
         }
     }
 }
-
 
 private extension DatabaseError {
     /// https://developer.apple.com/documentation/coredata/error-codes
@@ -378,7 +378,7 @@ extension DatabaseError {
         }
         
         init(multipleValidationError error: NSError) {
-            if let errors = error.userInfo[NSDetailedErrorsKey] as? [NSError] {
+            if let errors = error.userInfo[NSDetailedErrorsKey] as? [NSError], !errors.isEmpty {
                 var keyInfo: String = "::"
                 var valueInfo: String = "::"
                 var predicateInfo: String = "::"
@@ -405,6 +405,7 @@ extension DatabaseError {
     }
 }
 
+// MARK: Mocks
 extension DatabaseError {
     static var mockDiskFull: Self {
         DatabaseError.diskFull(.init(NSError(

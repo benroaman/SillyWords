@@ -40,7 +40,7 @@ protocol FavoritesTabNavFlowModel: AnyObject, Observable {
     @ViewBuilder func destination(for route: MainRoute) -> some View {
         switch route {
             #warning("TODO: Implement favorite detail screen")
-        case .favoriteWordDetail(let favorite): EmptyView()
+        case .wordDetail(let favorite): EmptyView()
         case .settingsWordGen, .settingsFavorites, .settingsSyllables, .settingsConsonants, .settingsVowels, .historyList, .settingsUserInterface, .settingsWordGenCurrentWordTransition, .settingsSentences, .settingsWordGenPresets: BadRouteView(route: route, flow: .favoritesTab)
         }
     }

@@ -50,7 +50,7 @@ private extension FavoritesListView {
     @ViewBuilder var zeroItemView: some View {
         zeroItemMessage
             .font(Self.zeroItemMessageFont)
-            .foregroundStyle(Style.Theme.Color.zeroItem)
+            .foregroundStyle(Theme.ZeroItem.color)
             .transition(.opacity.animation(.default))
     }
     

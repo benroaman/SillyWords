@@ -18,13 +18,13 @@ enum SettingsFavoritesMenuOption: Int, SettingsSimpleMenuRowOption, CaseIterable
     
     var icon: SFSymbol {
         switch self {
-        case .clear: Style.Theme.Icon.delete
+        case .clear: Theme.Delete.icon
         }
     }
     
     var iconColor: Color {
         switch self {
-        case .clear: Style.Theme.Color.delete
+        case .clear: Theme.Delete.color
         }
     }
     

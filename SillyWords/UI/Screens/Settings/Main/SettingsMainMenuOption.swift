@@ -24,19 +24,19 @@ enum SettingsMainMenuOption: SettingsSimpleMenuRowOption, CaseIterable {
     
     var icon: SFSymbol {
         switch self {
-        case .wordGen: Style.Theme.Icon.wordGen
-        case .favorites: Style.Theme.Icon.favorites
-        case .feedback: Style.Theme.Icon.contact
-        case .userInterface: Style.Theme.Icon.userInterface
+        case .wordGen: Theme.WordGen.icon
+        case .favorites: Theme.Favorite.icon
+        case .feedback: Theme.Feedback.icon
+        case .userInterface: Theme.UserInterface.icon
         }
     }
     
     var iconColor: Color {
         switch self {
-        case .wordGen: Style.Theme.Color.wordGen
-        case .favorites: Style.Theme.Color.favorite
-        case .feedback: Style.Theme.Color.feedback
-        case .userInterface: Style.Theme.Color.userInterface
+        case .wordGen: Theme.WordGen.color
+        case .favorites: Theme.Favorite.color
+        case .feedback: Theme.Feedback.color
+        case .userInterface: Theme.UserInterface.color
         }
     }
 

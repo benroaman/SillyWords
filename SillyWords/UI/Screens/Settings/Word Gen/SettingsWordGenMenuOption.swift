@@ -26,16 +26,16 @@ enum SettingsWordGenMenuOption: Int, SettingsSimpleMenuRowOption, CaseIterable {
     
     var icon: SFSymbol {
         switch self {
-        case .presets: Style.Theme.Icon.presets
-        case .syllables: Style.Theme.Icon.syllables
-        case .vowels: Style.Theme.Icon.vowels
-        case .consonants: Style.Theme.Icon.consonants
-        case .sentence: Style.Theme.Icon.sentenceGen
+        case .presets: Theme.Presets.icon
+        case .syllables: Theme.Syllables.icon
+        case .vowels: Theme.Vowels.icon
+        case .consonants: Theme.Consonants.icon
+        case .sentence: Theme.SentenceGen.icon
         }
     }
     
     var iconColor: Color {
-        Style.Theme.Color.wordGen
+        Theme.WordGen.color
     }
     
     var accessory: SFSymbol? {

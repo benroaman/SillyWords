@@ -105,9 +105,9 @@ private extension WordGenView {
                             model.onWordGenNewSentenceTap()
                         }
                     }, label: {
-                        Image(.arrowTrianglehead2Clockwise)
+                        Image(Theme.SentenceGen.refreshIcon)
                     })
-                    .tint(Style.Theme.Color.wordGen)
+                    .tint(Theme.SentenceGen.color)
                 }
                 .animation(.easeInOut(duration: 0.75), value: model.currentWordSentence)
                 .background(
@@ -128,18 +128,18 @@ private extension WordGenView {
                 model.onWordGenNewWordTap()
             }
         }, label: {
-            Image(Style.Theme.Icon.wordGen)
+            Image(Theme.WordGen.icon)
         })
-        .tint(Style.Theme.Color.wordGen)
+        .tint(Theme.WordGen.color)
         .wordViewButton()
         .accessibilityLabel("Generate New Word")
     }
     
     @ViewBuilder var toggleFavoriteButton: some View {
         Button(action: model.onWordGenFavoriteTap, label: {
-            Image(model.isCurrentWordFavorite ? Style.Theme.Icon.favoriteYes : Style.Theme.Icon.favoriteNo)
+            Image(model.isCurrentWordFavorite ? Theme.Favorite.iconOn : Theme.Favorite.iconOff)
         })
-        .tint(Style.Theme.Color.favorite)
+        .tint(Theme.Favorite.color)
         .wordViewButton()
         .animation(.easeIn(duration: 0.75), value: model.currentWord)
         .sensoryFeedback(.impact(weight: .light), trigger: model.isCurrentWordFavorite)
@@ -150,9 +150,9 @@ private extension WordGenView {
         Button(action: {
             model.onWordGenHistoryTap()
         }, label: {
-            Image(.clock)
+            Image(Theme.History.icon)
         })
-        .tint(Style.Theme.Color.history)
+        .tint(Theme.History.color)
         .wordViewButton()
         .accessibilityLabel("Open History")
     }
@@ -161,24 +161,25 @@ private extension WordGenView {
         Button(action: {
             model.onWordGenSettingsTap()
         }, label: {
-            Image(.gearshape)
+            Image(Theme.Settings.icon)
         })
-        .tint(Style.Theme.Color.main)
+        .tint(Theme.Settings.color)
         .wordViewButton()
         .accessibilityLabel("Open Word Generation Settings")
     }
     
     @ViewBuilder var reportButton: some View {
-        Menu("", systemImage: "exclamationmark.bubble") {
+        Menu(Theme.Report.icon) {
             Button(action: model.onWordGenReportOffensive, label: {
-                Label("Offensive", systemImage: "envelope.fill")
+                Label(title: "Offensive", symbol: Theme.Contact.icon)
             })
-            .tint(Style.Theme.Color.offensive)
+            .tint(Theme.Offensive.color)
             Button(action: model.onWordGenReportLowQuality, label: {
-                Label("Poor Quality", systemImage: "envelope.fill")
+                Label(title: "Poor Quality", symbol: Theme.Contact.icon)
             })
+            .tint(Theme.PoorQuality.color)
         }
-        .tint(Style.Theme.Color.report)
+        .tint(Theme.Report.color)
         .wordViewButton()
         .accessibilityLabel("Report \(model.currentWord)")
     }
